@@ -28,6 +28,18 @@ final class BundleLoader
     /** @var array<string, array{file: string}> */
     private array $themes;
 
+    /** @var list<string> bundle-declared language ids (before any runtime registration) */
+    private readonly array $bundledLanguageIds;
+
+    /** @var list<string> bundle-declared theme ids (before any runtime registration) */
+    private readonly array $bundledThemeIds;
+
+    /** @var array<string, array<string, mixed>> language id → decoded raw grammar registered at runtime */
+    private array $customGrammars = [];
+
+    /** @var array<string, array<string, mixed>> theme id → decoded raw theme registered at runtime */
+    private array $customThemes = [];
+
     /** @var array<string, array<string, mixed>> scope name → decoded raw grammar */
     private array $rawCache = [];
 
@@ -51,6 +63,9 @@ final class BundleLoader
                 $this->langIndex[$alias] ??= $id;
             }
         }
+
+        $this->bundledLanguageIds = array_keys($this->languages);
+        $this->bundledThemeIds = array_keys($this->themes);
     }
 
     public static function bundled(): self
@@ -68,6 +83,76 @@ final class BundleLoader
     public function themeIds(): array
     {
         return array_keys($this->themes);
+    }
+
+    /** @return list<string> ids shipped in the bundle, excluding runtime registrations */
+    public function bundledLanguageIds(): array
+    {
+        return $this->bundledLanguageIds;
+    }
+
+    /** @return list<string> ids shipped in the bundle, excluding runtime registrations */
+    public function bundledThemeIds(): array
+    {
+        return $this->bundledThemeIds;
+    }
+
+    /**
+     * Register a decoded `.tmLanguage` grammar at runtime. The language id is
+     * taken from $langId, else the grammar's `name`, else its `scopeName`. Its
+     * scope (and `embeddedLangs`/includes) resolve against grammars already
+     * registered here, so a custom grammar may reference bundled ones.
+     *
+     * @param array<string, mixed> $raw
+     * @param list<string> $aliases
+     * @param list<string> $embedded language ids this grammar embeds
+     * @return string the resolved language id
+     */
+    public function registerGrammar(array $raw, ?string $langId = null, array $aliases = [], array $embedded = []): string
+    {
+        $scopeName = is_string($raw['scopeName'] ?? null) ? $raw['scopeName'] : null;
+        if ($scopeName === null || $scopeName === '') {
+            throw Highlight::invalidGrammar('missing scopeName');
+        }
+
+        $name = is_string($raw['name'] ?? null) ? $raw['name'] : null;
+        $id = $langId ?? $name ?? $scopeName;
+
+        $this->customGrammars[$id] = $raw;
+        $this->languages[$id] = [
+            'file' => '',
+            'scopeName' => $scopeName,
+            'aliases' => $aliases,
+            'embedded' => $embedded,
+        ];
+        $this->langIndex[$id] = $id;
+        $this->scopeIndex[$scopeName] = $id;
+        foreach ($aliases as $alias) {
+            $this->langIndex[$alias] = $id;
+        }
+        $this->rawCache[$scopeName] = $raw;
+
+        return $id;
+    }
+
+    /**
+     * Register a decoded VS Code theme at runtime, keyed by its `name`. A custom
+     * theme overrides a bundled theme of the same name.
+     *
+     * @param array<string, mixed> $raw
+     * @return string the theme id (its `name`)
+     */
+    public function registerTheme(array $raw): string
+    {
+        $id = is_string($raw['name'] ?? null) ? $raw['name'] : null;
+        if ($id === null || $id === '') {
+            throw Highlight::invalidTheme('missing name');
+        }
+
+        $this->customThemes[$id] = $raw;
+        $this->themes[$id] = ['file' => ''];
+
+        return $id;
     }
 
     public function hasLanguage(string $idOrAlias): bool
@@ -113,12 +198,18 @@ final class BundleLoader
     public function rawGrammar(string $idOrAlias): array
     {
         $id = $this->langIndex[$idOrAlias] ?? throw Highlight::unknownLanguage($idOrAlias);
+        if (isset($this->customGrammars[$id])) {
+            return $this->customGrammars[$id];
+        }
         return $this->loadGrammarFile($this->languages[$id]['file']);
     }
 
     /** @return array<string, mixed> decoded theme JSON */
     public function rawTheme(string $themeId): array
     {
+        if (isset($this->customThemes[$themeId])) {
+            return $this->customThemes[$themeId];
+        }
         $entry = $this->themes[$themeId] ?? throw Highlight::unknownTheme($themeId);
         return self::decodeJson($this->baseDir . '/' . $entry['file']);
     }
@@ -135,6 +226,9 @@ final class BundleLoader
             $id = $this->scopeIndex[$scopeName] ?? null;
             if ($id === null) {
                 return null;
+            }
+            if (isset($this->customGrammars[$id])) {
+                return $this->customGrammars[$id];
             }
             return $this->loadGrammarFile($this->languages[$id]['file']);
         };

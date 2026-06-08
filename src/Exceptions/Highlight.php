@@ -25,6 +25,16 @@ final class Highlight extends \RuntimeException
         return new self('A `theme` or `themes` option is required.');
     }
 
+    public static function invalidGrammar(string $reason): self
+    {
+        return new self("Cannot load grammar: {$reason}.");
+    }
+
+    public static function invalidTheme(string $reason): self
+    {
+        return new self("Cannot load theme: {$reason}.");
+    }
+
     public static function badThemesOption(): self
     {
         return new self('The `themes` option must be a non-empty map of colour key to theme name.');

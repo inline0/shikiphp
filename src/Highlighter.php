@@ -83,6 +83,46 @@ final class Highlighter
         return $this->loader->themeIds();
     }
 
+    /** @return list<string> language ids shipped in the bundle */
+    public function bundledLanguages(): array
+    {
+        return $this->loader->bundledLanguageIds();
+    }
+
+    /** @return list<string> theme ids shipped in the bundle */
+    public function bundledThemes(): array
+    {
+        return $this->loader->bundledThemeIds();
+    }
+
+    /**
+     * Register a custom TextMate grammar (decoded `.tmLanguage` JSON) so
+     * codeToHtml/codeToTokens can use it by language id. The id is $langId, else
+     * the grammar's `name`, else its `scopeName`; includes/embedded langs resolve
+     * against already-registered grammars.
+     *
+     * @param array<string, mixed> $rawTmLanguage
+     * @param list<string> $aliases
+     * @param list<string> $embedded language ids this grammar embeds
+     */
+    public function loadGrammar(array $rawTmLanguage, ?string $langId = null, array $aliases = [], array $embedded = []): void
+    {
+        $id = $this->loader->registerGrammar($rawTmLanguage, $langId, $aliases, $embedded);
+        unset($this->grammars[$id]);
+    }
+
+    /**
+     * Register a custom VS Code theme (decoded JSON) keyed by its `name`. A custom
+     * theme overrides a bundled theme of the same name.
+     *
+     * @param array<string, mixed> $rawTheme
+     */
+    public function loadTheme(array $rawTheme): void
+    {
+        $id = $this->loader->registerTheme($rawTheme);
+        unset($this->themes[$id]);
+    }
+
     /**
      * @param Options $options
      * @return list<list<ThemedToken>>

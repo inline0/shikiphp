@@ -26,7 +26,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `mergeWhitespaces`, `tokenizeMaxLineLength`, `defaultColor`.
 - ANSI highlighting (`lang: 'ansi'`): SGR parser, 16/256/truecolor palette with
   theme `terminal.ansi*` overrides and Shiki's default fallback.
-- 76 bundled languages and 20 bundled themes (from `tm-grammars`/`tm-themes`).
+- The full Shiki bundle: every `tm-grammars` language (200+) and `tm-themes`
+  theme (65). The Oniguruma→JS converter handles all 32k+ grammar patterns with
+  zero failures, and every language tokenizes without error.
 - CLI (`bin/shikiphp`) and a Shiki.js oracle regression harness (78 scenarios).
 
 [Unreleased]: https://github.com/inline0/shikiphp/commits/main

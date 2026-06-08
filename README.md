@@ -40,10 +40,10 @@ Laravel/WordPress/static-site build step.
 - Shiki-compatible HTML output: dual light/dark themes via CSS variables,
   `codeToHast`, transformers (all hooks), decorations, `colorReplacements`,
   `structure: inline`, and ANSI (`lang: 'ansi'`) highlighting
-- **76 languages** and **20 themes** bundled (from `tm-grammars`/`tm-themes`)
+- the **full Shiki bundle** — every `tm-grammars` language (200+) and `tm-themes` theme (65)
 - No PHP extensions beyond `json`/`mbstring`, no Node, no native Oniguruma binding
 - Validated token-for-token against Shiki.js with an oracle regression harness
-  (78 scenarios across the full grammar/theme set)
+  (scenarios across the full grammar/theme set)
 
 ## Quick Start
 

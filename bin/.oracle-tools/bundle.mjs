@@ -14,20 +14,10 @@ const themesOutDir = resolve(registryDir, 'themes');
 
 const shikiVersion = require('shiki/package.json').version;
 
-const CURATED_LANGS = [
-  'javascript', 'typescript', 'jsx', 'tsx', 'json', 'jsonc', 'html', 'css',
-  'scss', 'php', 'python', 'bash', 'shell', 'markdown', 'yaml', 'toml', 'sql',
-  'rust', 'go', 'c', 'cpp', 'java', 'ruby', 'vue', 'xml', 'diff', 'dockerfile',
-  'ini', 'lua', 'csharp',
-];
+const allGrammars = [...grammarsIndex, ...injectionsIndex];
 
-const CURATED_THEMES = [
-  'github-dark', 'github-light', 'github-dark-dimmed', 'nord', 'dracula',
-  'one-dark-pro', 'one-light', 'vitesse-dark', 'vitesse-light', 'monokai',
-  'min-dark', 'min-light', 'solarized-dark', 'solarized-light',
-  'catppuccin-mocha', 'catppuccin-latte', 'tokyo-night', 'material-theme-darker',
-  'slack-dark', 'rose-pine',
-];
+const ALL_LANGS = allGrammars.map((g) => g.name);
+const ALL_THEMES = themesIndex.map((t) => t.name);
 
 const EXTRA_ALIASES = {
   js: 'javascript',
@@ -40,7 +30,6 @@ const EXTRA_ALIASES = {
   md: 'markdown',
 };
 
-const allGrammars = [...grammarsIndex, ...injectionsIndex];
 const byName = new Map(allGrammars.map((g) => [g.name, g]));
 const byAlias = new Map();
 for (const g of allGrammars) {
@@ -63,7 +52,7 @@ function addGrammarClosure(id) {
 }
 
 const requestedGrammars = new Map();
-for (const id of CURATED_LANGS) {
+for (const id of ALL_LANGS) {
   requestedGrammars.set(id, addGrammarClosure(id));
 }
 
@@ -121,7 +110,7 @@ for (const [alias, target] of Object.entries(EXTRA_ALIASES)) {
 const manifestThemes = {};
 const themeMeta = new Map(themesIndex.map((t) => [t.name, t]));
 
-for (const id of CURATED_THEMES) {
+for (const id of ALL_THEMES) {
   const meta = themeMeta.get(id);
   if (!meta) throw new Error(`unknown theme: ${id}`);
   const json = loadThemeJson(id);
@@ -145,7 +134,7 @@ writeFileSync(
 );
 
 const grammarFiles = closure.size;
-const themeFiles = CURATED_THEMES.length;
+const themeFiles = ALL_THEMES.length;
 process.stdout.write(
   `bundled ${grammarFiles} grammars, ${themeFiles} themes ` +
   `(${Object.keys(manifestLanguages).length} language ids) ` +

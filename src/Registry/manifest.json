@@ -1,49 +1,35 @@
 {
   "version": "3.23.0",
   "languages": {
-    "javascript": {
-      "file": "grammars/javascript.json",
-      "scopeName": "source.js",
-      "aliases": [
-        "js",
-        "cjs",
-        "mjs"
-      ],
-      "embedded": []
-    },
-    "typescript": {
-      "file": "grammars/typescript.json",
-      "scopeName": "source.ts",
-      "aliases": [
-        "ts",
-        "cts",
-        "mts"
-      ],
-      "embedded": []
-    },
-    "jsx": {
-      "file": "grammars/jsx.json",
-      "scopeName": "source.js.jsx",
+    "abap": {
+      "file": "grammars/abap.json",
+      "scopeName": "source.abap",
       "aliases": [],
       "embedded": []
     },
-    "tsx": {
-      "file": "grammars/tsx.json",
-      "scopeName": "source.tsx",
+    "actionscript-3": {
+      "file": "grammars/actionscript-3.json",
+      "scopeName": "source.actionscript.3",
       "aliases": [],
       "embedded": []
     },
-    "json": {
-      "file": "grammars/json.json",
-      "scopeName": "source.json",
+    "ada": {
+      "file": "grammars/ada.json",
+      "scopeName": "source.ada",
       "aliases": [],
       "embedded": []
     },
-    "jsonc": {
-      "file": "grammars/jsonc.json",
-      "scopeName": "source.json.comments",
+    "angular-html": {
+      "file": "grammars/angular-html.json",
+      "scopeName": "text.html.derivative.ng",
       "aliases": [],
-      "embedded": []
+      "embedded": [
+        "html",
+        "angular-expression",
+        "angular-let-declaration",
+        "angular-template",
+        "angular-template-blocks"
+      ]
     },
     "html": {
       "file": "grammars/html.json",
@@ -54,11 +40,73 @@
         "css"
       ]
     },
+    "javascript": {
+      "file": "grammars/javascript.json",
+      "scopeName": "source.js",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "embedded": []
+    },
     "css": {
       "file": "grammars/css.json",
       "scopeName": "source.css",
       "aliases": [],
       "embedded": []
+    },
+    "angular-expression": {
+      "file": "grammars/angular-expression.json",
+      "scopeName": "expression.ng",
+      "aliases": [],
+      "embedded": []
+    },
+    "angular-let-declaration": {
+      "file": "grammars/angular-let-declaration.json",
+      "scopeName": "template.let.ng",
+      "aliases": [],
+      "embedded": [
+        "angular-expression"
+      ]
+    },
+    "angular-template": {
+      "file": "grammars/angular-template.json",
+      "scopeName": "template.ng",
+      "aliases": [],
+      "embedded": [
+        "angular-expression"
+      ]
+    },
+    "angular-template-blocks": {
+      "file": "grammars/angular-template-blocks.json",
+      "scopeName": "template.blocks.ng",
+      "aliases": [],
+      "embedded": [
+        "angular-expression",
+        "angular-template"
+      ]
+    },
+    "angular-ts": {
+      "file": "grammars/angular-ts.json",
+      "scopeName": "source.ts.ng",
+      "aliases": [],
+      "embedded": [
+        "angular-expression",
+        "angular-inline-style",
+        "angular-inline-template",
+        "angular-let-declaration",
+        "angular-template",
+        "angular-template-blocks"
+      ]
+    },
+    "angular-inline-style": {
+      "file": "grammars/angular-inline-style.json",
+      "scopeName": "inline-styles.ng",
+      "aliases": [],
+      "embedded": [
+        "scss"
+      ]
     },
     "scss": {
       "file": "grammars/scss.json",
@@ -68,17 +116,37 @@
         "css"
       ]
     },
-    "php": {
-      "file": "grammars/php.json",
-      "scopeName": "source.php",
+    "angular-inline-template": {
+      "file": "grammars/angular-inline-template.json",
+      "scopeName": "inline-template.ng",
+      "aliases": [],
+      "embedded": [
+        "angular-html",
+        "angular-template"
+      ]
+    },
+    "apache": {
+      "file": "grammars/apache.json",
+      "scopeName": "source.apacheconf",
+      "aliases": [],
+      "embedded": []
+    },
+    "apex": {
+      "file": "grammars/apex.json",
+      "scopeName": "source.apex",
+      "aliases": [],
+      "embedded": []
+    },
+    "apl": {
+      "file": "grammars/apl.json",
+      "scopeName": "source.apl",
       "aliases": [],
       "embedded": [
         "html",
         "xml",
-        "sql",
+        "css",
         "javascript",
-        "json",
-        "css"
+        "json"
       ]
     },
     "xml": {
@@ -95,30 +163,209 @@
       "aliases": [],
       "embedded": []
     },
+    "json": {
+      "file": "grammars/json.json",
+      "scopeName": "source.json",
+      "aliases": [],
+      "embedded": []
+    },
+    "applescript": {
+      "file": "grammars/applescript.json",
+      "scopeName": "source.applescript",
+      "aliases": [],
+      "embedded": []
+    },
+    "ara": {
+      "file": "grammars/ara.json",
+      "scopeName": "source.ara",
+      "aliases": [],
+      "embedded": []
+    },
+    "asciidoc": {
+      "file": "grammars/asciidoc.json",
+      "scopeName": "text.asciidoc",
+      "aliases": [
+        "adoc"
+      ],
+      "embedded": [
+        "html",
+        "yaml",
+        "csv",
+        "css",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "json",
+        "jsonc",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "regexp",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "markdown",
+        "log",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "abap",
+        "rst",
+        "haskell",
+        "kotlin"
+      ]
+    },
+    "yaml": {
+      "file": "grammars/yaml.json",
+      "scopeName": "source.yaml",
+      "aliases": [
+        "yml"
+      ],
+      "embedded": []
+    },
+    "csv": {
+      "file": "grammars/csv.json",
+      "scopeName": "text.csv",
+      "aliases": [],
+      "embedded": []
+    },
+    "ini": {
+      "file": "grammars/ini.json",
+      "scopeName": "source.ini",
+      "aliases": [
+        "properties"
+      ],
+      "embedded": []
+    },
+    "lua": {
+      "file": "grammars/lua.json",
+      "scopeName": "source.lua",
+      "aliases": [],
+      "embedded": [
+        "c"
+      ]
+    },
+    "c": {
+      "file": "grammars/c.json",
+      "scopeName": "source.c",
+      "aliases": [],
+      "embedded": []
+    },
+    "make": {
+      "file": "grammars/make.json",
+      "scopeName": "source.makefile",
+      "aliases": [
+        "makefile"
+      ],
+      "embedded": []
+    },
+    "perl": {
+      "file": "grammars/perl.json",
+      "scopeName": "source.perl",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "xml",
+        "css",
+        "javascript",
+        "sql"
+      ]
+    },
     "sql": {
       "file": "grammars/sql.json",
       "scopeName": "source.sql",
       "aliases": [],
       "embedded": []
     },
-    "python": {
-      "file": "grammars/python.json",
-      "scopeName": "source.python",
-      "aliases": [
-        "py"
-      ],
+    "r": {
+      "file": "grammars/r.json",
+      "scopeName": "source.r",
+      "aliases": [],
       "embedded": []
     },
-    "shellscript": {
-      "file": "grammars/shellscript.json",
-      "scopeName": "source.shell",
+    "ruby": {
+      "file": "grammars/ruby.json",
+      "scopeName": "source.ruby",
       "aliases": [
-        "bash",
-        "sh",
-        "shell",
-        "zsh"
+        "rb"
       ],
+      "embedded": [
+        "html",
+        "haml",
+        "xml",
+        "sql",
+        "graphql",
+        "css",
+        "cpp",
+        "c",
+        "javascript",
+        "shellscript",
+        "lua",
+        "yaml"
+      ]
+    },
+    "haml": {
+      "file": "grammars/haml.json",
+      "scopeName": "text.haml",
+      "aliases": [],
+      "embedded": [
+        "ruby",
+        "javascript",
+        "sass",
+        "coffee",
+        "markdown",
+        "css"
+      ]
+    },
+    "sass": {
+      "file": "grammars/sass.json",
+      "scopeName": "source.sass",
+      "aliases": [],
       "embedded": []
+    },
+    "coffee": {
+      "file": "grammars/coffee.json",
+      "scopeName": "source.coffee",
+      "aliases": [
+        "coffeescript"
+      ],
+      "embedded": [
+        "javascript"
+      ]
     },
     "markdown": {
       "file": "grammars/markdown.json",
@@ -186,116 +433,50 @@
         "html-derivative"
       ]
     },
-    "ini": {
-      "file": "grammars/ini.json",
-      "scopeName": "source.ini",
-      "aliases": [
-        "properties"
-      ],
-      "embedded": []
-    },
-    "lua": {
-      "file": "grammars/lua.json",
-      "scopeName": "source.lua",
-      "aliases": [],
-      "embedded": [
-        "c"
-      ]
-    },
-    "c": {
-      "file": "grammars/c.json",
-      "scopeName": "source.c",
-      "aliases": [],
-      "embedded": []
-    },
-    "make": {
-      "file": "grammars/make.json",
-      "scopeName": "source.makefile",
-      "aliases": [
-        "makefile"
-      ],
-      "embedded": []
-    },
-    "perl": {
-      "file": "grammars/perl.json",
-      "scopeName": "source.perl",
+    "php": {
+      "file": "grammars/php.json",
+      "scopeName": "source.php",
       "aliases": [],
       "embedded": [
         "html",
-        "xml",
-        "css",
-        "javascript",
-        "sql"
-      ]
-    },
-    "r": {
-      "file": "grammars/r.json",
-      "scopeName": "source.r",
-      "aliases": [],
-      "embedded": []
-    },
-    "ruby": {
-      "file": "grammars/ruby.json",
-      "scopeName": "source.ruby",
-      "aliases": [
-        "rb"
-      ],
-      "embedded": [
-        "html",
-        "haml",
         "xml",
         "sql",
-        "graphql",
-        "css",
-        "cpp",
-        "c",
         "javascript",
-        "shellscript",
-        "lua",
-        "yaml"
-      ]
-    },
-    "haml": {
-      "file": "grammars/haml.json",
-      "scopeName": "text.haml",
-      "aliases": [],
-      "embedded": [
-        "ruby",
-        "javascript",
-        "sass",
-        "coffee",
-        "markdown",
+        "json",
         "css"
       ]
     },
-    "sass": {
-      "file": "grammars/sass.json",
-      "scopeName": "source.sass",
-      "aliases": [],
+    "vb": {
+      "file": "grammars/vb.json",
+      "scopeName": "source.asp.vb.net",
+      "aliases": [
+        "cmd"
+      ],
       "embedded": []
     },
-    "coffee": {
-      "file": "grammars/coffee.json",
-      "scopeName": "source.coffee",
-      "aliases": [
-        "coffeescript"
-      ],
+    "xsl": {
+      "file": "grammars/xsl.json",
+      "scopeName": "text.xml.xsl",
+      "aliases": [],
       "embedded": [
-        "javascript"
+        "xml"
       ]
     },
-    "graphql": {
-      "file": "grammars/graphql.json",
-      "scopeName": "source.graphql",
+    "bat": {
+      "file": "grammars/bat.json",
+      "scopeName": "source.batchfile",
       "aliases": [
-        "gql"
+        "batch"
       ],
-      "embedded": [
-        "javascript",
-        "typescript",
-        "jsx",
-        "tsx"
-      ]
+      "embedded": []
+    },
+    "clojure": {
+      "file": "grammars/clojure.json",
+      "scopeName": "source.clojure",
+      "aliases": [
+        "clj"
+      ],
+      "embedded": []
     },
     "cpp": {
       "file": "grammars/cpp.json",
@@ -336,46 +517,6 @@
         "c"
       ]
     },
-    "yaml": {
-      "file": "grammars/yaml.json",
-      "scopeName": "source.yaml",
-      "aliases": [
-        "yml"
-      ],
-      "embedded": []
-    },
-    "vb": {
-      "file": "grammars/vb.json",
-      "scopeName": "source.asp.vb.net",
-      "aliases": [
-        "cmd"
-      ],
-      "embedded": []
-    },
-    "xsl": {
-      "file": "grammars/xsl.json",
-      "scopeName": "text.xml.xsl",
-      "aliases": [],
-      "embedded": [
-        "xml"
-      ]
-    },
-    "bat": {
-      "file": "grammars/bat.json",
-      "scopeName": "source.batchfile",
-      "aliases": [
-        "batch"
-      ],
-      "embedded": []
-    },
-    "clojure": {
-      "file": "grammars/clojure.json",
-      "scopeName": "source.clojure",
-      "aliases": [
-        "clj"
-      ],
-      "embedded": []
-    },
     "diff": {
       "file": "grammars/diff.json",
       "scopeName": "source.diff",
@@ -405,6 +546,17 @@
       "embedded": [
         "shellscript"
       ]
+    },
+    "shellscript": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
     },
     "go": {
       "file": "grammars/go.json",
@@ -440,6 +592,12 @@
       "aliases": [
         "styl"
       ],
+      "embedded": []
+    },
+    "jsonc": {
+      "file": "grammars/jsonc.json",
+      "scopeName": "source.json.comments",
+      "aliases": [],
       "embedded": []
     },
     "jsonl": {
@@ -485,6 +643,14 @@
       ],
       "embedded": []
     },
+    "python": {
+      "file": "grammars/python.json",
+      "scopeName": "source.python",
+      "aliases": [
+        "py"
+      ],
+      "embedded": []
+    },
     "julia": {
       "file": "grammars/julia.json",
       "scopeName": "source.julia",
@@ -510,6 +676,22 @@
     "scala": {
       "file": "grammars/scala.json",
       "scopeName": "source.scala",
+      "aliases": [],
+      "embedded": []
+    },
+    "typescript": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "tsx": {
+      "file": "grammars/tsx.json",
+      "scopeName": "source.tsx",
       "aliases": [],
       "embedded": []
     },
@@ -628,12 +810,6 @@
       "aliases": [],
       "embedded": []
     },
-    "abap": {
-      "file": "grammars/abap.json",
-      "scopeName": "source.abap",
-      "aliases": [],
-      "embedded": []
-    },
     "rst": {
       "file": "grammars/rst.json",
       "scopeName": "source.rst",
@@ -663,10 +839,1242 @@
       "aliases": [],
       "embedded": []
     },
+    "graphql": {
+      "file": "grammars/graphql.json",
+      "scopeName": "source.graphql",
+      "aliases": [
+        "gql"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx"
+      ]
+    },
+    "jsx": {
+      "file": "grammars/jsx.json",
+      "scopeName": "source.js.jsx",
+      "aliases": [],
+      "embedded": []
+    },
+    "kotlin": {
+      "file": "grammars/kotlin.json",
+      "scopeName": "source.kotlin",
+      "aliases": [
+        "kt",
+        "kts"
+      ],
+      "embedded": []
+    },
+    "asm": {
+      "file": "grammars/asm.json",
+      "scopeName": "source.asm.x86_64",
+      "aliases": [],
+      "embedded": []
+    },
+    "astro": {
+      "file": "grammars/astro.json",
+      "scopeName": "source.astro",
+      "aliases": [],
+      "embedded": [
+        "json",
+        "javascript",
+        "typescript",
+        "stylus",
+        "sass",
+        "css",
+        "scss",
+        "less",
+        "postcss",
+        "tsx"
+      ]
+    },
+    "postcss": {
+      "file": "grammars/postcss.json",
+      "scopeName": "source.css.postcss",
+      "aliases": [],
+      "embedded": []
+    },
+    "awk": {
+      "file": "grammars/awk.json",
+      "scopeName": "source.awk",
+      "aliases": [],
+      "embedded": []
+    },
+    "ballerina": {
+      "file": "grammars/ballerina.json",
+      "scopeName": "source.ballerina",
+      "aliases": [],
+      "embedded": []
+    },
+    "beancount": {
+      "file": "grammars/beancount.json",
+      "scopeName": "text.beancount",
+      "aliases": [],
+      "embedded": []
+    },
+    "berry": {
+      "file": "grammars/berry.json",
+      "scopeName": "source.berry",
+      "aliases": [
+        "be"
+      ],
+      "embedded": []
+    },
+    "bicep": {
+      "file": "grammars/bicep.json",
+      "scopeName": "source.bicep",
+      "aliases": [],
+      "embedded": []
+    },
+    "bird2": {
+      "file": "grammars/bird2.json",
+      "scopeName": "source.bird2",
+      "aliases": [
+        "bird"
+      ],
+      "embedded": []
+    },
+    "blade": {
+      "file": "grammars/blade.json",
+      "scopeName": "text.html.php.blade",
+      "aliases": [],
+      "embedded": [
+        "html-derivative",
+        "html",
+        "xml",
+        "sql",
+        "javascript",
+        "json",
+        "css"
+      ]
+    },
+    "bsl": {
+      "file": "grammars/bsl.json",
+      "scopeName": "source.bsl",
+      "aliases": [
+        "1c"
+      ],
+      "embedded": [
+        "sdbl"
+      ]
+    },
+    "sdbl": {
+      "file": "grammars/sdbl.json",
+      "scopeName": "source.sdbl",
+      "aliases": [
+        "1c-query"
+      ],
+      "embedded": []
+    },
+    "c3": {
+      "file": "grammars/c3.json",
+      "scopeName": "source.c3",
+      "aliases": [],
+      "embedded": []
+    },
+    "cadence": {
+      "file": "grammars/cadence.json",
+      "scopeName": "source.cadence",
+      "aliases": [
+        "cdc"
+      ],
+      "embedded": []
+    },
+    "cairo": {
+      "file": "grammars/cairo.json",
+      "scopeName": "source.cairo0",
+      "aliases": [],
+      "embedded": [
+        "python"
+      ]
+    },
+    "clarity": {
+      "file": "grammars/clarity.json",
+      "scopeName": "source.clar",
+      "aliases": [],
+      "embedded": []
+    },
+    "cobol": {
+      "file": "grammars/cobol.json",
+      "scopeName": "source.cobol",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "java"
+      ]
+    },
+    "codeowners": {
+      "file": "grammars/codeowners.json",
+      "scopeName": "text.codeowners",
+      "aliases": [],
+      "embedded": []
+    },
+    "codeql": {
+      "file": "grammars/codeql.json",
+      "scopeName": "source.ql",
+      "aliases": [
+        "ql"
+      ],
+      "embedded": []
+    },
+    "common-lisp": {
+      "file": "grammars/common-lisp.json",
+      "scopeName": "source.commonlisp",
+      "aliases": [
+        "lisp"
+      ],
+      "embedded": []
+    },
+    "coq": {
+      "file": "grammars/coq.json",
+      "scopeName": "source.coq",
+      "aliases": [],
+      "embedded": []
+    },
+    "crystal": {
+      "file": "grammars/crystal.json",
+      "scopeName": "source.crystal",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "sql",
+        "css",
+        "c",
+        "javascript",
+        "shellscript"
+      ]
+    },
+    "cue": {
+      "file": "grammars/cue.json",
+      "scopeName": "source.cue",
+      "aliases": [],
+      "embedded": []
+    },
+    "cypher": {
+      "file": "grammars/cypher.json",
+      "scopeName": "source.cypher",
+      "aliases": [
+        "cql"
+      ],
+      "embedded": []
+    },
+    "d": {
+      "file": "grammars/d.json",
+      "scopeName": "source.d",
+      "aliases": [],
+      "embedded": []
+    },
+    "dax": {
+      "file": "grammars/dax.json",
+      "scopeName": "source.dax",
+      "aliases": [],
+      "embedded": []
+    },
+    "desktop": {
+      "file": "grammars/desktop.json",
+      "scopeName": "source.desktop",
+      "aliases": [],
+      "embedded": []
+    },
+    "dotenv": {
+      "file": "grammars/dotenv.json",
+      "scopeName": "source.dotenv",
+      "aliases": [],
+      "embedded": []
+    },
+    "dream-maker": {
+      "file": "grammars/dream-maker.json",
+      "scopeName": "source.dm",
+      "aliases": [],
+      "embedded": []
+    },
+    "edge": {
+      "file": "grammars/edge.json",
+      "scopeName": "text.html.edge",
+      "aliases": [],
+      "embedded": [
+        "typescript",
+        "html",
+        "html-derivative"
+      ]
+    },
+    "elm": {
+      "file": "grammars/elm.json",
+      "scopeName": "source.elm",
+      "aliases": [],
+      "embedded": [
+        "glsl"
+      ]
+    },
+    "emacs-lisp": {
+      "file": "grammars/emacs-lisp.json",
+      "scopeName": "source.emacs.lisp",
+      "aliases": [
+        "elisp"
+      ],
+      "embedded": []
+    },
+    "erb": {
+      "file": "grammars/erb.json",
+      "scopeName": "text.html.erb",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "ruby"
+      ]
+    },
+    "fennel": {
+      "file": "grammars/fennel.json",
+      "scopeName": "source.fnl",
+      "aliases": [],
+      "embedded": []
+    },
+    "fish": {
+      "file": "grammars/fish.json",
+      "scopeName": "source.fish",
+      "aliases": [],
+      "embedded": []
+    },
+    "fluent": {
+      "file": "grammars/fluent.json",
+      "scopeName": "source.ftl",
+      "aliases": [
+        "ftl"
+      ],
+      "embedded": []
+    },
+    "fortran-fixed-form": {
+      "file": "grammars/fortran-fixed-form.json",
+      "scopeName": "source.fortran.fixed",
+      "aliases": [
+        "f",
+        "for",
+        "f77"
+      ],
+      "embedded": [
+        "fortran-free-form"
+      ]
+    },
+    "fortran-free-form": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "gdresource": {
+      "file": "grammars/gdresource.json",
+      "scopeName": "source.gdresource",
+      "aliases": [
+        "tscn",
+        "tres"
+      ],
+      "embedded": [
+        "gdshader",
+        "gdscript"
+      ]
+    },
+    "gdshader": {
+      "file": "grammars/gdshader.json",
+      "scopeName": "source.gdshader",
+      "aliases": [],
+      "embedded": []
+    },
+    "gdscript": {
+      "file": "grammars/gdscript.json",
+      "scopeName": "source.gdscript",
+      "aliases": [
+        "gd"
+      ],
+      "embedded": []
+    },
+    "genie": {
+      "file": "grammars/genie.json",
+      "scopeName": "source.genie",
+      "aliases": [],
+      "embedded": []
+    },
+    "gherkin": {
+      "file": "grammars/gherkin.json",
+      "scopeName": "text.gherkin.feature",
+      "aliases": [],
+      "embedded": []
+    },
+    "gleam": {
+      "file": "grammars/gleam.json",
+      "scopeName": "source.gleam",
+      "aliases": [],
+      "embedded": []
+    },
+    "glimmer-js": {
+      "file": "grammars/glimmer-js.json",
+      "scopeName": "source.gjs",
+      "aliases": [
+        "gjs"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "css",
+        "html"
+      ]
+    },
+    "glimmer-ts": {
+      "file": "grammars/glimmer-ts.json",
+      "scopeName": "source.gts",
+      "aliases": [
+        "gts"
+      ],
+      "embedded": [
+        "typescript",
+        "css",
+        "javascript",
+        "html"
+      ]
+    },
+    "gn": {
+      "file": "grammars/gn.json",
+      "scopeName": "source.gn",
+      "aliases": [],
+      "embedded": []
+    },
+    "hack": {
+      "file": "grammars/hack.json",
+      "scopeName": "source.hack",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "sql"
+      ]
+    },
+    "haxe": {
+      "file": "grammars/haxe.json",
+      "scopeName": "source.hx",
+      "aliases": [],
+      "embedded": []
+    },
+    "hcl": {
+      "file": "grammars/hcl.json",
+      "scopeName": "source.hcl",
+      "aliases": [],
+      "embedded": []
+    },
+    "hjson": {
+      "file": "grammars/hjson.json",
+      "scopeName": "source.hjson",
+      "aliases": [],
+      "embedded": []
+    },
+    "hlsl": {
+      "file": "grammars/hlsl.json",
+      "scopeName": "source.hlsl",
+      "aliases": [],
+      "embedded": []
+    },
+    "http": {
+      "file": "grammars/http.json",
+      "scopeName": "source.http",
+      "aliases": [],
+      "embedded": [
+        "shellscript",
+        "json",
+        "xml",
+        "graphql"
+      ]
+    },
+    "hurl": {
+      "file": "grammars/hurl.json",
+      "scopeName": "source.hurl",
+      "aliases": [],
+      "embedded": [
+        "graphql",
+        "xml",
+        "csv"
+      ]
+    },
+    "hxml": {
+      "file": "grammars/hxml.json",
+      "scopeName": "source.hxml",
+      "aliases": [],
+      "embedded": [
+        "haxe"
+      ]
+    },
+    "hy": {
+      "file": "grammars/hy.json",
+      "scopeName": "source.hy",
+      "aliases": [],
+      "embedded": []
+    },
+    "imba": {
+      "file": "grammars/imba.json",
+      "scopeName": "source.imba",
+      "aliases": [],
+      "embedded": []
+    },
+    "jinja": {
+      "file": "grammars/jinja.json",
+      "scopeName": "source.jinja",
+      "aliases": [],
+      "embedded": [
+        "jinja-html"
+      ]
+    },
+    "jinja-html": {
+      "file": "grammars/jinja-html.json",
+      "scopeName": "text.html.jinja",
+      "aliases": [],
+      "embedded": [
+        "html"
+      ]
+    },
+    "jison": {
+      "file": "grammars/jison.json",
+      "scopeName": "source.jison",
+      "aliases": [],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "json5": {
+      "file": "grammars/json5.json",
+      "scopeName": "source.json5",
+      "aliases": [],
+      "embedded": []
+    },
+    "jsonnet": {
+      "file": "grammars/jsonnet.json",
+      "scopeName": "source.jsonnet",
+      "aliases": [],
+      "embedded": []
+    },
+    "jssm": {
+      "file": "grammars/jssm.json",
+      "scopeName": "source.jssm",
+      "aliases": [
+        "fsl"
+      ],
+      "embedded": []
+    },
+    "just": {
+      "file": "grammars/just.json",
+      "scopeName": "source.just",
+      "aliases": [],
+      "embedded": [
+        "shellscript",
+        "javascript",
+        "typescript",
+        "perl",
+        "python",
+        "ruby"
+      ]
+    },
+    "kdl": {
+      "file": "grammars/kdl.json",
+      "scopeName": "source.kdl",
+      "aliases": [],
+      "embedded": []
+    },
+    "kusto": {
+      "file": "grammars/kusto.json",
+      "scopeName": "source.kusto",
+      "aliases": [
+        "kql"
+      ],
+      "embedded": []
+    },
+    "lean": {
+      "file": "grammars/lean.json",
+      "scopeName": "source.lean4",
+      "aliases": [
+        "lean4"
+      ],
+      "embedded": []
+    },
+    "liquid": {
+      "file": "grammars/liquid.json",
+      "scopeName": "text.html.liquid",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "css",
+        "json",
+        "javascript"
+      ]
+    },
+    "llvm": {
+      "file": "grammars/llvm.json",
+      "scopeName": "source.llvm",
+      "aliases": [],
+      "embedded": []
+    },
+    "logo": {
+      "file": "grammars/logo.json",
+      "scopeName": "source.logo",
+      "aliases": [],
+      "embedded": []
+    },
+    "luau": {
+      "file": "grammars/luau.json",
+      "scopeName": "source.luau",
+      "aliases": [],
+      "embedded": []
+    },
+    "marko": {
+      "file": "grammars/marko.json",
+      "scopeName": "text.marko",
+      "aliases": [],
+      "embedded": [
+        "css",
+        "less",
+        "scss",
+        "typescript"
+      ]
+    },
+    "matlab": {
+      "file": "grammars/matlab.json",
+      "scopeName": "source.matlab",
+      "aliases": [],
+      "embedded": []
+    },
+    "mdc": {
+      "file": "grammars/mdc.json",
+      "scopeName": "text.markdown.mdc.standalone",
+      "aliases": [],
+      "embedded": [
+        "markdown",
+        "yaml",
+        "html-derivative"
+      ]
+    },
+    "mdx": {
+      "file": "grammars/mdx.json",
+      "scopeName": "source.mdx",
+      "aliases": [],
+      "embedded": [
+        "tsx",
+        "toml",
+        "yaml",
+        "c",
+        "clojure",
+        "coffee",
+        "cpp",
+        "csharp",
+        "css",
+        "diff",
+        "docker",
+        "elixir",
+        "elm",
+        "erlang",
+        "go",
+        "graphql",
+        "haskell",
+        "html",
+        "ini",
+        "java",
+        "javascript",
+        "json",
+        "julia",
+        "kotlin",
+        "less",
+        "lua",
+        "make",
+        "markdown",
+        "objective-c",
+        "perl",
+        "python",
+        "r",
+        "ruby",
+        "rust",
+        "scala",
+        "scss",
+        "shellscript",
+        "shellsession",
+        "sql",
+        "xml",
+        "swift",
+        "typescript"
+      ]
+    },
     "toml": {
       "file": "grammars/toml.json",
       "scopeName": "source.toml",
       "aliases": [],
+      "embedded": []
+    },
+    "shellsession": {
+      "file": "grammars/shellsession.json",
+      "scopeName": "text.shell-session",
+      "aliases": [
+        "console"
+      ],
+      "embedded": [
+        "shellscript"
+      ]
+    },
+    "mermaid": {
+      "file": "grammars/mermaid.json",
+      "scopeName": "markdown.mermaid.codeblock",
+      "aliases": [
+        "mmd"
+      ],
+      "embedded": []
+    },
+    "mipsasm": {
+      "file": "grammars/mipsasm.json",
+      "scopeName": "source.mips",
+      "aliases": [
+        "mips"
+      ],
+      "embedded": []
+    },
+    "mojo": {
+      "file": "grammars/mojo.json",
+      "scopeName": "source.mojo",
+      "aliases": [],
+      "embedded": []
+    },
+    "moonbit": {
+      "file": "grammars/moonbit.json",
+      "scopeName": "source.moonbit",
+      "aliases": [
+        "mbt",
+        "mbti"
+      ],
+      "embedded": []
+    },
+    "move": {
+      "file": "grammars/move.json",
+      "scopeName": "source.move",
+      "aliases": [],
+      "embedded": []
+    },
+    "narrat": {
+      "file": "grammars/narrat.json",
+      "scopeName": "source.narrat",
+      "aliases": [
+        "nar"
+      ],
+      "embedded": []
+    },
+    "nextflow": {
+      "file": "grammars/nextflow.json",
+      "scopeName": "source.nextflow",
+      "aliases": [
+        "nf"
+      ],
+      "embedded": [
+        "nextflow-groovy"
+      ]
+    },
+    "nextflow-groovy": {
+      "file": "grammars/nextflow-groovy.json",
+      "scopeName": "source.nextflow-groovy",
+      "aliases": [],
+      "embedded": []
+    },
+    "nginx": {
+      "file": "grammars/nginx.json",
+      "scopeName": "source.nginx",
+      "aliases": [],
+      "embedded": [
+        "lua"
+      ]
+    },
+    "nim": {
+      "file": "grammars/nim.json",
+      "scopeName": "source.nim",
+      "aliases": [],
+      "embedded": [
+        "c",
+        "html",
+        "xml",
+        "javascript",
+        "css",
+        "glsl",
+        "markdown"
+      ]
+    },
+    "nix": {
+      "file": "grammars/nix.json",
+      "scopeName": "source.nix",
+      "aliases": [],
+      "embedded": [
+        "markdown-nix"
+      ]
+    },
+    "markdown-nix": {
+      "file": "grammars/markdown-nix.json",
+      "scopeName": "markdown.nix.codeblock",
+      "aliases": [],
+      "embedded": []
+    },
+    "nushell": {
+      "file": "grammars/nushell.json",
+      "scopeName": "source.nushell",
+      "aliases": [
+        "nu"
+      ],
+      "embedded": []
+    },
+    "objective-cpp": {
+      "file": "grammars/objective-cpp.json",
+      "scopeName": "source.objcpp",
+      "aliases": [],
+      "embedded": []
+    },
+    "ocaml": {
+      "file": "grammars/ocaml.json",
+      "scopeName": "source.ocaml",
+      "aliases": [],
+      "embedded": []
+    },
+    "odin": {
+      "file": "grammars/odin.json",
+      "scopeName": "source.odin",
+      "aliases": [],
+      "embedded": []
+    },
+    "openscad": {
+      "file": "grammars/openscad.json",
+      "scopeName": "source.scad",
+      "aliases": [
+        "scad"
+      ],
+      "embedded": []
+    },
+    "pascal": {
+      "file": "grammars/pascal.json",
+      "scopeName": "source.pascal",
+      "aliases": [],
+      "embedded": []
+    },
+    "pkl": {
+      "file": "grammars/pkl.json",
+      "scopeName": "source.pkl",
+      "aliases": [],
+      "embedded": []
+    },
+    "plsql": {
+      "file": "grammars/plsql.json",
+      "scopeName": "source.plsql.oracle",
+      "aliases": [],
+      "embedded": []
+    },
+    "po": {
+      "file": "grammars/po.json",
+      "scopeName": "source.po",
+      "aliases": [
+        "pot",
+        "potx"
+      ],
+      "embedded": []
+    },
+    "polar": {
+      "file": "grammars/polar.json",
+      "scopeName": "source.polar",
+      "aliases": [],
+      "embedded": []
+    },
+    "powerquery": {
+      "file": "grammars/powerquery.json",
+      "scopeName": "source.powerquery",
+      "aliases": [],
+      "embedded": []
+    },
+    "prisma": {
+      "file": "grammars/prisma.json",
+      "scopeName": "source.prisma",
+      "aliases": [],
+      "embedded": []
+    },
+    "prolog": {
+      "file": "grammars/prolog.json",
+      "scopeName": "source.prolog",
+      "aliases": [],
+      "embedded": []
+    },
+    "proto": {
+      "file": "grammars/proto.json",
+      "scopeName": "source.proto",
+      "aliases": [
+        "protobuf"
+      ],
+      "embedded": []
+    },
+    "puppet": {
+      "file": "grammars/puppet.json",
+      "scopeName": "source.puppet",
+      "aliases": [],
+      "embedded": []
+    },
+    "purescript": {
+      "file": "grammars/purescript.json",
+      "scopeName": "source.purescript",
+      "aliases": [],
+      "embedded": []
+    },
+    "qml": {
+      "file": "grammars/qml.json",
+      "scopeName": "source.qml",
+      "aliases": [],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "qmldir": {
+      "file": "grammars/qmldir.json",
+      "scopeName": "source.qmldir",
+      "aliases": [],
+      "embedded": []
+    },
+    "qss": {
+      "file": "grammars/qss.json",
+      "scopeName": "source.qss",
+      "aliases": [],
+      "embedded": []
+    },
+    "racket": {
+      "file": "grammars/racket.json",
+      "scopeName": "source.racket",
+      "aliases": [],
+      "embedded": []
+    },
+    "razor": {
+      "file": "grammars/razor.json",
+      "scopeName": "text.aspnetcorerazor",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "csharp"
+      ]
+    },
+    "reg": {
+      "file": "grammars/reg.json",
+      "scopeName": "source.reg",
+      "aliases": [],
+      "embedded": []
+    },
+    "rel": {
+      "file": "grammars/rel.json",
+      "scopeName": "source.rel",
+      "aliases": [],
+      "embedded": []
+    },
+    "riscv": {
+      "file": "grammars/riscv.json",
+      "scopeName": "source.riscv",
+      "aliases": [],
+      "embedded": []
+    },
+    "ron": {
+      "file": "grammars/ron.json",
+      "scopeName": "source.ron",
+      "aliases": [],
+      "embedded": []
+    },
+    "rosmsg": {
+      "file": "grammars/rosmsg.json",
+      "scopeName": "source.rosmsg",
+      "aliases": [],
+      "embedded": []
+    },
+    "sas": {
+      "file": "grammars/sas.json",
+      "scopeName": "source.sas",
+      "aliases": [],
+      "embedded": [
+        "sql"
+      ]
+    },
+    "scheme": {
+      "file": "grammars/scheme.json",
+      "scopeName": "source.scheme",
+      "aliases": [],
+      "embedded": []
+    },
+    "shaderlab": {
+      "file": "grammars/shaderlab.json",
+      "scopeName": "source.shaderlab",
+      "aliases": [
+        "shader"
+      ],
+      "embedded": [
+        "hlsl"
+      ]
+    },
+    "smalltalk": {
+      "file": "grammars/smalltalk.json",
+      "scopeName": "source.smalltalk",
+      "aliases": [],
+      "embedded": []
+    },
+    "solidity": {
+      "file": "grammars/solidity.json",
+      "scopeName": "source.solidity",
+      "aliases": [],
+      "embedded": []
+    },
+    "soy": {
+      "file": "grammars/soy.json",
+      "scopeName": "text.html.soy",
+      "aliases": [
+        "closure-templates"
+      ],
+      "embedded": [
+        "html"
+      ]
+    },
+    "sparql": {
+      "file": "grammars/sparql.json",
+      "scopeName": "source.sparql",
+      "aliases": [],
+      "embedded": [
+        "turtle"
+      ]
+    },
+    "turtle": {
+      "file": "grammars/turtle.json",
+      "scopeName": "source.turtle",
+      "aliases": [],
+      "embedded": []
+    },
+    "splunk": {
+      "file": "grammars/splunk.json",
+      "scopeName": "source.splunk_search",
+      "aliases": [
+        "spl"
+      ],
+      "embedded": []
+    },
+    "ssh-config": {
+      "file": "grammars/ssh-config.json",
+      "scopeName": "source.ssh-config",
+      "aliases": [],
+      "embedded": []
+    },
+    "stata": {
+      "file": "grammars/stata.json",
+      "scopeName": "source.stata",
+      "aliases": [],
+      "embedded": [
+        "sql"
+      ]
+    },
+    "surrealql": {
+      "file": "grammars/surrealql.json",
+      "scopeName": "source.surrealql",
+      "aliases": [
+        "surql"
+      ],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "svelte": {
+      "file": "grammars/svelte.json",
+      "scopeName": "source.svelte",
+      "aliases": [],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "coffee",
+        "stylus",
+        "sass",
+        "css",
+        "scss",
+        "less",
+        "postcss",
+        "pug",
+        "markdown"
+      ]
+    },
+    "system-verilog": {
+      "file": "grammars/system-verilog.json",
+      "scopeName": "source.systemverilog",
+      "aliases": [],
+      "embedded": []
+    },
+    "systemd": {
+      "file": "grammars/systemd.json",
+      "scopeName": "source.systemd",
+      "aliases": [],
+      "embedded": []
+    },
+    "talonscript": {
+      "file": "grammars/talonscript.json",
+      "scopeName": "source.talon",
+      "aliases": [
+        "talon"
+      ],
+      "embedded": []
+    },
+    "tasl": {
+      "file": "grammars/tasl.json",
+      "scopeName": "source.tasl",
+      "aliases": [],
+      "embedded": []
+    },
+    "tcl": {
+      "file": "grammars/tcl.json",
+      "scopeName": "source.tcl",
+      "aliases": [],
+      "embedded": []
+    },
+    "templ": {
+      "file": "grammars/templ.json",
+      "scopeName": "source.templ",
+      "aliases": [],
+      "embedded": [
+        "go",
+        "javascript",
+        "css"
+      ]
+    },
+    "terraform": {
+      "file": "grammars/terraform.json",
+      "scopeName": "source.hcl.terraform",
+      "aliases": [
+        "tf",
+        "tfvars"
+      ],
+      "embedded": []
+    },
+    "ts-tags": {
+      "file": "grammars/ts-tags.json",
+      "scopeName": "source.ts.tags",
+      "aliases": [
+        "lit"
+      ],
+      "embedded": [
+        "typescript",
+        "es-tag-css",
+        "es-tag-glsl",
+        "es-tag-html",
+        "es-tag-sql",
+        "es-tag-xml"
+      ]
+    },
+    "es-tag-css": {
+      "file": "grammars/es-tag-css.json",
+      "scopeName": "inline.es6-css",
+      "aliases": [],
+      "embedded": [
+        "typescript",
+        "css",
+        "javascript"
+      ]
+    },
+    "es-tag-glsl": {
+      "file": "grammars/es-tag-glsl.json",
+      "scopeName": "inline.es6-glsl",
+      "aliases": [],
+      "embedded": [
+        "typescript",
+        "glsl",
+        "javascript"
+      ]
+    },
+    "es-tag-html": {
+      "file": "grammars/es-tag-html.json",
+      "scopeName": "inline.es6-html",
+      "aliases": [],
+      "embedded": [
+        "typescript",
+        "html",
+        "javascript"
+      ]
+    },
+    "es-tag-sql": {
+      "file": "grammars/es-tag-sql.json",
+      "scopeName": "inline.tagged-template-sql",
+      "aliases": [],
+      "embedded": [
+        "typescript",
+        "sql"
+      ]
+    },
+    "es-tag-xml": {
+      "file": "grammars/es-tag-xml.json",
+      "scopeName": "inline.es6-xml",
+      "aliases": [],
+      "embedded": [
+        "xml"
+      ]
+    },
+    "tsv": {
+      "file": "grammars/tsv.json",
+      "scopeName": "text.tsv",
+      "aliases": [],
+      "embedded": []
+    },
+    "twig": {
+      "file": "grammars/twig.json",
+      "scopeName": "text.html.twig",
+      "aliases": [],
+      "embedded": [
+        "css",
+        "javascript",
+        "scss",
+        "php",
+        "python",
+        "ruby"
+      ]
+    },
+    "typespec": {
+      "file": "grammars/typespec.json",
+      "scopeName": "source.tsp",
+      "aliases": [
+        "tsp"
+      ],
+      "embedded": []
+    },
+    "typst": {
+      "file": "grammars/typst.json",
+      "scopeName": "source.typst",
+      "aliases": [
+        "typ"
+      ],
+      "embedded": []
+    },
+    "v": {
+      "file": "grammars/v.json",
+      "scopeName": "source.v",
+      "aliases": [],
+      "embedded": []
+    },
+    "vala": {
+      "file": "grammars/vala.json",
+      "scopeName": "source.vala",
+      "aliases": [],
+      "embedded": []
+    },
+    "verilog": {
+      "file": "grammars/verilog.json",
+      "scopeName": "source.verilog",
+      "aliases": [],
+      "embedded": []
+    },
+    "vhdl": {
+      "file": "grammars/vhdl.json",
+      "scopeName": "source.vhdl",
+      "aliases": [],
+      "embedded": []
+    },
+    "viml": {
+      "file": "grammars/viml.json",
+      "scopeName": "source.viml",
+      "aliases": [
+        "vim",
+        "vimscript"
+      ],
       "embedded": []
     },
     "vue": {
@@ -700,12 +2108,6 @@
         "vue-sfc-style-variable-injection"
       ]
     },
-    "json5": {
-      "file": "grammars/json5.json",
-      "scopeName": "source.json5",
-      "aliases": [],
-      "embedded": []
-    },
     "markdown-vue": {
       "file": "grammars/markdown-vue.json",
       "scopeName": "markdown.vue.codeblock",
@@ -732,34 +2134,138 @@
         "javascript"
       ]
     },
-    "bash": {
-      "file": "grammars/shellscript.json",
-      "scopeName": "source.shell",
+    "vue-html": {
+      "file": "grammars/vue-html.json",
+      "scopeName": "text.html.vue-html",
+      "aliases": [],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "vue-vine": {
+      "file": "grammars/vue-vine.json",
+      "scopeName": "source.vue-vine",
+      "aliases": [],
+      "embedded": [
+        "css",
+        "scss",
+        "less",
+        "stylus",
+        "postcss",
+        "javascript"
+      ]
+    },
+    "vyper": {
+      "file": "grammars/vyper.json",
+      "scopeName": "source.vyper",
       "aliases": [
-        "bash",
-        "sh",
-        "shell",
-        "zsh"
+        "vy"
       ],
       "embedded": []
     },
-    "shell": {
-      "file": "grammars/shellscript.json",
-      "scopeName": "source.shell",
+    "wasm": {
+      "file": "grammars/wasm.json",
+      "scopeName": "source.wat",
+      "aliases": [],
+      "embedded": []
+    },
+    "wenyan": {
+      "file": "grammars/wenyan.json",
+      "scopeName": "source.wenyan",
       "aliases": [
-        "bash",
-        "sh",
-        "shell",
-        "zsh"
+        "文言"
       ],
       "embedded": []
     },
-    "dockerfile": {
-      "file": "grammars/docker.json",
-      "scopeName": "source.dockerfile",
+    "wgsl": {
+      "file": "grammars/wgsl.json",
+      "scopeName": "source.wgsl",
+      "aliases": [],
+      "embedded": []
+    },
+    "wikitext": {
+      "file": "grammars/wikitext.json",
+      "scopeName": "source.wikitext",
       "aliases": [
-        "dockerfile"
+        "mediawiki",
+        "wiki"
       ],
+      "embedded": [
+        "html",
+        "css",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "yaml",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "jsonc",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "markdown",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "json"
+      ]
+    },
+    "wit": {
+      "file": "grammars/wit.json",
+      "scopeName": "source.wit",
+      "aliases": [],
+      "embedded": []
+    },
+    "wolfram": {
+      "file": "grammars/wolfram.json",
+      "scopeName": "source.wolfram",
+      "aliases": [
+        "wl"
+      ],
+      "embedded": []
+    },
+    "zenscript": {
+      "file": "grammars/zenscript.json",
+      "scopeName": "source.zenscript",
+      "aliases": [],
+      "embedded": []
+    },
+    "zig": {
+      "file": "grammars/zig.json",
+      "scopeName": "source.zig",
+      "aliases": [],
       "embedded": []
     },
     "js": {
@@ -792,65 +2298,128 @@
       ],
       "embedded": []
     },
-    "ts": {
-      "file": "grammars/typescript.json",
-      "scopeName": "source.ts",
+    "adoc": {
+      "file": "grammars/asciidoc.json",
+      "scopeName": "text.asciidoc",
       "aliases": [
-        "ts",
-        "cts",
-        "mts"
+        "adoc"
+      ],
+      "embedded": [
+        "html",
+        "yaml",
+        "csv",
+        "css",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "json",
+        "jsonc",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "regexp",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "markdown",
+        "log",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "abap",
+        "rst",
+        "haskell",
+        "kotlin"
+      ]
+    },
+    "yml": {
+      "file": "grammars/yaml.json",
+      "scopeName": "source.yaml",
+      "aliases": [
+        "yml"
       ],
       "embedded": []
     },
-    "cts": {
-      "file": "grammars/typescript.json",
-      "scopeName": "source.ts",
+    "properties": {
+      "file": "grammars/ini.json",
+      "scopeName": "source.ini",
       "aliases": [
-        "ts",
-        "cts",
-        "mts"
+        "properties"
       ],
       "embedded": []
     },
-    "mts": {
-      "file": "grammars/typescript.json",
-      "scopeName": "source.ts",
+    "makefile": {
+      "file": "grammars/make.json",
+      "scopeName": "source.makefile",
       "aliases": [
-        "ts",
-        "cts",
-        "mts"
+        "makefile"
       ],
       "embedded": []
     },
-    "py": {
-      "file": "grammars/python.json",
-      "scopeName": "source.python",
+    "rb": {
+      "file": "grammars/ruby.json",
+      "scopeName": "source.ruby",
       "aliases": [
-        "py"
+        "rb"
       ],
-      "embedded": []
+      "embedded": [
+        "html",
+        "haml",
+        "xml",
+        "sql",
+        "graphql",
+        "css",
+        "cpp",
+        "c",
+        "javascript",
+        "shellscript",
+        "lua",
+        "yaml"
+      ]
     },
-    "sh": {
-      "file": "grammars/shellscript.json",
-      "scopeName": "source.shell",
+    "coffeescript": {
+      "file": "grammars/coffee.json",
+      "scopeName": "source.coffee",
       "aliases": [
-        "bash",
-        "sh",
-        "shell",
-        "zsh"
+        "coffeescript"
       ],
-      "embedded": []
-    },
-    "zsh": {
-      "file": "grammars/shellscript.json",
-      "scopeName": "source.shell",
-      "aliases": [
-        "bash",
-        "sh",
-        "shell",
-        "zsh"
-      ],
-      "embedded": []
+      "embedded": [
+        "javascript"
+      ]
     },
     "md": {
       "file": "grammars/markdown.json",
@@ -918,65 +2487,29 @@
         "html-derivative"
       ]
     },
-    "properties": {
-      "file": "grammars/ini.json",
-      "scopeName": "source.ini",
+    "cmd": {
+      "file": "grammars/vb.json",
+      "scopeName": "source.asp.vb.net",
       "aliases": [
-        "properties"
+        "cmd"
       ],
       "embedded": []
     },
-    "makefile": {
-      "file": "grammars/make.json",
-      "scopeName": "source.makefile",
+    "batch": {
+      "file": "grammars/bat.json",
+      "scopeName": "source.batchfile",
       "aliases": [
-        "makefile"
+        "batch"
       ],
       "embedded": []
     },
-    "rb": {
-      "file": "grammars/ruby.json",
-      "scopeName": "source.ruby",
+    "clj": {
+      "file": "grammars/clojure.json",
+      "scopeName": "source.clojure",
       "aliases": [
-        "rb"
+        "clj"
       ],
-      "embedded": [
-        "html",
-        "haml",
-        "xml",
-        "sql",
-        "graphql",
-        "css",
-        "cpp",
-        "c",
-        "javascript",
-        "shellscript",
-        "lua",
-        "yaml"
-      ]
-    },
-    "coffeescript": {
-      "file": "grammars/coffee.json",
-      "scopeName": "source.coffee",
-      "aliases": [
-        "coffeescript"
-      ],
-      "embedded": [
-        "javascript"
-      ]
-    },
-    "gql": {
-      "file": "grammars/graphql.json",
-      "scopeName": "source.graphql",
-      "aliases": [
-        "gql"
-      ],
-      "embedded": [
-        "javascript",
-        "typescript",
-        "jsx",
-        "tsx"
-      ]
+      "embedded": []
     },
     "c++": {
       "file": "grammars/cpp.json",
@@ -999,35 +2532,55 @@
       ],
       "embedded": []
     },
-    "yml": {
-      "file": "grammars/yaml.json",
-      "scopeName": "source.yaml",
+    "dockerfile": {
+      "file": "grammars/docker.json",
+      "scopeName": "source.dockerfile",
       "aliases": [
-        "yml"
+        "dockerfile"
       ],
       "embedded": []
     },
-    "cmd": {
-      "file": "grammars/vb.json",
-      "scopeName": "source.asp.vb.net",
+    "bash": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
       "aliases": [
-        "cmd"
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
       ],
       "embedded": []
     },
-    "batch": {
-      "file": "grammars/bat.json",
-      "scopeName": "source.batchfile",
+    "sh": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
       "aliases": [
-        "batch"
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
       ],
       "embedded": []
     },
-    "clj": {
-      "file": "grammars/clojure.json",
-      "scopeName": "source.clojure",
+    "shell": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
       "aliases": [
-        "clj"
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "zsh": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
       ],
       "embedded": []
     },
@@ -1089,6 +2642,14 @@
       ],
       "embedded": []
     },
+    "py": {
+      "file": "grammars/python.json",
+      "scopeName": "source.python",
+      "aliases": [
+        "py"
+      ],
+      "embedded": []
+    },
     "jl": {
       "file": "grammars/julia.json",
       "scopeName": "source.julia",
@@ -1108,6 +2669,36 @@
       "scopeName": "source.rust",
       "aliases": [
         "rs"
+      ],
+      "embedded": []
+    },
+    "ts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "cts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "mts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
       ],
       "embedded": []
     },
@@ -1181,27 +2772,707 @@
         "hs"
       ],
       "embedded": []
+    },
+    "gql": {
+      "file": "grammars/graphql.json",
+      "scopeName": "source.graphql",
+      "aliases": [
+        "gql"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx"
+      ]
+    },
+    "kt": {
+      "file": "grammars/kotlin.json",
+      "scopeName": "source.kotlin",
+      "aliases": [
+        "kt",
+        "kts"
+      ],
+      "embedded": []
+    },
+    "kts": {
+      "file": "grammars/kotlin.json",
+      "scopeName": "source.kotlin",
+      "aliases": [
+        "kt",
+        "kts"
+      ],
+      "embedded": []
+    },
+    "be": {
+      "file": "grammars/berry.json",
+      "scopeName": "source.berry",
+      "aliases": [
+        "be"
+      ],
+      "embedded": []
+    },
+    "bird": {
+      "file": "grammars/bird2.json",
+      "scopeName": "source.bird2",
+      "aliases": [
+        "bird"
+      ],
+      "embedded": []
+    },
+    "1c": {
+      "file": "grammars/bsl.json",
+      "scopeName": "source.bsl",
+      "aliases": [
+        "1c"
+      ],
+      "embedded": [
+        "sdbl"
+      ]
+    },
+    "1c-query": {
+      "file": "grammars/sdbl.json",
+      "scopeName": "source.sdbl",
+      "aliases": [
+        "1c-query"
+      ],
+      "embedded": []
+    },
+    "cdc": {
+      "file": "grammars/cadence.json",
+      "scopeName": "source.cadence",
+      "aliases": [
+        "cdc"
+      ],
+      "embedded": []
+    },
+    "ql": {
+      "file": "grammars/codeql.json",
+      "scopeName": "source.ql",
+      "aliases": [
+        "ql"
+      ],
+      "embedded": []
+    },
+    "lisp": {
+      "file": "grammars/common-lisp.json",
+      "scopeName": "source.commonlisp",
+      "aliases": [
+        "lisp"
+      ],
+      "embedded": []
+    },
+    "cql": {
+      "file": "grammars/cypher.json",
+      "scopeName": "source.cypher",
+      "aliases": [
+        "cql"
+      ],
+      "embedded": []
+    },
+    "elisp": {
+      "file": "grammars/emacs-lisp.json",
+      "scopeName": "source.emacs.lisp",
+      "aliases": [
+        "elisp"
+      ],
+      "embedded": []
+    },
+    "ftl": {
+      "file": "grammars/fluent.json",
+      "scopeName": "source.ftl",
+      "aliases": [
+        "ftl"
+      ],
+      "embedded": []
+    },
+    "f": {
+      "file": "grammars/fortran-fixed-form.json",
+      "scopeName": "source.fortran.fixed",
+      "aliases": [
+        "f",
+        "for",
+        "f77"
+      ],
+      "embedded": [
+        "fortran-free-form"
+      ]
+    },
+    "for": {
+      "file": "grammars/fortran-fixed-form.json",
+      "scopeName": "source.fortran.fixed",
+      "aliases": [
+        "f",
+        "for",
+        "f77"
+      ],
+      "embedded": [
+        "fortran-free-form"
+      ]
+    },
+    "f77": {
+      "file": "grammars/fortran-fixed-form.json",
+      "scopeName": "source.fortran.fixed",
+      "aliases": [
+        "f",
+        "for",
+        "f77"
+      ],
+      "embedded": [
+        "fortran-free-form"
+      ]
+    },
+    "f90": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "f95": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "f03": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "f08": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "f18": {
+      "file": "grammars/fortran-free-form.json",
+      "scopeName": "source.fortran.free",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "embedded": []
+    },
+    "tscn": {
+      "file": "grammars/gdresource.json",
+      "scopeName": "source.gdresource",
+      "aliases": [
+        "tscn",
+        "tres"
+      ],
+      "embedded": [
+        "gdshader",
+        "gdscript"
+      ]
+    },
+    "tres": {
+      "file": "grammars/gdresource.json",
+      "scopeName": "source.gdresource",
+      "aliases": [
+        "tscn",
+        "tres"
+      ],
+      "embedded": [
+        "gdshader",
+        "gdscript"
+      ]
+    },
+    "gd": {
+      "file": "grammars/gdscript.json",
+      "scopeName": "source.gdscript",
+      "aliases": [
+        "gd"
+      ],
+      "embedded": []
+    },
+    "gjs": {
+      "file": "grammars/glimmer-js.json",
+      "scopeName": "source.gjs",
+      "aliases": [
+        "gjs"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "css",
+        "html"
+      ]
+    },
+    "gts": {
+      "file": "grammars/glimmer-ts.json",
+      "scopeName": "source.gts",
+      "aliases": [
+        "gts"
+      ],
+      "embedded": [
+        "typescript",
+        "css",
+        "javascript",
+        "html"
+      ]
+    },
+    "fsl": {
+      "file": "grammars/jssm.json",
+      "scopeName": "source.jssm",
+      "aliases": [
+        "fsl"
+      ],
+      "embedded": []
+    },
+    "kql": {
+      "file": "grammars/kusto.json",
+      "scopeName": "source.kusto",
+      "aliases": [
+        "kql"
+      ],
+      "embedded": []
+    },
+    "lean4": {
+      "file": "grammars/lean.json",
+      "scopeName": "source.lean4",
+      "aliases": [
+        "lean4"
+      ],
+      "embedded": []
+    },
+    "console": {
+      "file": "grammars/shellsession.json",
+      "scopeName": "text.shell-session",
+      "aliases": [
+        "console"
+      ],
+      "embedded": [
+        "shellscript"
+      ]
+    },
+    "mmd": {
+      "file": "grammars/mermaid.json",
+      "scopeName": "markdown.mermaid.codeblock",
+      "aliases": [
+        "mmd"
+      ],
+      "embedded": []
+    },
+    "mips": {
+      "file": "grammars/mipsasm.json",
+      "scopeName": "source.mips",
+      "aliases": [
+        "mips"
+      ],
+      "embedded": []
+    },
+    "mbt": {
+      "file": "grammars/moonbit.json",
+      "scopeName": "source.moonbit",
+      "aliases": [
+        "mbt",
+        "mbti"
+      ],
+      "embedded": []
+    },
+    "mbti": {
+      "file": "grammars/moonbit.json",
+      "scopeName": "source.moonbit",
+      "aliases": [
+        "mbt",
+        "mbti"
+      ],
+      "embedded": []
+    },
+    "nar": {
+      "file": "grammars/narrat.json",
+      "scopeName": "source.narrat",
+      "aliases": [
+        "nar"
+      ],
+      "embedded": []
+    },
+    "nf": {
+      "file": "grammars/nextflow.json",
+      "scopeName": "source.nextflow",
+      "aliases": [
+        "nf"
+      ],
+      "embedded": [
+        "nextflow-groovy"
+      ]
+    },
+    "nu": {
+      "file": "grammars/nushell.json",
+      "scopeName": "source.nushell",
+      "aliases": [
+        "nu"
+      ],
+      "embedded": []
+    },
+    "scad": {
+      "file": "grammars/openscad.json",
+      "scopeName": "source.scad",
+      "aliases": [
+        "scad"
+      ],
+      "embedded": []
+    },
+    "pot": {
+      "file": "grammars/po.json",
+      "scopeName": "source.po",
+      "aliases": [
+        "pot",
+        "potx"
+      ],
+      "embedded": []
+    },
+    "potx": {
+      "file": "grammars/po.json",
+      "scopeName": "source.po",
+      "aliases": [
+        "pot",
+        "potx"
+      ],
+      "embedded": []
+    },
+    "protobuf": {
+      "file": "grammars/proto.json",
+      "scopeName": "source.proto",
+      "aliases": [
+        "protobuf"
+      ],
+      "embedded": []
+    },
+    "shader": {
+      "file": "grammars/shaderlab.json",
+      "scopeName": "source.shaderlab",
+      "aliases": [
+        "shader"
+      ],
+      "embedded": [
+        "hlsl"
+      ]
+    },
+    "closure-templates": {
+      "file": "grammars/soy.json",
+      "scopeName": "text.html.soy",
+      "aliases": [
+        "closure-templates"
+      ],
+      "embedded": [
+        "html"
+      ]
+    },
+    "spl": {
+      "file": "grammars/splunk.json",
+      "scopeName": "source.splunk_search",
+      "aliases": [
+        "spl"
+      ],
+      "embedded": []
+    },
+    "surql": {
+      "file": "grammars/surrealql.json",
+      "scopeName": "source.surrealql",
+      "aliases": [
+        "surql"
+      ],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "talon": {
+      "file": "grammars/talonscript.json",
+      "scopeName": "source.talon",
+      "aliases": [
+        "talon"
+      ],
+      "embedded": []
+    },
+    "tf": {
+      "file": "grammars/terraform.json",
+      "scopeName": "source.hcl.terraform",
+      "aliases": [
+        "tf",
+        "tfvars"
+      ],
+      "embedded": []
+    },
+    "tfvars": {
+      "file": "grammars/terraform.json",
+      "scopeName": "source.hcl.terraform",
+      "aliases": [
+        "tf",
+        "tfvars"
+      ],
+      "embedded": []
+    },
+    "lit": {
+      "file": "grammars/ts-tags.json",
+      "scopeName": "source.ts.tags",
+      "aliases": [
+        "lit"
+      ],
+      "embedded": [
+        "typescript",
+        "es-tag-css",
+        "es-tag-glsl",
+        "es-tag-html",
+        "es-tag-sql",
+        "es-tag-xml"
+      ]
+    },
+    "tsp": {
+      "file": "grammars/typespec.json",
+      "scopeName": "source.tsp",
+      "aliases": [
+        "tsp"
+      ],
+      "embedded": []
+    },
+    "typ": {
+      "file": "grammars/typst.json",
+      "scopeName": "source.typst",
+      "aliases": [
+        "typ"
+      ],
+      "embedded": []
+    },
+    "vim": {
+      "file": "grammars/viml.json",
+      "scopeName": "source.viml",
+      "aliases": [
+        "vim",
+        "vimscript"
+      ],
+      "embedded": []
+    },
+    "vimscript": {
+      "file": "grammars/viml.json",
+      "scopeName": "source.viml",
+      "aliases": [
+        "vim",
+        "vimscript"
+      ],
+      "embedded": []
+    },
+    "vy": {
+      "file": "grammars/vyper.json",
+      "scopeName": "source.vyper",
+      "aliases": [
+        "vy"
+      ],
+      "embedded": []
+    },
+    "文言": {
+      "file": "grammars/wenyan.json",
+      "scopeName": "source.wenyan",
+      "aliases": [
+        "文言"
+      ],
+      "embedded": []
+    },
+    "mediawiki": {
+      "file": "grammars/wikitext.json",
+      "scopeName": "source.wikitext",
+      "aliases": [
+        "mediawiki",
+        "wiki"
+      ],
+      "embedded": [
+        "html",
+        "css",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "yaml",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "jsonc",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "markdown",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "json"
+      ]
+    },
+    "wiki": {
+      "file": "grammars/wikitext.json",
+      "scopeName": "source.wikitext",
+      "aliases": [
+        "mediawiki",
+        "wiki"
+      ],
+      "embedded": [
+        "html",
+        "css",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "yaml",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "jsonc",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "markdown",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "json"
+      ]
+    },
+    "wl": {
+      "file": "grammars/wolfram.json",
+      "scopeName": "source.wolfram",
+      "aliases": [
+        "wl"
+      ],
+      "embedded": []
     }
   },
   "themes": {
-    "github-dark": {
-      "file": "themes/github-dark.json",
-      "displayName": "GitHub Dark",
+    "andromeeda": {
+      "file": "themes/andromeeda.json",
+      "displayName": "Andromeeda",
       "type": "dark"
     },
-    "github-light": {
-      "file": "themes/github-light.json",
-      "displayName": "GitHub Light",
+    "aurora-x": {
+      "file": "themes/aurora-x.json",
+      "displayName": "Aurora X",
+      "type": "dark"
+    },
+    "ayu-dark": {
+      "file": "themes/ayu-dark.json",
+      "displayName": "Ayu Dark",
+      "type": "dark"
+    },
+    "ayu-light": {
+      "file": "themes/ayu-light.json",
+      "displayName": "Ayu Light",
       "type": "light"
     },
-    "github-dark-dimmed": {
-      "file": "themes/github-dark-dimmed.json",
-      "displayName": "GitHub Dark Dimmed",
+    "ayu-mirage": {
+      "file": "themes/ayu-mirage.json",
+      "displayName": "Ayu Mirage",
       "type": "dark"
     },
-    "nord": {
-      "file": "themes/nord.json",
-      "displayName": "Nord",
+    "catppuccin-frappe": {
+      "file": "themes/catppuccin-frappe.json",
+      "displayName": "Catppuccin Frappé",
+      "type": "dark"
+    },
+    "catppuccin-latte": {
+      "file": "themes/catppuccin-latte.json",
+      "displayName": "Catppuccin Latte",
+      "type": "light"
+    },
+    "catppuccin-macchiato": {
+      "file": "themes/catppuccin-macchiato.json",
+      "displayName": "Catppuccin Macchiato",
+      "type": "dark"
+    },
+    "catppuccin-mocha": {
+      "file": "themes/catppuccin-mocha.json",
+      "displayName": "Catppuccin Mocha",
+      "type": "dark"
+    },
+    "dark-plus": {
+      "file": "themes/dark-plus.json",
+      "displayName": "Dark Plus",
       "type": "dark"
     },
     "dracula": {
@@ -1209,29 +3480,149 @@
       "displayName": "Dracula Theme",
       "type": "dark"
     },
-    "one-dark-pro": {
-      "file": "themes/one-dark-pro.json",
-      "displayName": "One Dark Pro",
+    "dracula-soft": {
+      "file": "themes/dracula-soft.json",
+      "displayName": "Dracula Theme Soft",
       "type": "dark"
     },
-    "one-light": {
-      "file": "themes/one-light.json",
-      "displayName": "One Light",
-      "type": "light"
-    },
-    "vitesse-dark": {
-      "file": "themes/vitesse-dark.json",
-      "displayName": "Vitesse Dark",
+    "everforest-dark": {
+      "file": "themes/everforest-dark.json",
+      "displayName": "Everforest Dark",
       "type": "dark"
     },
-    "vitesse-light": {
-      "file": "themes/vitesse-light.json",
-      "displayName": "Vitesse Light",
+    "everforest-light": {
+      "file": "themes/everforest-light.json",
+      "displayName": "Everforest Light",
       "type": "light"
     },
-    "monokai": {
-      "file": "themes/monokai.json",
-      "displayName": "Monokai",
+    "github-dark": {
+      "file": "themes/github-dark.json",
+      "displayName": "GitHub Dark",
+      "type": "dark"
+    },
+    "github-dark-default": {
+      "file": "themes/github-dark-default.json",
+      "displayName": "GitHub Dark Default",
+      "type": "dark"
+    },
+    "github-dark-dimmed": {
+      "file": "themes/github-dark-dimmed.json",
+      "displayName": "GitHub Dark Dimmed",
+      "type": "dark"
+    },
+    "github-dark-high-contrast": {
+      "file": "themes/github-dark-high-contrast.json",
+      "displayName": "GitHub Dark High Contrast",
+      "type": "dark"
+    },
+    "github-light": {
+      "file": "themes/github-light.json",
+      "displayName": "GitHub Light",
+      "type": "light"
+    },
+    "github-light-default": {
+      "file": "themes/github-light-default.json",
+      "displayName": "GitHub Light Default",
+      "type": "light"
+    },
+    "github-light-high-contrast": {
+      "file": "themes/github-light-high-contrast.json",
+      "displayName": "GitHub Light High Contrast",
+      "type": "light"
+    },
+    "gruvbox-dark-hard": {
+      "file": "themes/gruvbox-dark-hard.json",
+      "displayName": "Gruvbox Dark Hard",
+      "type": "dark"
+    },
+    "gruvbox-dark-medium": {
+      "file": "themes/gruvbox-dark-medium.json",
+      "displayName": "Gruvbox Dark Medium",
+      "type": "dark"
+    },
+    "gruvbox-dark-soft": {
+      "file": "themes/gruvbox-dark-soft.json",
+      "displayName": "Gruvbox Dark Soft",
+      "type": "dark"
+    },
+    "gruvbox-light-hard": {
+      "file": "themes/gruvbox-light-hard.json",
+      "displayName": "Gruvbox Light Hard",
+      "type": "light"
+    },
+    "gruvbox-light-medium": {
+      "file": "themes/gruvbox-light-medium.json",
+      "displayName": "Gruvbox Light Medium",
+      "type": "light"
+    },
+    "gruvbox-light-soft": {
+      "file": "themes/gruvbox-light-soft.json",
+      "displayName": "Gruvbox Light Soft",
+      "type": "light"
+    },
+    "horizon": {
+      "file": "themes/horizon.json",
+      "displayName": "Horizon",
+      "type": "dark"
+    },
+    "horizon-bright": {
+      "file": "themes/horizon-bright.json",
+      "displayName": "Horizon Bright",
+      "type": "light"
+    },
+    "houston": {
+      "file": "themes/houston.json",
+      "displayName": "Houston",
+      "type": "dark"
+    },
+    "kanagawa-dragon": {
+      "file": "themes/kanagawa-dragon.json",
+      "displayName": "Kanagawa Dragon",
+      "type": "dark"
+    },
+    "kanagawa-lotus": {
+      "file": "themes/kanagawa-lotus.json",
+      "displayName": "Kanagawa Lotus",
+      "type": "light"
+    },
+    "kanagawa-wave": {
+      "file": "themes/kanagawa-wave.json",
+      "displayName": "Kanagawa Wave",
+      "type": "dark"
+    },
+    "laserwave": {
+      "file": "themes/laserwave.json",
+      "displayName": "LaserWave",
+      "type": "dark"
+    },
+    "light-plus": {
+      "file": "themes/light-plus.json",
+      "displayName": "Light Plus",
+      "type": "light"
+    },
+    "material-theme": {
+      "file": "themes/material-theme.json",
+      "displayName": "Material Theme",
+      "type": "dark"
+    },
+    "material-theme-darker": {
+      "file": "themes/material-theme-darker.json",
+      "displayName": "Material Theme Darker",
+      "type": "dark"
+    },
+    "material-theme-lighter": {
+      "file": "themes/material-theme-lighter.json",
+      "displayName": "Material Theme Lighter",
+      "type": "light"
+    },
+    "material-theme-ocean": {
+      "file": "themes/material-theme-ocean.json",
+      "displayName": "Material Theme Ocean",
+      "type": "dark"
+    },
+    "material-theme-palenight": {
+      "file": "themes/material-theme-palenight.json",
+      "displayName": "Material Theme Palenight",
       "type": "dark"
     },
     "min-dark": {
@@ -1244,6 +3635,81 @@
       "displayName": "Min Light",
       "type": "light"
     },
+    "monokai": {
+      "file": "themes/monokai.json",
+      "displayName": "Monokai",
+      "type": "dark"
+    },
+    "night-owl": {
+      "file": "themes/night-owl.json",
+      "displayName": "Night Owl",
+      "type": "dark"
+    },
+    "night-owl-light": {
+      "file": "themes/night-owl-light.json",
+      "displayName": "Night Owl Light",
+      "type": "light"
+    },
+    "nord": {
+      "file": "themes/nord.json",
+      "displayName": "Nord",
+      "type": "dark"
+    },
+    "one-dark-pro": {
+      "file": "themes/one-dark-pro.json",
+      "displayName": "One Dark Pro",
+      "type": "dark"
+    },
+    "one-light": {
+      "file": "themes/one-light.json",
+      "displayName": "One Light",
+      "type": "light"
+    },
+    "plastic": {
+      "file": "themes/plastic.json",
+      "displayName": "Plastic",
+      "type": "dark"
+    },
+    "poimandres": {
+      "file": "themes/poimandres.json",
+      "displayName": "Poimandres",
+      "type": "dark"
+    },
+    "red": {
+      "file": "themes/red.json",
+      "displayName": "Red",
+      "type": "dark"
+    },
+    "rose-pine": {
+      "file": "themes/rose-pine.json",
+      "displayName": "Rosé Pine",
+      "type": "dark"
+    },
+    "rose-pine-dawn": {
+      "file": "themes/rose-pine-dawn.json",
+      "displayName": "Rosé Pine Dawn",
+      "type": "light"
+    },
+    "rose-pine-moon": {
+      "file": "themes/rose-pine-moon.json",
+      "displayName": "Rosé Pine Moon",
+      "type": "dark"
+    },
+    "slack-dark": {
+      "file": "themes/slack-dark.json",
+      "displayName": "Slack Dark",
+      "type": "dark"
+    },
+    "slack-ochin": {
+      "file": "themes/slack-ochin.json",
+      "displayName": "Slack Ochin",
+      "type": "light"
+    },
+    "snazzy-light": {
+      "file": "themes/snazzy-light.json",
+      "displayName": "Snazzy Light",
+      "type": "light"
+    },
     "solarized-dark": {
       "file": "themes/solarized-dark.json",
       "displayName": "Solarized Dark",
@@ -1254,35 +3720,35 @@
       "displayName": "Solarized Light",
       "type": "light"
     },
-    "catppuccin-mocha": {
-      "file": "themes/catppuccin-mocha.json",
-      "displayName": "Catppuccin Mocha",
+    "synthwave-84": {
+      "file": "themes/synthwave-84.json",
+      "displayName": "Synthwave '84",
       "type": "dark"
-    },
-    "catppuccin-latte": {
-      "file": "themes/catppuccin-latte.json",
-      "displayName": "Catppuccin Latte",
-      "type": "light"
     },
     "tokyo-night": {
       "file": "themes/tokyo-night.json",
       "displayName": "Tokyo Night",
       "type": "dark"
     },
-    "material-theme-darker": {
-      "file": "themes/material-theme-darker.json",
-      "displayName": "Material Theme Darker",
+    "vesper": {
+      "file": "themes/vesper.json",
+      "displayName": "Vesper",
       "type": "dark"
     },
-    "slack-dark": {
-      "file": "themes/slack-dark.json",
-      "displayName": "Slack Dark",
+    "vitesse-black": {
+      "file": "themes/vitesse-black.json",
+      "displayName": "Vitesse Black",
       "type": "dark"
     },
-    "rose-pine": {
-      "file": "themes/rose-pine.json",
-      "displayName": "Rosé Pine",
+    "vitesse-dark": {
+      "file": "themes/vitesse-dark.json",
+      "displayName": "Vitesse Dark",
       "type": "dark"
+    },
+    "vitesse-light": {
+      "file": "themes/vitesse-light.json",
+      "displayName": "Vitesse Light",
+      "type": "light"
     }
   }
 }

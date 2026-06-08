@@ -73,7 +73,7 @@ final class ThemeTrieElement
         if (isset($this->children[$head])) {
             $child = $this->children[$head];
         } else {
-            $child = new ThemeTrieElement($this->mainRule->clone());
+            $child = new ThemeTrieElement($this->mainRule->clone(), self::cloneRules($this->rulesWithParentScopes));
             $this->children[$head] = $child;
         }
 
@@ -113,6 +113,15 @@ final class ThemeTrieElement
             $foreground,
             $background,
         );
+    }
+
+    /**
+     * @param list<ThemeTrieElementRule> $rules
+     * @return list<ThemeTrieElementRule>
+     */
+    private static function cloneRules(array $rules): array
+    {
+        return array_map(static fn (ThemeTrieElementRule $rule): ThemeTrieElementRule => $rule->clone(), $rules);
     }
 
     /**

@@ -69,11 +69,50 @@ final class Theme
         $rootRule = new ThemeTrieElementRule(0, null, $defaultFontStyle, $defaultForeground, $defaultBackground);
         $root = new ThemeTrieElement($rootRule);
 
+        usort($rules, self::cmpParsedRules(...));
+
         foreach ($rules as $rule) {
             $root->insert(0, $rule->scope, $rule->parentScopes, $rule->fontStyle, $rule->foreground, $rule->background);
         }
 
         return new self($raw, $root, $defaults);
+    }
+
+    private static function cmpParsedRules(ParsedThemeRule $a, ParsedThemeRule $b): int
+    {
+        if ($a->scope !== $b->scope) {
+            return $a->scope <=> $b->scope;
+        }
+
+        $parents = self::cmpParentScopes($a->parentScopes, $b->parentScopes);
+        if ($parents !== 0) {
+            return $parents;
+        }
+
+        return $a->index <=> $b->index;
+    }
+
+    /**
+     * @param list<string>|null $a
+     * @param list<string>|null $b
+     */
+    private static function cmpParentScopes(?array $a, ?array $b): int
+    {
+        if ($a === null) {
+            return $b === null ? 0 : -1;
+        }
+        if ($b === null) {
+            return 1;
+        }
+
+        $count = min(count($a), count($b));
+        for ($i = 0; $i < $count; $i++) {
+            if ($a[$i] !== $b[$i]) {
+                return $a[$i] <=> $b[$i];
+            }
+        }
+
+        return count($a) <=> count($b);
     }
 
     /**

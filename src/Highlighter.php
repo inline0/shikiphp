@@ -16,6 +16,8 @@ use Shikiphp\Registry\BundleLoader;
 use Shikiphp\Render\HtmlRenderer;
 use Shikiphp\Render\RenderOptions;
 use Shikiphp\Render\ThemedToken;
+use Shikiphp\Render\ThemedTokenStyle;
+use Shikiphp\Render\ThemedTokenWithVariants;
 use Shikiphp\Theme\FontStyle;
 use Shikiphp\Theme\StyleAttributes;
 use Shikiphp\Theme\Theme;
@@ -132,6 +134,126 @@ final class Highlighter
         [$themesByKey, $defaultKey] = $this->resolveThemes($options);
 
         return $this->tokenize($code, $options, $themesByKey, $defaultKey);
+    }
+
+    /**
+     * Tokenize once per theme, then merge into per-token `variants` keyed by
+     * theme key, mirroring Shiki's `codeToTokensWithThemes`. Token boundaries
+     * are the union across themes (each theme coalesces adjacent same-style
+     * tokens independently, then the boundaries are synced).
+     *
+     * @param array{themes: array<string, string>, lang: string, colorReplacements?: array<string, string|array<string,string>>, tokenizeMaxLineLength?: int|null} $options
+     * @return list<list<ThemedTokenWithVariants>>
+     */
+    public function codeToTokensWithThemes(string $code, array $options): array
+    {
+        if (($options['themes'] ?? []) === []) {
+            throw Highlight::badThemesOption();
+        }
+
+        $keys = array_keys($options['themes']);
+        $perTheme = [];
+        foreach ($options['themes'] as $key => $themeId) {
+            $singleOptions = $options;
+            unset($singleOptions['themes']);
+            $singleOptions['theme'] = $themeId;
+            [$themesByKey, $defaultKey] = $this->resolveThemes($singleOptions);
+            $perTheme[$key] = $this->tokenize($code, $singleOptions, $themesByKey, $defaultKey);
+        }
+
+        $synced = self::syncThemesTokenization($perTheme, $keys);
+
+        $out = [];
+        $lineCount = count($synced[$keys[0]]);
+        for ($lineIdx = 0; $lineIdx < $lineCount; $lineIdx++) {
+            $line = [];
+            $tokenCount = count($synced[$keys[0]][$lineIdx]);
+            for ($tokenIdx = 0; $tokenIdx < $tokenCount; $tokenIdx++) {
+                $base = $synced[$keys[0]][$lineIdx][$tokenIdx];
+                $variants = [];
+                foreach ($keys as $key) {
+                    $variants[$key] = self::tokenStyle($synced[$key][$lineIdx][$tokenIdx]);
+                }
+                $line[] = new ThemedTokenWithVariants($base->content, $base->offset, $variants);
+            }
+            $out[] = $line;
+        }
+
+        return $out;
+    }
+
+    private static function tokenStyle(ThemedToken $token): ThemedTokenStyle
+    {
+        return new ThemedTokenStyle($token->color, $token->fontStyle, $token->bgColor);
+    }
+
+    /**
+     * Port of Shiki's `syncThemesTokenization`: split each theme's per-line
+     * tokens to the union of all themes' token boundaries so every theme yields
+     * the same number of tokens with identical content spans.
+     *
+     * @param array<string, list<list<ThemedToken>>> $perTheme
+     * @param list<string> $keys
+     * @return array<string, list<list<ThemedToken>>>
+     */
+    private static function syncThemesTokenization(array $perTheme, array $keys): array
+    {
+        $out = [];
+        foreach ($keys as $key) {
+            $out[$key] = [];
+        }
+
+        $lineCount = count($perTheme[$keys[0]]);
+        for ($lineIdx = 0; $lineIdx < $lineCount; $lineIdx++) {
+            $outLines = [];
+            $current = [];
+            foreach ($keys as $key) {
+                $outLines[$key] = [];
+                $current[$key] = $perTheme[$key][$lineIdx];
+            }
+
+            while (self::allPresent($current, $keys)) {
+                $minLength = PHP_INT_MAX;
+                foreach ($keys as $key) {
+                    $minLength = min($minLength, self::utf16Length($current[$key][0]->content));
+                }
+
+                foreach ($keys as $key) {
+                    $token = $current[$key][0];
+                    if (self::utf16Length($token->content) === $minLength) {
+                        $outLines[$key][] = $token;
+                        array_shift($current[$key]);
+                    } else {
+                        $length = self::utf16Length($token->content);
+                        $head = self::utf16Substr($token->content, 0, $minLength);
+                        $tail = self::utf16Substr($token->content, $minLength, $length);
+                        $outLines[$key][] = $token->withContent($head, $token->offset);
+                        $current[$key][0] = $token->withContent($tail, $token->offset + $minLength);
+                    }
+                }
+            }
+
+            foreach ($keys as $key) {
+                $out[$key][] = $outLines[$key];
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param array<string, list<ThemedToken>> $current
+     * @param list<string> $keys
+     */
+    private static function allPresent(array $current, array $keys): bool
+    {
+        foreach ($keys as $key) {
+            if ($current[$key] === []) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

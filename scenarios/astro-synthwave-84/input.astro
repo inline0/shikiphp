@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+const posts = await Astro.glob('../posts/*.md');
+const title = "Blog";
+---
+
+<Layout title={title}>
+  <h1>{title}</h1>
+  <ul>
+    {posts.map((post) => (
+      <li><a href={post.url}>{post.frontmatter.title}</a></li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  h1 { color: hotpink; }
+</style>

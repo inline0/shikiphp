@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+  <ul>
+  {% for user in users %}
+    <li class="{{ loop.first ? 'first' : '' }}">
+      {{ user.name|upper }} - {{ user.email|default('n/a') }}
+    </li>
+  {% else %}
+    <li>No users found</li>
+  {% endfor %}
+  </ul>
+  {% set total = users|length %}
+  <p>Total: {{ total }}</p>
+{% endblock %}

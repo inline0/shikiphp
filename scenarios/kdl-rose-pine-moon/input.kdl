@@ -1,0 +1,16 @@
+package {
+    name "my-app"
+    version "1.2.3"
+}
+
+dependencies {
+    serde version="1.0" features="derive"
+    tokio version="1.35" {
+        feature "full"
+    }
+}
+
+scripts {
+    build "cargo build --release"
+    test "cargo test"
+}

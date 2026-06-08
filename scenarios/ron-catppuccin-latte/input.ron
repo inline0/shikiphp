@@ -1,0 +1,13 @@
+Config(
+    name: "demo",
+    version: (1, 2, 0),
+    enabled: true,
+    servers: [
+        (host: "localhost", port: 8080),
+        (host: "0.0.0.0", port: 9090),
+    ],
+    options: {
+        "timeout": 30,
+        "retries": 3,
+    },
+)

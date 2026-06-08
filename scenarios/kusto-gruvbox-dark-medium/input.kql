@@ -1,0 +1,6 @@
+StormEvents
+| where StartTime >= datetime(2007-01-01)
+| where State == "FLORIDA"
+| summarize EventCount = count() by EventType
+| top 5 by EventCount desc
+| project EventType, EventCount, Pct = EventCount * 100.0 / 1000

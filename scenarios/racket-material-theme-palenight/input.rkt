@@ -1,0 +1,12 @@
+#lang racket
+
+(define (fib n)
+  (cond
+    [(< n 2) n]
+    [else (+ (fib (- n 1)) (fib (- n 2)))]))
+
+(define (map-range f lo hi)
+  (for/list ([i (in-range lo hi)])
+    (f i)))
+
+(printf "fibs: ~a\n" (map-range fib 0 10))

@@ -29,10 +29,18 @@ final class Registry implements RuleFactoryHelper
 
     private int $lastRuleId = 0;
 
-    /** @var array<string, array<string, int>> per-scope repository name → root rule id */
+    /**
+     * Repository rule ids keyed by `baseScope` then `scopeName` then repository
+     * name. Keyed by the active `$base` scope (the tokenization root) as well as
+     * the entry scope so a grammar compiled while embedded under a different root
+     * (where its `$base`/`$self` includes bind to that root) never shares rule ids
+     * with the same grammar compiled standalone.
+     *
+     * @var array<string, array<string, array<string, int>>>
+     */
     private array $repositoryCache = [];
 
-    /** @var array<string, int> per-scope `$self` root rule id */
+    /** @var array<string, array<string, int>> per `baseScope` then `scopeName` `$self` root rule id */
     private array $selfCache = [];
 
     /** @var list<RawGrammar> compilation context stack (innermost last) */
@@ -40,8 +48,6 @@ final class Registry implements RuleFactoryHelper
 
     /** @var list<array<array-key, mixed>> nested-repository context stack (innermost last) */
     private array $repoStack = [];
-
-    private ?RawGrammar $baseGrammar = null;
 
     /** @var (callable(string): ?array<string, mixed>)|null */
     private $resolver;
@@ -106,12 +112,13 @@ final class Registry implements RuleFactoryHelper
      */
     public function compileGrammarRoot(RawGrammar $raw): int
     {
-        if (isset($this->selfCache[$raw->scopeName])) {
-            return $this->selfCache[$raw->scopeName];
+        $base = $this->baseScopeFor($raw);
+        if (isset($this->selfCache[$base][$raw->scopeName])) {
+            return $this->selfCache[$base][$raw->scopeName];
         }
 
         $rootId = $this->nextRuleId();
-        $this->selfCache[$raw->scopeName] = $rootId;
+        $this->selfCache[$base][$raw->scopeName] = $rootId;
 
         $this->pushCompile($raw);
         $patterns = RuleFactory::compileRootPatterns($raw->patterns, $this);
@@ -188,8 +195,18 @@ final class Registry implements RuleFactoryHelper
 
     public function resolveBase(): int
     {
-        $base = $this->baseGrammar ?? $this->currentGrammar();
-        return $this->compileGrammarRoot($base);
+        return $this->compileGrammarRoot($this->compileStack[0] ?? $this->currentGrammar());
+    }
+
+    /**
+     * The active `$base` scope: the bottom of the compile stack (the grammar
+     * whose root compilation initiated the current chain — vscode-textmate binds
+     * `$base`/`$self` at the start of compiling a top-level grammar). When the
+     * stack is empty this call is itself starting a root chain for `$raw`.
+     */
+    private function baseScopeFor(RawGrammar $raw): string
+    {
+        return ($this->compileStack[0] ?? $raw)->scopeName;
     }
 
     public function resolveExternalInclude(string $scopeName, ?string $ruleName): ?int
@@ -315,9 +332,9 @@ final class Registry implements RuleFactoryHelper
 
     private function resolveRepositoryFor(RawGrammar $raw, string $name): ?int
     {
-        $cache = $this->repositoryCache[$raw->scopeName] ?? [];
-        if (isset($cache[$name])) {
-            return $cache[$name];
+        $base = $this->baseScopeFor($raw);
+        if (isset($this->repositoryCache[$base][$raw->scopeName][$name])) {
+            return $this->repositoryCache[$base][$raw->scopeName][$name];
         }
 
         if ($name === '$self') {
@@ -333,7 +350,7 @@ final class Registry implements RuleFactoryHelper
         }
 
         $id = $this->nextRuleId();
-        $this->repositoryCache[$raw->scopeName][$name] = $id;
+        $this->repositoryCache[$base][$raw->scopeName][$name] = $id;
 
         $this->pushCompile($raw);
         RuleFactory::getCompiledRuleId($entry, $this, $id);
@@ -364,17 +381,11 @@ final class Registry implements RuleFactoryHelper
 
     private function pushCompile(RawGrammar $raw): void
     {
-        if ($this->compileStack === []) {
-            $this->baseGrammar = $raw;
-        }
         $this->compileStack[] = $raw;
     }
 
     private function popCompile(): void
     {
         array_pop($this->compileStack);
-        if ($this->compileStack === []) {
-            $this->baseGrammar = null;
-        }
     }
 }

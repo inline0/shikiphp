@@ -1,0 +1,4 @@
+{"id": 1, "name": "Alice", "active": true, "score": 9.5, "tags": ["a", "b"]}
+{"id": 2, "name": "Bob", "active": false, "score": null, "tags": []}
+{"id": 3, "name": "Carol", "active": true, "score": 7.25, "nested": {"role": "admin"}}
+{"id": 4, "name": "Dave \"D\"", "active": false, "score": -1, "tags": ["x"]}

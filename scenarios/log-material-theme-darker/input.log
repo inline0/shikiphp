@@ -1,0 +1,8 @@
+2026-06-08 09:14:02.123 INFO  [main] Starting application v1.4.2
+2026-06-08 09:14:02.456 DEBUG [main] Loading config from /etc/app/config.yml
+2026-06-08 09:14:03.001 INFO  [http-1] Listening on http://0.0.0.0:8080
+2026-06-08 09:14:05.778 WARN  [worker-3] Slow query took 1423ms
+2026-06-08 09:14:07.342 ERROR [worker-1] Failed to connect to db: timeout
+    at Pool.connect (pool.js:88:13)
+    at async main (index.js:12:5)
+2026-06-08 09:14:08.900 INFO  [worker-1] Retrying connection (attempt 2/5)

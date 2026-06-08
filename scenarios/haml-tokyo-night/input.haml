@@ -1,0 +1,17 @@
+!!! 5
+%html{lang: "en"}
+  %head
+    %title= page_title
+    %meta{charset: "utf-8"}
+  %body
+    #main.container
+      %h1.title Welcome, #{current_user.name}
+      / A simple list of posts
+      %ul.posts
+        - @posts.each do |post|
+          %li
+            %a{href: post_path(post)}= post.title
+      - if @posts.empty?
+        %p.empty No posts yet.
+      :javascript
+        console.log("loaded");

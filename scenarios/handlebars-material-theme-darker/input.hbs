@@ -1,0 +1,20 @@
+<div class="profile">
+  <h1>{{user.name}}</h1>
+  {{! Show bio only if present }}
+  {{#if user.bio}}
+    <p>{{user.bio}}</p>
+  {{else}}
+    <p>No bio provided.</p>
+  {{/if}}
+
+  <ul>
+    {{#each user.posts as |post index|}}
+      <li data-index="{{index}}">
+        <a href="{{post.url}}">{{post.title}}</a>
+        {{formatDate post.date format="short"}}
+      </li>
+    {{/each}}
+  </ul>
+
+  {{> footer year=2026}}
+</div>

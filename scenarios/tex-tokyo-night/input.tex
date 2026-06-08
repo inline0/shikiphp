@@ -1,0 +1,18 @@
+% A plain TeX example
+\def\greet#1{Hello, #1!}
+
+\font\big=cmr10 scaled 2000
+\big
+\greet{TeX}
+
+\medskip
+The sum is $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$.
+
+\hbox{%
+  \vbox{%
+    \hsize=3in
+    This is a paragraph set in a vbox of fixed width.
+  }%
+}
+
+\bye

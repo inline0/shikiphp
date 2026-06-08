@@ -1,0 +1,14 @@
+pick a1b2c3d Add user authentication
+reword d4e5f6a Fix typo in README
+edit 7890abc Refactor database layer
+squash 1122334 Add missing tests
+fixup 5566778 Address review comments
+drop 99aabbc Remove debug logging
+
+# Rebase 0f1e2d3..5566778 onto 0f1e2d3 (6 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit

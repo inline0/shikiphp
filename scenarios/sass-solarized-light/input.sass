@@ -1,0 +1,21 @@
+// Theme variables
+$primary: #3498db
+$padding: 12px
+
+=rounded($r: 4px)
+  border-radius: $r
+
+.button
+  color: lighten($primary, 10%)
+  padding: $padding ($padding * 2)
+  +rounded(6px)
+
+  &:hover
+    background: darken($primary, 5%)
+
+  .icon
+    width: 1em
+
+@media (max-width: 600px)
+  .button
+    padding: $padding

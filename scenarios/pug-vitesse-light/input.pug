@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    meta(charset="utf-8")
+  body
+    //- Main content block
+    #app.container
+      h1.title Welcome, #{user.name}
+      if user.posts.length
+        ul.posts
+          each post in user.posts
+            li
+              a(href=post.url)= post.title
+      else
+        p.empty No posts yet.
+      script.
+        console.log("hydrated");

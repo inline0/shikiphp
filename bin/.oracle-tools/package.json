@@ -1,0 +1,12 @@
+{
+  "name": "shikiphp-oracle-tools",
+  "private": true,
+  "type": "module",
+  "description": "Node oracle + bundler tooling for shikiphp (gitignored).",
+  "dependencies": {
+    "oniguruma-to-es": "^4.3.3",
+    "shiki": "^3.6.0",
+    "tm-grammars": "^1.23.0",
+    "tm-themes": "^1.10.0"
+  }
+}

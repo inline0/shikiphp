@@ -787,7 +787,11 @@ final class PatternConverter
 
         $body = $this->groupBodies[$key] ?? null;
         if ($body === null) {
-            throw ConversionFailed::unsupported('\\g<' . $name . '>', $this->src);
+            // Self/forward recursion (e.g. balanced brackets `(?<s>...\g<s>...)`):
+            // JS has no recursion, so collapse the recursive call to the empty match
+            // — the surrounding alternatives still match flat content. Mirrors
+            // oniguruma-to-es bottoming out its recursion-depth expansion.
+            return '(?:)';
         }
         return '(?:' . $body . ')';
     }

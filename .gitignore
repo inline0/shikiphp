@@ -1,0 +1,11 @@
+/vendor/
+/.phpunit.cache/
+/.phpstan.cache/
+/build/
+composer.lock
+.DS_Store
+.shikiphp/
+node_modules/
+/bin/.oracle-tools/
+docs/node_modules/
+docs/.next/

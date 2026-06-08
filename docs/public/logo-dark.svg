@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="56" viewBox="0 0 320 56" fill="none">
+  <rect x="2" y="2" width="52" height="52" rx="12" fill="#161b22"/>
+  <text x="28" y="38" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700" fill="#79c0ff" text-anchor="middle">&lt;/&gt;</text>
+  <text x="68" y="38" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="30" font-weight="700" fill="#e6edf3">shiki<tspan fill="#d2a8ff">php</tspan></text>
+</svg>

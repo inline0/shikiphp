@@ -1,0 +1,84 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Shikiphp\Highlighter;
+use Shikiphp\Shikiphp;
+
+(static function (): void {
+    foreach ([__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'] as $autoload) {
+        if (is_file($autoload)) {
+            require_once $autoload;
+
+            return;
+        }
+    }
+
+    fwrite(STDERR, "Could not locate the Composer autoloader. Run `composer install`.\n");
+    exit(1);
+})();
+
+$argv = $_SERVER['argv'];
+$command = $argv[1] ?? null;
+
+if ($command === null || in_array($command, ['-h', '--help', 'help'], true)) {
+    echo <<<TXT
+    shikiphp — pure PHP syntax highlighter (a Shiki port)
+
+    Usage:
+      shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]   Highlight a file to HTML
+      shikiphp langs                                                List bundled languages
+      shikiphp themes                                               List bundled themes
+
+    TXT;
+    exit(0);
+}
+
+match ($command) {
+    'highlight' => cmdHighlight($argv),
+    'langs' => cmdLangs(),
+    'themes' => cmdThemes(),
+    default => fwrite(STDERR, "Unknown command: {$command}\n") === false ? exit(1) : exit(1),
+};
+
+function cmdHighlight(array $argv): void
+{
+    $file = null;
+    $lang = null;
+    $theme = 'github-dark';
+
+    foreach (array_slice($argv, 2) as $arg) {
+        if (str_starts_with($arg, '--lang=')) {
+            $lang = substr($arg, 7);
+        } elseif (str_starts_with($arg, '--theme=')) {
+            $theme = substr($arg, 8);
+        } elseif (!str_starts_with($arg, '--')) {
+            $file = $arg;
+        }
+    }
+
+    if ($file === null || !is_file($file)) {
+        fwrite(STDERR, "Usage: shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]\n");
+        exit(1);
+    }
+
+    $code = (string) file_get_contents($file);
+    $lang ??= pathinfo($file, PATHINFO_EXTENSION) ?: 'txt';
+
+    echo Shikiphp::codeToHtml($code, ['lang' => $lang, 'theme' => $theme]), "\n";
+}
+
+function cmdLangs(): void
+{
+    foreach (Highlighter::createBundled()->loadedLanguages() as $lang) {
+        echo $lang, "\n";
+    }
+}
+
+function cmdThemes(): void
+{
+    foreach (Highlighter::createBundled()->loadedThemes() as $theme) {
+        echo $theme, "\n";
+    }
+}

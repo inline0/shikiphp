@@ -1,0 +1,72 @@
+{
+    "name": "shikiphp/shikiphp",
+    "description": "Pure PHP port of Shiki. Syntax-highlight code with VS Code themes and TextMate grammars — no extensions, no Node, no Oniguruma binding.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "inline0",
+            "homepage": "https://github.com/inline0"
+        }
+    ],
+    "homepage": "https://github.com/inline0/shikiphp",
+    "support": {
+        "issues": "https://github.com/inline0/shikiphp/issues",
+        "source": "https://github.com/inline0/shikiphp"
+    },
+    "keywords": [
+        "php",
+        "shiki",
+        "syntax-highlighting",
+        "highlighter",
+        "textmate",
+        "tmlanguage",
+        "oniguruma",
+        "vscode-themes",
+        "code-blocks",
+        "tokenizer"
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^13.1",
+        "squizlabs/php_codesniffer": "^3.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shikiphp\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shikiphp\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "bin": [
+        "bin/shikiphp"
+    ],
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite=unit",
+        "test:integration": "phpunit --testsuite=integration",
+        "test:oracle": "php bin/test-regression",
+        "analyse": "phpstan analyse --memory-limit=512M",
+        "cs": "phpcs --warning-severity=0",
+        "cs:fix": "phpcbf",
+        "verify": [
+            "@analyse",
+            "@cs",
+            "@test",
+            "@test:oracle"
+        ]
+    }
+}

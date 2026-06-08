@@ -32,13 +32,18 @@ Laravel/WordPress/static-site build step.
 
 **shikiphp solves this** by porting Shiki's real pipeline to PHP:
 
-- TextMate grammar tokenizer (a faithful port of `vscode-textmate`)
+- TextMate grammar tokenizer (a faithful port of `vscode-textmate`), incl.
+  embedded languages, injections, and nested repositories
 - VS Code theme resolution with scope-selector specificity (`vscode-textmate`'s theme matching)
 - A pure-PHP **JavaScript regex engine** as the grammar regex runtime, fed by an
   `oniguruma-to-es` port — the same Oniguruma→RegExp path modern Shiki uses
-- Shiki-compatible HTML output, including dual light/dark themes via CSS variables
+- Shiki-compatible HTML output: dual light/dark themes via CSS variables,
+  `codeToHast`, transformers (all hooks), decorations, `colorReplacements`,
+  `structure: inline`, and ANSI (`lang: 'ansi'`) highlighting
+- **76 languages** and **20 themes** bundled (from `tm-grammars`/`tm-themes`)
 - No PHP extensions beyond `json`/`mbstring`, no Node, no native Oniguruma binding
-- Validated against Shiki.js itself with an oracle regression harness
+- Validated token-for-token against Shiki.js with an oracle regression harness
+  (78 scenarios across the full grammar/theme set)
 
 ## Quick Start
 
@@ -66,6 +71,34 @@ Dual themes (light + dark) via CSS variables, like Shiki:
 echo Shikiphp::codeToHtml($code, [
     'lang'   => 'ts',
     'themes' => ['light' => 'github-light', 'dark' => 'github-dark'],
+]);
+```
+
+Transformers, decorations, and other options (Shiki-compatible):
+
+```php
+echo Shikiphp::codeToHtml($code, [
+    'lang'        => 'js',
+    'theme'       => 'vitesse-dark',
+    'transformers' => [new MyLineNumberTransformer()],
+    'decorations' => [
+        ['start' => ['line' => 0, 'character' => 0], 'end' => ['line' => 0, 'character' => 5],
+         'properties' => ['class' => 'highlight']],
+    ],
+    'colorReplacements' => ['#ffffff' => '#f8f8f2'],
+    'structure'   => 'classic', // or 'inline'
+]);
+
+// Structured output (a HAST tree you can walk/serialize yourself):
+$hast = Shikiphp::highlighter()->codeToHast($code, ['lang' => 'rust', 'theme' => 'nord']);
+```
+
+Highlight ANSI terminal output:
+
+```php
+echo Shikiphp::codeToHtml("\e[31merror\e[0m: something broke", [
+    'lang'  => 'ansi',
+    'theme' => 'github-dark',
 ]);
 ```
 

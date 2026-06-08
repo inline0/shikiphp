@@ -69,7 +69,10 @@ the same themed tokens and HTML as Shiki, in pure PHP.
 - `src/Oniguruma/` — `PatternConverter` (oniguruma-to-es port), `OnigScanner`, value objects.
 - `src/Grammar/` — `Registry`, rules, `Tokenizer`, `StateStack`, `ScopeStack`, `Token`.
 - `src/Theme/` — `Theme`, theme matching, `StyleAttributes`, `FontStyle`.
-- `src/Render/` — `ThemedToken`, `HtmlRenderer`.
+- `src/Render/` — `ThemedToken`, `HtmlRenderer`, `HastBuilder`, `RenderOptions`.
+- `src/Hast/` — `Node`/`Element`/`Text` + `HastSerializer` (the `codeToHast` tree).
+- `src/Transformer/` — Shiki-compatible transformer pipeline (all hooks) + decorations.
+- `src/Ansi/` — ANSI (`lang: 'ansi'`) tokenizer + palette.
 - `src/Registry/` — bundled grammars + themes (JSON) and the bundle manifest.
 - `src/Highlighter.php`, `src/Shikiphp.php` — orchestration + static facade.
 - `bin/.oracle-tools/` — Node side: `shiki` dependency + `oracle.mjs` + bundler.

@@ -1,0 +1,119 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+ini_set('memory_limit', '512M');
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Shikiphp\Tests\Oracle\OracleCapture;
+use Shikiphp\Tests\Oracle\ScenarioRepository;
+use Shikiphp\Tests\Oracle\ScenarioRunner;
+
+$opts = getopt('', ['filter:', 'jobs:', 'fast', 'scenario:']);
+$filter = is_string($opts['filter'] ?? null) ? $opts['filter'] : null;
+$exact = is_string($opts['scenario'] ?? null) ? $opts['scenario'] : null;
+$jobs = max(1, (int) ($opts['jobs'] ?? 1));
+$fast = isset($opts['fast']);
+
+if (!OracleCapture::isAvailable()) {
+    fwrite(STDERR, "Oracle unavailable: install node and run `npm install` in bin/.oracle-tools.\n");
+    exit(2);
+}
+
+$scenarios = (new ScenarioRepository())->all();
+if ($exact !== null) {
+    $scenarios = array_values(array_filter(
+        $scenarios,
+        static fn (array $s): bool => $s['name'] === $exact,
+    ));
+} elseif ($filter !== null) {
+    $scenarios = array_values(array_filter(
+        $scenarios,
+        static fn (array $s): bool => str_contains($s['name'], (string) $filter),
+    ));
+}
+
+if ($scenarios === []) {
+    echo "No scenarios found" . ($filter !== null ? " matching '{$filter}'" : "") . "\n";
+    exit(0);
+}
+
+$results = $jobs > 1 ? runParallel($scenarios, $jobs) : ScenarioRunner::runAll($scenarios);
+
+$passed = 0;
+$failed = 0;
+foreach ($results as $result) {
+    if ($result['pass']) {
+        $passed++;
+        if (!$fast) {
+            echo "PASS  {$result['name']}\n";
+        }
+        continue;
+    }
+
+    $failed++;
+    echo "FAIL  {$result['name']}\n";
+    if (!$fast) {
+        foreach ($result['diff'] as $line) {
+            echo "  {$line}\n";
+        }
+    }
+}
+
+echo "\n";
+echo "Total:  " . count($results) . "\n";
+echo "Passed: {$passed}\n";
+echo "Failed: {$failed}\n";
+
+exit($failed > 0 ? 1 : 0);
+
+/**
+ * @param list<array{name: string, path: string, lang: string, theme: string, input: string}> $scenarios
+ * @return list<array{name: string, pass: bool, diff: list<string>}>
+ */
+function runParallel(array $scenarios, int $jobs): array
+{
+    $self = __FILE__;
+    $php = PHP_BINARY;
+
+    $running = [];
+    $results = [];
+    $queue = $scenarios;
+
+    while ($queue !== [] || $running !== []) {
+        while ($queue !== [] && count($running) < $jobs) {
+            $scenario = array_shift($queue);
+            $cmd = sprintf(
+                '%s %s --scenario=%s --fast 2>/dev/null; echo "EXIT:$?"',
+                escapeshellarg($php),
+                escapeshellarg($self),
+                escapeshellarg($scenario['name']),
+            );
+            $handle = popen($cmd, 'r');
+            if ($handle === false) {
+                $results[] = ['name' => $scenario['name'], 'pass' => false, 'diff' => ['failed to spawn worker']];
+                continue;
+            }
+            $running[] = ['name' => $scenario['name'], 'handle' => $handle];
+        }
+
+        foreach ($running as $i => $worker) {
+            $output = (string) stream_get_contents($worker['handle']);
+            pclose($worker['handle']);
+            $pass = str_contains($output, 'EXIT:0');
+            $results[] = [
+                'name' => $worker['name'],
+                'pass' => $pass,
+                'diff' => $pass ? [] : ['mismatch (run `bin/compare` for detail)'],
+            ];
+            unset($running[$i]);
+        }
+        $running = array_values($running);
+    }
+
+    usort($results, static fn (array $a, array $b): int => $a['name'] <=> $b['name']);
+
+    return $results;
+}

@@ -1,0 +1,1288 @@
+{
+  "version": "3.23.0",
+  "languages": {
+    "javascript": {
+      "file": "grammars/javascript.json",
+      "scopeName": "source.js",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "embedded": []
+    },
+    "typescript": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "jsx": {
+      "file": "grammars/jsx.json",
+      "scopeName": "source.js.jsx",
+      "aliases": [],
+      "embedded": []
+    },
+    "tsx": {
+      "file": "grammars/tsx.json",
+      "scopeName": "source.tsx",
+      "aliases": [],
+      "embedded": []
+    },
+    "json": {
+      "file": "grammars/json.json",
+      "scopeName": "source.json",
+      "aliases": [],
+      "embedded": []
+    },
+    "jsonc": {
+      "file": "grammars/jsonc.json",
+      "scopeName": "source.json.comments",
+      "aliases": [],
+      "embedded": []
+    },
+    "html": {
+      "file": "grammars/html.json",
+      "scopeName": "text.html.basic",
+      "aliases": [],
+      "embedded": [
+        "javascript",
+        "css"
+      ]
+    },
+    "css": {
+      "file": "grammars/css.json",
+      "scopeName": "source.css",
+      "aliases": [],
+      "embedded": []
+    },
+    "scss": {
+      "file": "grammars/scss.json",
+      "scopeName": "source.css.scss",
+      "aliases": [],
+      "embedded": [
+        "css"
+      ]
+    },
+    "php": {
+      "file": "grammars/php.json",
+      "scopeName": "source.php",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "xml",
+        "sql",
+        "javascript",
+        "json",
+        "css"
+      ]
+    },
+    "xml": {
+      "file": "grammars/xml.json",
+      "scopeName": "text.xml",
+      "aliases": [],
+      "embedded": [
+        "java"
+      ]
+    },
+    "java": {
+      "file": "grammars/java.json",
+      "scopeName": "source.java",
+      "aliases": [],
+      "embedded": []
+    },
+    "sql": {
+      "file": "grammars/sql.json",
+      "scopeName": "source.sql",
+      "aliases": [],
+      "embedded": []
+    },
+    "python": {
+      "file": "grammars/python.json",
+      "scopeName": "source.python",
+      "aliases": [
+        "py"
+      ],
+      "embedded": []
+    },
+    "shellscript": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "markdown": {
+      "file": "grammars/markdown.json",
+      "scopeName": "text.html.markdown",
+      "aliases": [
+        "md"
+      ],
+      "embedded": [
+        "css",
+        "html",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "yaml",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "json",
+        "jsonc",
+        "jsonl",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "regexp",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "log",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "abap",
+        "rst",
+        "html-derivative"
+      ]
+    },
+    "ini": {
+      "file": "grammars/ini.json",
+      "scopeName": "source.ini",
+      "aliases": [
+        "properties"
+      ],
+      "embedded": []
+    },
+    "lua": {
+      "file": "grammars/lua.json",
+      "scopeName": "source.lua",
+      "aliases": [],
+      "embedded": [
+        "c"
+      ]
+    },
+    "c": {
+      "file": "grammars/c.json",
+      "scopeName": "source.c",
+      "aliases": [],
+      "embedded": []
+    },
+    "make": {
+      "file": "grammars/make.json",
+      "scopeName": "source.makefile",
+      "aliases": [
+        "makefile"
+      ],
+      "embedded": []
+    },
+    "perl": {
+      "file": "grammars/perl.json",
+      "scopeName": "source.perl",
+      "aliases": [],
+      "embedded": [
+        "html",
+        "xml",
+        "css",
+        "javascript",
+        "sql"
+      ]
+    },
+    "r": {
+      "file": "grammars/r.json",
+      "scopeName": "source.r",
+      "aliases": [],
+      "embedded": []
+    },
+    "ruby": {
+      "file": "grammars/ruby.json",
+      "scopeName": "source.ruby",
+      "aliases": [
+        "rb"
+      ],
+      "embedded": [
+        "html",
+        "haml",
+        "xml",
+        "sql",
+        "graphql",
+        "css",
+        "cpp",
+        "c",
+        "javascript",
+        "shellscript",
+        "lua",
+        "yaml"
+      ]
+    },
+    "haml": {
+      "file": "grammars/haml.json",
+      "scopeName": "text.haml",
+      "aliases": [],
+      "embedded": [
+        "ruby",
+        "javascript",
+        "sass",
+        "coffee",
+        "markdown",
+        "css"
+      ]
+    },
+    "sass": {
+      "file": "grammars/sass.json",
+      "scopeName": "source.sass",
+      "aliases": [],
+      "embedded": []
+    },
+    "coffee": {
+      "file": "grammars/coffee.json",
+      "scopeName": "source.coffee",
+      "aliases": [
+        "coffeescript"
+      ],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "graphql": {
+      "file": "grammars/graphql.json",
+      "scopeName": "source.graphql",
+      "aliases": [
+        "gql"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx"
+      ]
+    },
+    "cpp": {
+      "file": "grammars/cpp.json",
+      "scopeName": "source.cpp",
+      "aliases": [
+        "c++"
+      ],
+      "embedded": [
+        "cpp-macro",
+        "regexp",
+        "glsl",
+        "sql"
+      ]
+    },
+    "cpp-macro": {
+      "file": "grammars/cpp-macro.json",
+      "scopeName": "source.cpp.embedded.macro",
+      "aliases": [],
+      "embedded": [
+        "regexp",
+        "glsl",
+        "sql"
+      ]
+    },
+    "regexp": {
+      "file": "grammars/regexp.json",
+      "scopeName": "source.regexp.python",
+      "aliases": [
+        "regex"
+      ],
+      "embedded": []
+    },
+    "glsl": {
+      "file": "grammars/glsl.json",
+      "scopeName": "source.glsl",
+      "aliases": [],
+      "embedded": [
+        "c"
+      ]
+    },
+    "yaml": {
+      "file": "grammars/yaml.json",
+      "scopeName": "source.yaml",
+      "aliases": [
+        "yml"
+      ],
+      "embedded": []
+    },
+    "vb": {
+      "file": "grammars/vb.json",
+      "scopeName": "source.asp.vb.net",
+      "aliases": [
+        "cmd"
+      ],
+      "embedded": []
+    },
+    "xsl": {
+      "file": "grammars/xsl.json",
+      "scopeName": "text.xml.xsl",
+      "aliases": [],
+      "embedded": [
+        "xml"
+      ]
+    },
+    "bat": {
+      "file": "grammars/bat.json",
+      "scopeName": "source.batchfile",
+      "aliases": [
+        "batch"
+      ],
+      "embedded": []
+    },
+    "clojure": {
+      "file": "grammars/clojure.json",
+      "scopeName": "source.clojure",
+      "aliases": [
+        "clj"
+      ],
+      "embedded": []
+    },
+    "diff": {
+      "file": "grammars/diff.json",
+      "scopeName": "source.diff",
+      "aliases": [],
+      "embedded": []
+    },
+    "docker": {
+      "file": "grammars/docker.json",
+      "scopeName": "source.dockerfile",
+      "aliases": [
+        "dockerfile"
+      ],
+      "embedded": []
+    },
+    "git-commit": {
+      "file": "grammars/git-commit.json",
+      "scopeName": "text.git-commit",
+      "aliases": [],
+      "embedded": [
+        "diff"
+      ]
+    },
+    "git-rebase": {
+      "file": "grammars/git-rebase.json",
+      "scopeName": "text.git-rebase",
+      "aliases": [],
+      "embedded": [
+        "shellscript"
+      ]
+    },
+    "go": {
+      "file": "grammars/go.json",
+      "scopeName": "source.go",
+      "aliases": [],
+      "embedded": []
+    },
+    "groovy": {
+      "file": "grammars/groovy.json",
+      "scopeName": "source.groovy",
+      "aliases": [],
+      "embedded": []
+    },
+    "pug": {
+      "file": "grammars/pug.json",
+      "scopeName": "text.pug",
+      "aliases": [
+        "jade"
+      ],
+      "embedded": [
+        "javascript",
+        "css",
+        "sass",
+        "scss",
+        "stylus",
+        "coffee",
+        "html"
+      ]
+    },
+    "stylus": {
+      "file": "grammars/stylus.json",
+      "scopeName": "source.stylus",
+      "aliases": [
+        "styl"
+      ],
+      "embedded": []
+    },
+    "jsonl": {
+      "file": "grammars/jsonl.json",
+      "scopeName": "source.json.lines",
+      "aliases": [],
+      "embedded": []
+    },
+    "less": {
+      "file": "grammars/less.json",
+      "scopeName": "source.css.less",
+      "aliases": [],
+      "embedded": []
+    },
+    "objective-c": {
+      "file": "grammars/objective-c.json",
+      "scopeName": "source.objc",
+      "aliases": [
+        "objc"
+      ],
+      "embedded": []
+    },
+    "swift": {
+      "file": "grammars/swift.json",
+      "scopeName": "source.swift",
+      "aliases": [],
+      "embedded": []
+    },
+    "raku": {
+      "file": "grammars/raku.json",
+      "scopeName": "source.perl.6",
+      "aliases": [
+        "perl6"
+      ],
+      "embedded": []
+    },
+    "powershell": {
+      "file": "grammars/powershell.json",
+      "scopeName": "source.powershell",
+      "aliases": [
+        "ps",
+        "ps1"
+      ],
+      "embedded": []
+    },
+    "julia": {
+      "file": "grammars/julia.json",
+      "scopeName": "source.julia",
+      "aliases": [
+        "jl"
+      ],
+      "embedded": [
+        "cpp",
+        "python",
+        "javascript",
+        "r",
+        "sql"
+      ]
+    },
+    "rust": {
+      "file": "grammars/rust.json",
+      "scopeName": "source.rust",
+      "aliases": [
+        "rs"
+      ],
+      "embedded": []
+    },
+    "scala": {
+      "file": "grammars/scala.json",
+      "scopeName": "source.scala",
+      "aliases": [],
+      "embedded": []
+    },
+    "csharp": {
+      "file": "grammars/csharp.json",
+      "scopeName": "source.cs",
+      "aliases": [
+        "c#",
+        "cs"
+      ],
+      "embedded": []
+    },
+    "fsharp": {
+      "file": "grammars/fsharp.json",
+      "scopeName": "source.fsharp",
+      "aliases": [
+        "f#",
+        "fs"
+      ],
+      "embedded": [
+        "markdown"
+      ]
+    },
+    "dart": {
+      "file": "grammars/dart.json",
+      "scopeName": "source.dart",
+      "aliases": [],
+      "embedded": []
+    },
+    "handlebars": {
+      "file": "grammars/handlebars.json",
+      "scopeName": "text.html.handlebars",
+      "aliases": [
+        "hbs"
+      ],
+      "embedded": [
+        "html",
+        "css",
+        "javascript",
+        "yaml"
+      ]
+    },
+    "log": {
+      "file": "grammars/log.json",
+      "scopeName": "text.log",
+      "aliases": [],
+      "embedded": []
+    },
+    "erlang": {
+      "file": "grammars/erlang.json",
+      "scopeName": "source.erlang",
+      "aliases": [
+        "erl"
+      ],
+      "embedded": [
+        "markdown"
+      ]
+    },
+    "elixir": {
+      "file": "grammars/elixir.json",
+      "scopeName": "source.elixir",
+      "aliases": [],
+      "embedded": [
+        "html"
+      ]
+    },
+    "latex": {
+      "file": "grammars/latex.json",
+      "scopeName": "text.tex.latex",
+      "aliases": [],
+      "embedded": [
+        "tex",
+        "shellscript",
+        "css",
+        "gnuplot",
+        "haskell",
+        "html",
+        "java",
+        "julia",
+        "javascript",
+        "lua",
+        "python",
+        "ruby",
+        "rust",
+        "typescript",
+        "xml",
+        "yaml",
+        "scala"
+      ]
+    },
+    "tex": {
+      "file": "grammars/tex.json",
+      "scopeName": "text.tex",
+      "aliases": [],
+      "embedded": [
+        "r"
+      ]
+    },
+    "gnuplot": {
+      "file": "grammars/gnuplot.json",
+      "scopeName": "source.gnuplot",
+      "aliases": [],
+      "embedded": []
+    },
+    "haskell": {
+      "file": "grammars/haskell.json",
+      "scopeName": "source.haskell",
+      "aliases": [
+        "hs"
+      ],
+      "embedded": []
+    },
+    "bibtex": {
+      "file": "grammars/bibtex.json",
+      "scopeName": "text.bibtex",
+      "aliases": [],
+      "embedded": []
+    },
+    "abap": {
+      "file": "grammars/abap.json",
+      "scopeName": "source.abap",
+      "aliases": [],
+      "embedded": []
+    },
+    "rst": {
+      "file": "grammars/rst.json",
+      "scopeName": "source.rst",
+      "aliases": [],
+      "embedded": [
+        "html-derivative",
+        "cpp",
+        "python",
+        "javascript",
+        "shellscript",
+        "yaml",
+        "cmake",
+        "ruby"
+      ]
+    },
+    "html-derivative": {
+      "file": "grammars/html-derivative.json",
+      "scopeName": "text.html.derivative",
+      "aliases": [],
+      "embedded": [
+        "html"
+      ]
+    },
+    "cmake": {
+      "file": "grammars/cmake.json",
+      "scopeName": "source.cmake",
+      "aliases": [],
+      "embedded": []
+    },
+    "toml": {
+      "file": "grammars/toml.json",
+      "scopeName": "source.toml",
+      "aliases": [],
+      "embedded": []
+    },
+    "vue": {
+      "file": "grammars/vue.json",
+      "scopeName": "text.html.vue",
+      "aliases": [],
+      "embedded": [
+        "markdown",
+        "pug",
+        "stylus",
+        "sass",
+        "css",
+        "scss",
+        "less",
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx",
+        "coffee",
+        "json",
+        "jsonc",
+        "json5",
+        "yaml",
+        "toml",
+        "graphql",
+        "html",
+        "html-derivative",
+        "markdown-vue",
+        "vue-directives",
+        "vue-interpolations",
+        "vue-sfc-style-variable-injection"
+      ]
+    },
+    "json5": {
+      "file": "grammars/json5.json",
+      "scopeName": "source.json5",
+      "aliases": [],
+      "embedded": []
+    },
+    "markdown-vue": {
+      "file": "grammars/markdown-vue.json",
+      "scopeName": "markdown.vue.codeblock",
+      "aliases": [],
+      "embedded": []
+    },
+    "vue-directives": {
+      "file": "grammars/vue-directives.json",
+      "scopeName": "vue.directives",
+      "aliases": [],
+      "embedded": []
+    },
+    "vue-interpolations": {
+      "file": "grammars/vue-interpolations.json",
+      "scopeName": "vue.interpolations",
+      "aliases": [],
+      "embedded": []
+    },
+    "vue-sfc-style-variable-injection": {
+      "file": "grammars/vue-sfc-style-variable-injection.json",
+      "scopeName": "vue.sfc.style.variable.injection",
+      "aliases": [],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "bash": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "shell": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "dockerfile": {
+      "file": "grammars/docker.json",
+      "scopeName": "source.dockerfile",
+      "aliases": [
+        "dockerfile"
+      ],
+      "embedded": []
+    },
+    "js": {
+      "file": "grammars/javascript.json",
+      "scopeName": "source.js",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "embedded": []
+    },
+    "cjs": {
+      "file": "grammars/javascript.json",
+      "scopeName": "source.js",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "embedded": []
+    },
+    "mjs": {
+      "file": "grammars/javascript.json",
+      "scopeName": "source.js",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "embedded": []
+    },
+    "ts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "cts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "mts": {
+      "file": "grammars/typescript.json",
+      "scopeName": "source.ts",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "embedded": []
+    },
+    "py": {
+      "file": "grammars/python.json",
+      "scopeName": "source.python",
+      "aliases": [
+        "py"
+      ],
+      "embedded": []
+    },
+    "sh": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "zsh": {
+      "file": "grammars/shellscript.json",
+      "scopeName": "source.shell",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "embedded": []
+    },
+    "md": {
+      "file": "grammars/markdown.json",
+      "scopeName": "text.html.markdown",
+      "aliases": [
+        "md"
+      ],
+      "embedded": [
+        "css",
+        "html",
+        "ini",
+        "java",
+        "lua",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "xml",
+        "xsl",
+        "yaml",
+        "bat",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "diff",
+        "docker",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "pug",
+        "javascript",
+        "json",
+        "jsonc",
+        "jsonl",
+        "less",
+        "objective-c",
+        "swift",
+        "scss",
+        "raku",
+        "powershell",
+        "python",
+        "julia",
+        "regexp",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "csharp",
+        "fsharp",
+        "dart",
+        "handlebars",
+        "log",
+        "erlang",
+        "elixir",
+        "latex",
+        "bibtex",
+        "abap",
+        "rst",
+        "html-derivative"
+      ]
+    },
+    "properties": {
+      "file": "grammars/ini.json",
+      "scopeName": "source.ini",
+      "aliases": [
+        "properties"
+      ],
+      "embedded": []
+    },
+    "makefile": {
+      "file": "grammars/make.json",
+      "scopeName": "source.makefile",
+      "aliases": [
+        "makefile"
+      ],
+      "embedded": []
+    },
+    "rb": {
+      "file": "grammars/ruby.json",
+      "scopeName": "source.ruby",
+      "aliases": [
+        "rb"
+      ],
+      "embedded": [
+        "html",
+        "haml",
+        "xml",
+        "sql",
+        "graphql",
+        "css",
+        "cpp",
+        "c",
+        "javascript",
+        "shellscript",
+        "lua",
+        "yaml"
+      ]
+    },
+    "coffeescript": {
+      "file": "grammars/coffee.json",
+      "scopeName": "source.coffee",
+      "aliases": [
+        "coffeescript"
+      ],
+      "embedded": [
+        "javascript"
+      ]
+    },
+    "gql": {
+      "file": "grammars/graphql.json",
+      "scopeName": "source.graphql",
+      "aliases": [
+        "gql"
+      ],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx"
+      ]
+    },
+    "c++": {
+      "file": "grammars/cpp.json",
+      "scopeName": "source.cpp",
+      "aliases": [
+        "c++"
+      ],
+      "embedded": [
+        "cpp-macro",
+        "regexp",
+        "glsl",
+        "sql"
+      ]
+    },
+    "regex": {
+      "file": "grammars/regexp.json",
+      "scopeName": "source.regexp.python",
+      "aliases": [
+        "regex"
+      ],
+      "embedded": []
+    },
+    "yml": {
+      "file": "grammars/yaml.json",
+      "scopeName": "source.yaml",
+      "aliases": [
+        "yml"
+      ],
+      "embedded": []
+    },
+    "cmd": {
+      "file": "grammars/vb.json",
+      "scopeName": "source.asp.vb.net",
+      "aliases": [
+        "cmd"
+      ],
+      "embedded": []
+    },
+    "batch": {
+      "file": "grammars/bat.json",
+      "scopeName": "source.batchfile",
+      "aliases": [
+        "batch"
+      ],
+      "embedded": []
+    },
+    "clj": {
+      "file": "grammars/clojure.json",
+      "scopeName": "source.clojure",
+      "aliases": [
+        "clj"
+      ],
+      "embedded": []
+    },
+    "jade": {
+      "file": "grammars/pug.json",
+      "scopeName": "text.pug",
+      "aliases": [
+        "jade"
+      ],
+      "embedded": [
+        "javascript",
+        "css",
+        "sass",
+        "scss",
+        "stylus",
+        "coffee",
+        "html"
+      ]
+    },
+    "styl": {
+      "file": "grammars/stylus.json",
+      "scopeName": "source.stylus",
+      "aliases": [
+        "styl"
+      ],
+      "embedded": []
+    },
+    "objc": {
+      "file": "grammars/objective-c.json",
+      "scopeName": "source.objc",
+      "aliases": [
+        "objc"
+      ],
+      "embedded": []
+    },
+    "perl6": {
+      "file": "grammars/raku.json",
+      "scopeName": "source.perl.6",
+      "aliases": [
+        "perl6"
+      ],
+      "embedded": []
+    },
+    "ps": {
+      "file": "grammars/powershell.json",
+      "scopeName": "source.powershell",
+      "aliases": [
+        "ps",
+        "ps1"
+      ],
+      "embedded": []
+    },
+    "ps1": {
+      "file": "grammars/powershell.json",
+      "scopeName": "source.powershell",
+      "aliases": [
+        "ps",
+        "ps1"
+      ],
+      "embedded": []
+    },
+    "jl": {
+      "file": "grammars/julia.json",
+      "scopeName": "source.julia",
+      "aliases": [
+        "jl"
+      ],
+      "embedded": [
+        "cpp",
+        "python",
+        "javascript",
+        "r",
+        "sql"
+      ]
+    },
+    "rs": {
+      "file": "grammars/rust.json",
+      "scopeName": "source.rust",
+      "aliases": [
+        "rs"
+      ],
+      "embedded": []
+    },
+    "c#": {
+      "file": "grammars/csharp.json",
+      "scopeName": "source.cs",
+      "aliases": [
+        "c#",
+        "cs"
+      ],
+      "embedded": []
+    },
+    "cs": {
+      "file": "grammars/csharp.json",
+      "scopeName": "source.cs",
+      "aliases": [
+        "c#",
+        "cs"
+      ],
+      "embedded": []
+    },
+    "f#": {
+      "file": "grammars/fsharp.json",
+      "scopeName": "source.fsharp",
+      "aliases": [
+        "f#",
+        "fs"
+      ],
+      "embedded": [
+        "markdown"
+      ]
+    },
+    "fs": {
+      "file": "grammars/fsharp.json",
+      "scopeName": "source.fsharp",
+      "aliases": [
+        "f#",
+        "fs"
+      ],
+      "embedded": [
+        "markdown"
+      ]
+    },
+    "hbs": {
+      "file": "grammars/handlebars.json",
+      "scopeName": "text.html.handlebars",
+      "aliases": [
+        "hbs"
+      ],
+      "embedded": [
+        "html",
+        "css",
+        "javascript",
+        "yaml"
+      ]
+    },
+    "erl": {
+      "file": "grammars/erlang.json",
+      "scopeName": "source.erlang",
+      "aliases": [
+        "erl"
+      ],
+      "embedded": [
+        "markdown"
+      ]
+    },
+    "hs": {
+      "file": "grammars/haskell.json",
+      "scopeName": "source.haskell",
+      "aliases": [
+        "hs"
+      ],
+      "embedded": []
+    }
+  },
+  "themes": {
+    "github-dark": {
+      "file": "themes/github-dark.json",
+      "displayName": "GitHub Dark",
+      "type": "dark"
+    },
+    "github-light": {
+      "file": "themes/github-light.json",
+      "displayName": "GitHub Light",
+      "type": "light"
+    },
+    "github-dark-dimmed": {
+      "file": "themes/github-dark-dimmed.json",
+      "displayName": "GitHub Dark Dimmed",
+      "type": "dark"
+    },
+    "nord": {
+      "file": "themes/nord.json",
+      "displayName": "Nord",
+      "type": "dark"
+    },
+    "dracula": {
+      "file": "themes/dracula.json",
+      "displayName": "Dracula Theme",
+      "type": "dark"
+    },
+    "one-dark-pro": {
+      "file": "themes/one-dark-pro.json",
+      "displayName": "One Dark Pro",
+      "type": "dark"
+    },
+    "one-light": {
+      "file": "themes/one-light.json",
+      "displayName": "One Light",
+      "type": "light"
+    },
+    "vitesse-dark": {
+      "file": "themes/vitesse-dark.json",
+      "displayName": "Vitesse Dark",
+      "type": "dark"
+    },
+    "vitesse-light": {
+      "file": "themes/vitesse-light.json",
+      "displayName": "Vitesse Light",
+      "type": "light"
+    },
+    "monokai": {
+      "file": "themes/monokai.json",
+      "displayName": "Monokai",
+      "type": "dark"
+    },
+    "min-dark": {
+      "file": "themes/min-dark.json",
+      "displayName": "Min Dark",
+      "type": "dark"
+    },
+    "min-light": {
+      "file": "themes/min-light.json",
+      "displayName": "Min Light",
+      "type": "light"
+    },
+    "solarized-dark": {
+      "file": "themes/solarized-dark.json",
+      "displayName": "Solarized Dark",
+      "type": "dark"
+    },
+    "solarized-light": {
+      "file": "themes/solarized-light.json",
+      "displayName": "Solarized Light",
+      "type": "light"
+    },
+    "catppuccin-mocha": {
+      "file": "themes/catppuccin-mocha.json",
+      "displayName": "Catppuccin Mocha",
+      "type": "dark"
+    },
+    "catppuccin-latte": {
+      "file": "themes/catppuccin-latte.json",
+      "displayName": "Catppuccin Latte",
+      "type": "light"
+    },
+    "tokyo-night": {
+      "file": "themes/tokyo-night.json",
+      "displayName": "Tokyo Night",
+      "type": "dark"
+    },
+    "material-theme-darker": {
+      "file": "themes/material-theme-darker.json",
+      "displayName": "Material Theme Darker",
+      "type": "dark"
+    },
+    "slack-dark": {
+      "file": "themes/slack-dark.json",
+      "displayName": "Slack Dark",
+      "type": "dark"
+    },
+    "rose-pine": {
+      "file": "themes/rose-pine.json",
+      "displayName": "Rosé Pine",
+      "type": "dark"
+    }
+  }
+}

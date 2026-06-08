@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Shikiphp\Shikiphp;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$argv = $_SERVER['argv'];
+[$lang, $theme, $file] = [$argv[1] ?? null, $argv[2] ?? null, $argv[3] ?? null];
+
+if ($lang === null || $theme === null || $file === null || !is_file($file)) {
+    fwrite(STDERR, "Usage: actual <lang> <theme> <file>\n");
+    exit(2);
+}
+
+$code = (string) file_get_contents($file);
+echo Shikiphp::codeToHtml($code, ['lang' => $lang, 'theme' => $theme]);

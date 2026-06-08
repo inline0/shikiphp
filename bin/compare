@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Shikiphp\Tests\Oracle\ActualCapture;
+use Shikiphp\Tests\Oracle\OracleCapture;
+use Shikiphp\Tests\Oracle\ScenarioComparator;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dir = $_SERVER['argv'][1] ?? null;
+if ($dir === null || !is_dir($dir)) {
+    fwrite(STDERR, "Usage: compare <scenarioDir>\n");
+    exit(2);
+}
+
+$dir = rtrim($dir, '/');
+$meta = $dir . '/meta.json';
+if (!is_file($meta)) {
+    fwrite(STDERR, "No meta.json in {$dir}\n");
+    exit(2);
+}
+
+/** @var array{lang: string, theme: string} $config */
+$config = json_decode((string) file_get_contents($meta), true, 512, JSON_THROW_ON_ERROR);
+
+$input = null;
+foreach (glob($dir . '/input.*') ?: [] as $candidate) {
+    $input = $candidate;
+    break;
+}
+if ($input === null) {
+    fwrite(STDERR, "No input.* in {$dir}\n");
+    exit(2);
+}
+
+$oracle = OracleCapture::html($config['lang'], $config['theme'], $input);
+$actual = ActualCapture::html($config['lang'], $config['theme'], $input);
+
+$comparison = ScenarioComparator::compare($oracle, $actual);
+if ($comparison['pass']) {
+    echo "PASS  " . basename($dir) . "\n";
+    exit(0);
+}
+
+echo "FAIL  " . basename($dir) . "\n";
+foreach ($comparison['diff'] as $line) {
+    echo $line . "\n";
+}
+exit(1);

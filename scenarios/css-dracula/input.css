@@ -1,0 +1,23 @@
+:root {
+  --accent: #ff79c6;
+  --radius: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  padding: 8px 16px;
+  color: var(--accent);
+  background: linear-gradient(90deg, #282a36 0%, #44475a 100%);
+  border-radius: var(--radius);
+}
+
+.button:hover,
+.button:focus-visible {
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .button {
+    width: 100%;
+  }
+}

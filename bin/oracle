@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$argv = $_SERVER['argv'];
+[$lang, $theme, $file] = [$argv[1] ?? null, $argv[2] ?? null, $argv[3] ?? null];
+
+if ($lang === null || $theme === null || $file === null || !is_file($file)) {
+    fwrite(STDERR, "Usage: oracle <lang> <theme> <file>\n");
+    exit(2);
+}
+
+$script = __DIR__ . '/.oracle-tools/oracle.mjs';
+$cmd = sprintf('node %s %s %s %s', escapeshellarg($script), escapeshellarg($lang), escapeshellarg($theme), escapeshellarg($file));
+
+passthru($cmd, $code);
+exit($code);

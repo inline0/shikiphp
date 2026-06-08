@@ -1,0 +1,7 @@
+{
+  "name": "shikiphp",
+  "version": "0.1.0",
+  "private": true,
+  "keywords": ["shiki", "highlight", "php"],
+  "nested": { "enabled": true, "count": 42, "ratio": 3.14, "empty": null }
+}

@@ -206,6 +206,11 @@ final class Theme
         return $this->defaults->background ?? self::DEFAULT_BACKGROUND_DARK;
     }
 
+    public function color(string $key): ?string
+    {
+        return $this->raw->colors[$key] ?? null;
+    }
+
     /**
      * @param list<string> $scopeParents the candidate's ancestors, innermost LAST
      * @param list<string>|null $selectorParents required ancestors, innermost LAST

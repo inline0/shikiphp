@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shikiphp;
 
+use Shikiphp\Ansi\AnsiTokenizer;
 use Shikiphp\Exceptions\Highlight;
 use Shikiphp\Grammar\Grammar;
 use Shikiphp\Grammar\Registry;
@@ -177,6 +178,10 @@ final class Highlighter
      */
     private function tokenize(string $code, array $options, array $themesByKey, string|false $defaultKey): array
     {
+        if (self::isAnsiLang($options['lang'])) {
+            return $this->tokenizeAnsi($code, $options, $themesByKey, $defaultKey);
+        }
+
         $grammar = $this->grammar($options['lang']);
         $replacements = self::resolveColorReplacements($options, $themesByKey);
         $maxLineLength = $options['tokenizeMaxLineLength'] ?? null;
@@ -205,6 +210,149 @@ final class Highlighter
         }
 
         return $out;
+    }
+
+    private static function isAnsiLang(string $lang): bool
+    {
+        return $lang === 'ansi';
+    }
+
+    /**
+     * Route Shiki's special `lang: 'ansi'` through the dedicated ANSI tokenizer
+     * (no grammar), still resolving the theme(s) for default fg/bg and the ANSI
+     * palette. Mirrors @shikijs/core's `tokenizeAnsiWithTheme` and, for dual
+     * themes, its `flatTokenVariants` merge.
+     *
+     * @param Options $options
+     * @param array<string, Theme> $themesByKey
+     * @return list<list<ThemedToken>>
+     */
+    private function tokenizeAnsi(string $code, array $options, array $themesByKey, string|false $defaultKey): array
+    {
+        $replacements = self::resolveColorReplacements($options, $themesByKey);
+        $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
+        $isDual = !isset($themesByKey['default']) || count($themesByKey) > 1;
+        $tokenizer = new AnsiTokenizer();
+
+        if (!$isDual) {
+            return $tokenizer->tokenize($code, $themesByKey['default'], $replacements);
+        }
+
+        $perTheme = [];
+        $keys = [];
+        foreach ($themesByKey as $key => $theme) {
+            $perTheme[] = $tokenizer->tokenize($code, $theme, $replacements);
+            $keys[] = $key;
+        }
+
+        $out = [];
+        $base = $perTheme[0];
+        foreach ($base as $lineIdx => $line) {
+            $mergedLine = [];
+            foreach ($line as $tokenIdx => $token) {
+                $variants = [];
+                foreach ($perTheme as $themeIdx => $themeLines) {
+                    $variants[$keys[$themeIdx]] = $themeLines[$lineIdx][$tokenIdx];
+                }
+                $mergedLine[] = self::flatAnsiVariants($token->content, $token->offset, $variants, $keys, $defaultKey, $prefix);
+            }
+            $out[] = $mergedLine;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Merge per-theme ANSI variants of one token into a single {@see ThemedToken}
+     * carrying the default theme's colours plus `--shiki-<key>[-bg|-...]` CSS
+     * variables for the rest. Faithful to Shiki's `flatTokenVariants`.
+     *
+     * @param array<string, ThemedToken> $variants
+     * @param list<string> $order
+     */
+    private static function flatAnsiVariants(
+        string $content,
+        int $offset,
+        array $variants,
+        array $order,
+        string|false $defaultKey,
+        string $prefix,
+    ): ThemedToken {
+        $styles = [];
+        foreach ($order as $key) {
+            $styles[$key] = self::tokenStyleObject($variants[$key]);
+        }
+
+        $styleKeys = [];
+        foreach ($styles as $style) {
+            foreach (array_keys($style) as $k) {
+                $styleKeys[$k] = true;
+            }
+        }
+        $styleKeys = array_keys($styleKeys);
+
+        $merged = [];
+        foreach ($order as $idx => $key) {
+            $cur = $styles[$key];
+            foreach ($styleKeys as $styleKey) {
+                $value = $cur[$styleKey] ?? 'inherit';
+                if ($idx === 0 && $defaultKey !== false && in_array($styleKey, ['color', 'background-color'], true)) {
+                    $merged[$styleKey] = $value;
+                } else {
+                    $merged[self::ansiVarKey($prefix, $key, $styleKey)] = $value;
+                }
+            }
+        }
+
+        $parts = [];
+        foreach ($merged as $k => $v) {
+            $parts[] = $k . ':' . $v;
+        }
+
+        return new ThemedToken($content, null, FontStyle::NONE, null, implode(';', $parts), $offset);
+    }
+
+    private static function ansiVarKey(string $prefix, string $key, string $styleKey): string
+    {
+        $suffix = match ($styleKey) {
+            'color' => '',
+            'background-color' => '-bg',
+            default => '-' . $styleKey,
+        };
+
+        return $prefix . $key . $suffix;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function tokenStyleObject(ThemedToken $token): array
+    {
+        $style = [];
+        if ($token->color !== null) {
+            $style['color'] = $token->color;
+        }
+        if ($token->bgColor !== null) {
+            $style['background-color'] = $token->bgColor;
+        }
+        if (($token->fontStyle & FontStyle::ITALIC) !== 0) {
+            $style['font-style'] = 'italic';
+        }
+        if (($token->fontStyle & FontStyle::BOLD) !== 0) {
+            $style['font-weight'] = 'bold';
+        }
+        $decorations = [];
+        if (($token->fontStyle & FontStyle::UNDERLINE) !== 0) {
+            $decorations[] = 'underline';
+        }
+        if (($token->fontStyle & FontStyle::STRIKETHROUGH) !== 0) {
+            $decorations[] = 'line-through';
+        }
+        if ($decorations !== []) {
+            $style['text-decoration'] = implode(' ', $decorations);
+        }
+
+        return $style;
     }
 
     private function grammar(string $lang): Grammar

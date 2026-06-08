@@ -1,0 +1,10 @@
+Plain line with no escapes at all.
+[31mred fg[0m [32mgreen fg[0m [34mblue fg[0m
+[41mred bg[0m [43myellow bg[49m default bg again
+[91mbright red[0m [96mbright cyan[0m [100mbright black bg[0m
+[1mbold[0m [1m[4mbold+underline[0m [3mitalic[0m [1m[3m[4mall three[0m
+[2mdim text[0m [2m[31mdim red[0m [7mreverse video[0m [31m[7mreverse red[0m
+[38;5;160m256-color fg 160[0m [48;5;21m256 bg 21[0m [38;5;244mgray 244[0m
+[38;2;255;128;0mtruecolor orange[0m [48;2;10;20;30mtruecolor bg[0m
+before [35mmagenta[39m reset-fg-mid-line [1mbold tail[0m end
+Another plain line.

@@ -35,7 +35,7 @@ final class Tokenizer
     public function tokenizeLine(string $line, ?StateStack $prevState): TokenizeLineResult
     {
         $isFirstLine = $prevState === null;
-        $stack = $prevState ?? $this->grammar->initialState();
+        $stack = $prevState !== null ? $prevState->reset() : $this->grammar->initialState();
 
         $lineWithNewline = $line . "\n";
         $this->onigString = new OnigString($lineWithNewline);

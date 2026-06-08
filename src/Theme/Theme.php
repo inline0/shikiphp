@@ -21,6 +21,9 @@ final class Theme
     /** @var array<string, StyleAttributes> */
     private array $cache = [];
 
+    /** @var array<string, StyleAttributes> */
+    private array $ruleCache = [];
+
     private function __construct(
         private readonly RawTheme $raw,
         ThemeTrieElement $root,
@@ -129,17 +132,43 @@ final class Theme
             return $this->cache[$key];
         }
 
+        $matched = $this->matchRule($scopePath);
+
+        return $this->cache[$key] = new StyleAttributes(
+            $matched->fontStyle === FontStyle::NOT_SET ? $this->defaults->fontStyle : $matched->fontStyle,
+            $matched->foreground ?? $this->defaults->foreground,
+            $matched->background ?? $this->defaults->background,
+        );
+    }
+
+    /**
+     * Like {@see match()} but without filling theme defaults: foreground/background
+     * are null and fontStyle is NOT_SET when no real (non-root) rule matched, so a
+     * caller accumulating across scope prefixes can tell a genuine match whose colour
+     * equals the default from no match at all.
+     *
+     * @param list<string> $scopePath scope segments, innermost LAST
+     */
+    public function matchRule(array $scopePath): StyleAttributes
+    {
+        if ($scopePath === []) {
+            return new StyleAttributes(FontStyle::NOT_SET, null, null);
+        }
+
+        $key = implode("\u{1f}", $scopePath);
+        if (isset($this->ruleCache[$key])) {
+            return $this->ruleCache[$key];
+        }
+
         $scopeName = $scopePath[count($scopePath) - 1];
         $parents = array_slice($scopePath, 0, -1);
-
-        $rules = $this->root->match($scopeName);
 
         $effectiveFontStyle = FontStyle::NOT_SET;
         $effectiveForeground = null;
         $effectiveBackground = null;
 
-        foreach ($rules as $rule) {
-            if (!self::scopesAreMatching($parents, $rule->parentScopes)) {
+        foreach ($this->root->match($scopeName) as $rule) {
+            if ($rule->scopeDepth === 0 || !self::scopesAreMatching($parents, $rule->parentScopes)) {
                 continue;
             }
 
@@ -150,13 +179,7 @@ final class Theme
             $effectiveBackground ??= $rule->background;
         }
 
-        if ($effectiveFontStyle === FontStyle::NOT_SET) {
-            $effectiveFontStyle = $this->defaults->fontStyle;
-        }
-        $effectiveForeground ??= $this->defaults->foreground;
-        $effectiveBackground ??= $this->defaults->background;
-
-        return $this->cache[$key] = new StyleAttributes(
+        return $this->ruleCache[$key] = new StyleAttributes(
             $effectiveFontStyle,
             $effectiveForeground,
             $effectiveBackground,

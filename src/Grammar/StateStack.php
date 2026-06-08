@@ -69,6 +69,26 @@ final readonly class StateStack
         );
     }
 
+    /**
+     * Return an equivalent stack with every frame's `\G` anchor and enter position
+     * cleared (vscode-textmate's `StackElement.reset()`), so stale per-line offsets
+     * carried from a previous line don't false-trigger the no-advance loop guard.
+     */
+    public function reset(): self
+    {
+        return new self(
+            parent: $this->parent?->reset(),
+            ruleId: $this->ruleId,
+            depth: $this->depth,
+            beginRuleCapturedEOL: $this->beginRuleCapturedEOL,
+            anchorPosition: -1,
+            endRule: $this->endRule,
+            nameScopesList: $this->nameScopesList,
+            contentNameScopesList: $this->contentNameScopesList,
+            enterPos: -1,
+        );
+    }
+
     public function pop(): ?self
     {
         return $this->parent;

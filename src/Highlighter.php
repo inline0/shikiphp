@@ -314,16 +314,14 @@ final class Highlighter
      */
     private static function resolveStyle(Theme $theme, array $scopes): StyleAttributes
     {
-        $default = $theme->foreground();
-
         $foreground = null;
         $fontStyle = FontStyle::NOT_SET;
 
         $depth = count($scopes);
         for ($i = 1; $i <= $depth; $i++) {
-            $match = $theme->match(array_slice($scopes, 0, $i));
+            $match = $theme->matchRule(array_slice($scopes, 0, $i));
 
-            if ($match->foreground !== null && $match->foreground !== $default) {
+            if ($match->foreground !== null) {
                 $foreground = $match->foreground;
             }
             if ($match->fontStyle !== FontStyle::NOT_SET && $match->fontStyle !== FontStyle::NONE) {

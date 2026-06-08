@@ -98,21 +98,21 @@ final class PatternConverterTest extends TestCase
     #[Test]
     public function possessive_plus_becomes_atomic_emulation(): void
     {
-        $this->assertSame('(?=(?<atomic1>a+))\k<atomic1>', $this->convert('a++')['pattern']);
+        $this->assertSame('(?:(?=(?<atomic1>a+))\k<atomic1>)', $this->convert('a++')['pattern']);
     }
 
     #[Test]
     public function possessive_star_and_interval(): void
     {
-        $this->assertSame('(?=(?<atomic1>a*))\k<atomic1>', $this->convert('a*+')['pattern']);
-        $this->assertSame('(?=(?<atomic1>a{2,5}))\k<atomic1>', $this->convert('a{2,5}+')['pattern']);
+        $this->assertSame('(?:(?=(?<atomic1>a*))\k<atomic1>)', $this->convert('a*+')['pattern']);
+        $this->assertSame('(?:(?=(?<atomic1>a{2,5}))\k<atomic1>)', $this->convert('a{2,5}+')['pattern']);
     }
 
     #[Test]
     public function atomic_group_emulation(): void
     {
         $this->assertSame(
-            '(?=(?<atomic1>foo|bar))\k<atomic1>',
+            '(?:(?=(?<atomic1>foo|bar))\k<atomic1>)',
             $this->convert('(?>foo|bar)')['pattern'],
         );
     }
@@ -134,7 +134,7 @@ final class PatternConverterTest extends TestCase
     #[Test]
     public function global_inline_multiline_flag_implies_dotall(): void
     {
-        $this->assertSame('ums', $this->convert('(?m)a.b')['flags']);
+        $this->assertSame('us', $this->convert('(?m)a.b')['flags']);
     }
 
     #[Test]

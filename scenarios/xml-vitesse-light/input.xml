@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Spring bean configuration -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <bean id="dataSource" class="com.example.DataSource">
+    <property name="url" value="jdbc:postgresql://localhost/db"/>
+    <property name="poolSize" value="10"/>
+    <description>Primary &amp; pooled connection</description>
+  </bean>
+
+  <bean id="service" class="com.example.Service">
+    <constructor-arg ref="dataSource"/>
+    <![CDATA[ raw <not> parsed & ignored ]]>
+  </bean>
+
+</beans>

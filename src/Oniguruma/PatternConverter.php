@@ -49,14 +49,21 @@ final class PatternConverter
     private int $len = 0;
     private bool $extended = false;
     private bool $flagI = false;
-    private bool $flagM = false;
     private bool $flagS = false;
     private bool $sticky = false;
     private int $groupCount = 0;
     private int $atomicCount = 0;
 
-    /** @var array<int|string, string> Converted inner body of each capturing group, keyed by number and name. */
-    private array $groupBodies = [];
+    /** @var array<int|string, string> Raw Oniguruma source of each group body, keyed by number and name. */
+    private array $groupSources = [];
+
+    /** When true, capturing/named groups are emitted non-capturing (subroutine inlining). */
+    private bool $neutralizeGroups = false;
+
+    private const MAX_SUBROUTINE_DEPTH = 2;
+
+    /** @var array<int|string, int> active inline depth per group key, to bound recursive subroutine expansion. */
+    private array $inlineDepth = [];
 
     /** @return array{pattern: string, flags: string, atomicSlots: list<int>} */
     public function convert(string $onigPattern): array
@@ -66,12 +73,13 @@ final class PatternConverter
         $this->pos = 0;
         $this->extended = false;
         $this->flagI = false;
-        $this->flagM = false;
         $this->flagS = false;
         $this->sticky = false;
         $this->groupCount = 0;
         $this->atomicCount = 0;
-        $this->groupBodies = [];
+        $this->groupSources = [];
+        $this->neutralizeGroups = false;
+        $this->inlineDepth = [];
 
         $this->consumeLeadingGlobalFlags();
 
@@ -83,9 +91,6 @@ final class PatternConverter
         $flags = 'u';
         if ($this->flagI) {
             $flags .= 'i';
-        }
-        if ($this->flagM) {
-            $flags .= 'm';
         }
         if ($this->flagS) {
             $flags .= 's';
@@ -182,7 +187,6 @@ final class PatternConverter
         if ($f === 'i') {
             $this->flagI = true;
         } elseif ($f === 'm') {
-            $this->flagM = true;
             $this->flagS = true;
         } elseif ($f === 's') {
             $this->flagS = true;
@@ -231,7 +235,17 @@ final class PatternConverter
                 continue;
             }
 
-            if ($ch === '^' || $ch === '$' || $ch === '.') {
+            if ($ch === '^') {
+                $this->pos++;
+                $out .= '(?<=^|\\n(?!$))';
+                continue;
+            }
+            if ($ch === '$') {
+                $this->pos++;
+                $out .= '(?=$|\\n)';
+                continue;
+            }
+            if ($ch === '.') {
                 $this->pos++;
                 $out .= $this->applyQuantifier($ch);
                 continue;
@@ -263,6 +277,44 @@ final class PatternConverter
         return false;
     }
 
+    /**
+     * Scan the raw Oniguruma source from a group's body start to its matching
+     * close paren and return that body substring, so a self/forward subroutine
+     * call (`\g<n>` inside group n) can inline the still-being-parsed body.
+     */
+    private function scanGroupBodySource(int $start): string
+    {
+        $depth = 1;
+        $i = $start;
+        $inClass = false;
+        while ($i < $this->len) {
+            $ch = $this->src[$i];
+            if ($ch === '\\') {
+                $i += 2;
+                continue;
+            }
+            if ($inClass) {
+                if ($ch === ']') {
+                    $inClass = false;
+                }
+                $i++;
+                continue;
+            }
+            if ($ch === '[') {
+                $inClass = true;
+            } elseif ($ch === '(') {
+                $depth++;
+            } elseif ($ch === ')') {
+                $depth--;
+                if ($depth === 0) {
+                    return substr($this->src, $start, $i - $start);
+                }
+            }
+            $i++;
+        }
+        return substr($this->src, $start);
+    }
+
     private function convertGroup(): string
     {
         $this->pos++; // consume (
@@ -271,11 +323,16 @@ final class PatternConverter
         }
 
         if ($this->src[$this->pos] !== '?') {
+            if ($this->neutralizeGroups) {
+                $body = $this->convertSequence(true);
+                $this->expect(')');
+                return '(?:' . $body . ')';
+            }
             $this->groupCount++;
             $number = $this->groupCount;
+            $this->groupSources[$number] = $this->scanGroupBodySource($this->pos);
             $body = $this->convertSequence(true);
             $this->expect(')');
-            $this->groupBodies[$number] = $body;
             return '(' . $body . ')';
         }
 
@@ -312,7 +369,7 @@ final class PatternConverter
             return '';
         }
 
-        if (preg_match('/^[imsx]/', $c) === 1) {
+        if (preg_match('/^[imsx-]/', $c) === 1) {
             return $this->convertScopedFlagGroup();
         }
 
@@ -331,13 +388,7 @@ final class PatternConverter
         }
         $name = $this->readName('>');
         $this->expect('>');
-        $this->groupCount++;
-        $number = $this->groupCount;
-        $body = $this->convertSequence(true);
-        $this->expect(')');
-        $this->groupBodies[$number] = $body;
-        $this->groupBodies[$name] = $body;
-        return '(?<' . $name . '>' . $body . ')';
+        return $this->finishNamedGroup($name);
     }
 
     private function convertQuotedNameGroup(): string
@@ -345,12 +396,23 @@ final class PatternConverter
         $this->pos++; // consume '
         $name = $this->readName("'");
         $this->expect("'");
+        return $this->finishNamedGroup($name);
+    }
+
+    private function finishNamedGroup(string $name): string
+    {
+        if ($this->neutralizeGroups) {
+            $body = $this->convertSequence(true);
+            $this->expect(')');
+            return '(?:' . $body . ')';
+        }
         $this->groupCount++;
         $number = $this->groupCount;
+        $source = $this->scanGroupBodySource($this->pos);
+        $this->groupSources[$number] = $source;
+        $this->groupSources[$name] = $source;
         $body = $this->convertSequence(true);
         $this->expect(')');
-        $this->groupBodies[$number] = $body;
-        $this->groupBodies[$name] = $body;
         return '(?<' . $name . '>' . $body . ')';
     }
 
@@ -358,14 +420,12 @@ final class PatternConverter
     {
         $addI = $addM = $addS = false;
         $remove = false;
-        $remI = $remM = $remS = false;
+        $remI = $remS = false;
         while ($this->pos < $this->len) {
             $c = $this->src[$this->pos];
             if ($c === 'i') {
                 $remove ? $remI = true : $addI = true;
-            } elseif ($c === 'm') {
-                $remove ? $remM = true : $addM = true;
-            } elseif ($c === 's') {
+            } elseif ($c === 'm' || $c === 's') {
                 $remove ? $remS = true : $addS = true;
             } elseif ($c === 'x') {
                 // extended toggled locally; handled by stripping, no JS flag.
@@ -382,9 +442,6 @@ final class PatternConverter
             if ($addI) {
                 $this->flagI = true;
             }
-            if ($addM) {
-                $this->flagM = true;
-            }
             if ($addS) {
                 $this->flagS = true;
             }
@@ -395,11 +452,8 @@ final class PatternConverter
         $body = $this->convertSequence(true);
         $this->expect(')');
 
-        if ($addM) {
-            $addS = true;
-        }
-        $prefix = ($addI ? 'i' : '') . ($addM ? 'm' : '') . ($addS ? 's' : '');
-        $suffix = ($remI ? 'i' : '') . ($remM ? 'm' : '') . ($remS ? 's' : '');
+        $prefix = ($addI ? 'i' : '') . ($addS ? 's' : '');
+        $suffix = ($remI ? 'i' : '') . ($remS ? 's' : '');
         $spec = $prefix . ($suffix !== '' ? '-' . $suffix : '');
         if ($spec === '') {
             return '(?:' . $body . ')';
@@ -785,15 +839,44 @@ final class PatternConverter
             $key = (int) ltrim($name, '+-');
         }
 
-        $body = $this->groupBodies[$key] ?? null;
-        if ($body === null) {
-            // Self/forward recursion (e.g. balanced brackets `(?<s>...\g<s>...)`):
-            // JS has no recursion, so collapse the recursive call to the empty match
-            // — the surrounding alternatives still match flat content. Mirrors
-            // oniguruma-to-es bottoming out its recursion-depth expansion.
+        $source = $this->groupSources[$key] ?? null;
+        if ($source === null || ($this->inlineDepth[$key] ?? 0) >= self::MAX_SUBROUTINE_DEPTH) {
+            // Forward/self recursion bottoms out at the empty match (JS has no
+            // recursion); bounded depth mirrors oniguruma-to-es' finite expansion.
             return '(?:)';
         }
-        return '(?:' . $body . ')';
+
+        $this->inlineDepth[$key] = ($this->inlineDepth[$key] ?? 0) + 1;
+        $inlined = $this->inlineSource($source);
+        $this->inlineDepth[$key]--;
+        return '(?:' . $inlined . ')';
+    }
+
+    /**
+     * Re-convert a stored group source with every capturing/named group emitted
+     * non-capturing, so an inlined subroutine adds no numbered capture slots and
+     * no duplicate group names — preserving the capture indices the grammar relies
+     * on. The atomic-emulation counter is shared so inlined atomic names stay unique.
+     */
+    private function inlineSource(string $source): string
+    {
+        $savedSrc = $this->src;
+        $savedPos = $this->pos;
+        $savedLen = $this->len;
+        $savedNeutralize = $this->neutralizeGroups;
+
+        $this->src = $source;
+        $this->pos = 0;
+        $this->len = strlen($source);
+        $this->neutralizeGroups = true;
+        $body = $this->convertSequence(false);
+
+        $this->src = $savedSrc;
+        $this->pos = $savedPos;
+        $this->len = $savedLen;
+        $this->neutralizeGroups = $savedNeutralize;
+
+        return $body;
     }
 
     /** Apply a quantifier (incl. possessive emulation) to the just-emitted atom. */
@@ -822,12 +905,35 @@ final class PatternConverter
         }
 
         if ($mode === '?') {
-            return $atom . $quant . '?';
+            $result = $atom . $quant . '?';
+        } elseif ($mode === '+') {
+            $result = $this->atomic($atom . $quant);
+        } else {
+            $result = $atom . $quant;
         }
-        if ($mode === '+') {
-            return $this->atomic($atom . $quant);
+
+        if ($this->pos < $this->len && $this->peekIsQuantifier()) {
+            return $this->applyQuantifier('(?:' . $result . ')');
         }
-        return $atom . $quant;
+        return $result;
+    }
+
+    /** True when the cursor sits on a quantifier (`*`, `+`, `?`, or a valid `{n,m}` interval). */
+    private function peekIsQuantifier(): bool
+    {
+        $ch = $this->src[$this->pos];
+        if ($ch === '*' || $ch === '+' || $ch === '?') {
+            return true;
+        }
+        if ($ch !== '{') {
+            return false;
+        }
+        $close = strpos($this->src, '}', $this->pos);
+        if ($close === false) {
+            return false;
+        }
+        $inner = substr($this->src, $this->pos + 1, $close - ($this->pos + 1));
+        return preg_match('/^\\d+(,\\d*)?$/', $inner) === 1;
     }
 
     /** Read a quantifier token (`*`, `+`, `?`, `{n,m}`) without its mode suffix. */
@@ -859,7 +965,7 @@ final class PatternConverter
     {
         $this->atomicCount++;
         $name = 'atomic' . $this->atomicCount;
-        return '(?=(?<' . $name . '>' . $body . '))\\k<' . $name . '>';
+        return '(?:(?=(?<' . $name . '>' . $body . '))\\k<' . $name . '>)';
     }
 
     private function readName(string $terminator): string

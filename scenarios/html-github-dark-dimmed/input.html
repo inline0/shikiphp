@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo &amp; Test</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; }
+    .hero { color: #2188ff; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <main class="hero" data-role="main">
+    <h1>Hello, World!</h1>
+    <!-- entry point -->
+    <a href="https://example.com?q=1&amp;p=2">Link</a>
+  </main>
+  <script>
+    const greet = (name) => `Hi ${name}`;
+    document.querySelector("h1").textContent = greet("there");
+  </script>
+</body>
+</html>

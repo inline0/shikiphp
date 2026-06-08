@@ -25,6 +25,18 @@ final class RuleFactory
         $id = $reservedId ?? $helper->nextRuleId();
         $desc['__ruleId'] = $id;
 
+        $repository = isset($desc['repository']) && is_array($desc['repository']) ? $desc['repository'] : null;
+        $helper->pushRepository($repository);
+        try {
+            return self::buildRule($desc, $helper, $id);
+        } finally {
+            $helper->popRepository($repository);
+        }
+    }
+
+    /** @param array<array-key, mixed> $desc */
+    private static function buildRule(array $desc, RuleFactoryHelper $helper, int $id): int
+    {
         $name = self::stringOrNull($desc['name'] ?? null);
         $contentName = self::stringOrNull($desc['contentName'] ?? null);
 

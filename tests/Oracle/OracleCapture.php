@@ -17,18 +17,54 @@ final class OracleCapture
 
     public static function html(string $lang, string $theme, string $file): string
     {
-        $script = self::toolsDir() . '/oracle.mjs';
+        $stderr = '';
+        $exit = -1;
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            [$stdout, $stderr, $exit] = self::run($lang, $theme, $file);
+            if ($exit === 0 && str_starts_with(ltrim($stdout), '<pre')) {
+                return $stdout;
+            }
+        }
+
+        throw new \RuntimeException(sprintf(
+            "Shiki oracle failed for %s/%s (%s): exit=%d\n%s",
+            $lang,
+            $theme,
+            basename($file),
+            $exit,
+            trim($stderr) !== '' ? $stderr : 'no output',
+        ));
+    }
+
+    /**
+     * Run oracle.mjs with stdout and stderr captured separately so a stray node
+     * warning never corrupts the reference HTML.
+     *
+     * @return array{string, string, int}
+     */
+    private static function run(string $lang, string $theme, string $file): array
+    {
         $cmd = sprintf(
-            'node %s %s %s %s 2>&1',
-            escapeshellarg($script),
+            'node %s %s %s %s',
+            escapeshellarg(self::toolsDir() . '/oracle.mjs'),
             escapeshellarg($lang),
             escapeshellarg($theme),
             escapeshellarg($file),
         );
 
-        $output = (string) shell_exec($cmd);
+        $descriptors = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+        $process = proc_open($cmd, $descriptors, $pipes);
+        if (!is_resource($process)) {
+            return ['', 'failed to spawn node', -1];
+        }
 
-        return $output;
+        $stdout = (string) stream_get_contents($pipes[1]);
+        $stderr = (string) stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exit = proc_close($process);
+
+        return [$stdout, $stderr, $exit];
     }
 
     private static function toolsDir(): string

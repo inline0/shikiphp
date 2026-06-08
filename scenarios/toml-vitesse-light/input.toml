@@ -1,0 +1,25 @@
+# Project manifest
+title = "shikiphp"
+version = "1.2.0"
+enabled = true
+ratio = 3.14e-2
+
+[package]
+name = "demo"
+authors = ["Ada <ada@example.com>", "Linus"]
+keywords = ["highlight", "shiki"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+
+[[bin]]
+name = "cli"
+path = "src/main.rs"
+
+[server]
+host = "127.0.0.1"
+ports = [8000, 8001, 8002]
+started = 2026-06-08T09:30:00Z
+greeting = """
+multi
+line"""

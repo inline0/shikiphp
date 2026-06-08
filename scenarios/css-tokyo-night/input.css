@@ -1,0 +1,33 @@
+/* Design tokens */
+:root {
+  --bg: #1a1b26;
+  --accent: hsl(220 90% 56%);
+  --gap: clamp(8px, 2vw, 24px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--gap);
+  background: var(--bg);
+}
+
+.card > .title::before {
+  content: "★ ";
+  color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0d0d0d;
+  }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

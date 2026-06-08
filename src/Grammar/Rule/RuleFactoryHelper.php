@@ -23,6 +23,12 @@ interface RuleFactoryHelper
     /** Resolve a `#name` reference against the grammar currently being compiled. */
     public function resolveRepositoryReference(string $name): ?int;
 
+    /** @param array<array-key, mixed>|null $repository a rule's own nested repository, or null. */
+    public function pushRepository(?array $repository): void;
+
+    /** @param array<array-key, mixed>|null $repository the repository pushed by the matching pushRepository call. */
+    public function popRepository(?array $repository): void;
+
     /** Resolve `$self` for the grammar currently being compiled. */
     public function resolveSelf(): ?int;
 

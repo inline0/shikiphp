@@ -1,0 +1,16 @@
+{
+  // editor settings
+  "editor.fontSize": 14,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": false
+  },
+  /* language-specific overrides */
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "terminal.integrated.fontFamily": "Fira Code",
+  "search.exclude": ["dist", "build"]
+}

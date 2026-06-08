@@ -1,0 +1,26 @@
+# CI pipeline config
+name: build-and-test
+on:
+  push:
+    branches: [main, "release/*"]
+
+defaults: &defaults
+  timeout: 30
+  retries: 2
+
+jobs:
+  test:
+    <<: *defaults
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: "production"
+      DEBUG: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          npm ci
+          npm test -- --coverage
+    matrix:
+      node: [18, 20, 22]
+      flaky: ~

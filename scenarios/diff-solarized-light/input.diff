@@ -1,0 +1,19 @@
+diff --git a/src/app.js b/src/app.js
+index 83db48f..f735c2d 100644
+--- a/src/app.js
++++ b/src/app.js
+@@ -1,6 +1,8 @@
+ import express from "express";
+
+-const app = express();
++const app = express();
++app.use(express.json());
++
+ app.get("/", (req, res) => {
+-  res.send("hello");
++  res.json({ message: "hello" });
+ });
+@@ -10,3 +12,4 @@ app.listen(3000, () => {
+   console.log("listening");
+ });
++// end of file

@@ -38,6 +38,9 @@ final class Registry implements RuleFactoryHelper
     /** @var list<RawGrammar> compilation context stack (innermost last) */
     private array $compileStack = [];
 
+    /** @var list<array<array-key, mixed>> nested-repository context stack (innermost last) */
+    private array $repoStack = [];
+
     private ?RawGrammar $baseGrammar = null;
 
     /** @var (callable(string): ?array<string, mixed>)|null */
@@ -144,8 +147,38 @@ final class Registry implements RuleFactoryHelper
 
     public function resolveRepositoryReference(string $name): ?int
     {
+        for ($i = count($this->repoStack) - 1; $i >= 0; $i--) {
+            if (!isset($this->repoStack[$i][$name]) || !is_array($this->repoStack[$i][$name])) {
+                continue;
+            }
+            $entry = &$this->repoStack[$i][$name];
+            if (isset($entry['__ruleId']) && is_int($entry['__ruleId'])) {
+                return $entry['__ruleId'];
+            }
+            $id = $this->nextRuleId();
+            $entry['__ruleId'] = $id;
+            RuleFactory::getCompiledRuleId($entry, $this, $id);
+            return $id;
+        }
+
         $current = $this->currentGrammar();
         return $this->resolveRepositoryFor($current, $name);
+    }
+
+    /** @param array<array-key, mixed>|null $repository a rule's own nested repository, or null. */
+    public function pushRepository(?array $repository): void
+    {
+        if ($repository !== null) {
+            $this->repoStack[] = $repository;
+        }
+    }
+
+    /** @param array<array-key, mixed>|null $repository the repository pushed by the matching pushRepository call. */
+    public function popRepository(?array $repository): void
+    {
+        if ($repository !== null) {
+            array_pop($this->repoStack);
+        }
     }
 
     public function resolveSelf(): int

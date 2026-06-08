@@ -1,0 +1,20 @@
+{
+  // app configuration
+  name: "shikiphp",
+  version: '1.0.0',
+  enabled: true,
+  retries: 3,
+  ratio: .75,
+  hex: 0xCAFE,
+  infinity: Infinity,
+  notANumber: NaN,
+  /* multi-line
+     block comment */
+  servers: [
+    { host: "a.local", port: 8080 },
+    { host: "b.local", port: 8081 },
+  ],
+  unquotedKey: "ok",
+  multiline: "line1\
+line2",
+}

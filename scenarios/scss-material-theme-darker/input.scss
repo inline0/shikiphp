@@ -1,0 +1,30 @@
+// Theme tokens
+$primary: #3498db;
+$radius: 4px;
+$breakpoints: (small: 480px, large: 1024px);
+
+@mixin flex-center($dir: row) {
+    display: flex;
+    flex-direction: $dir;
+    align-items: center;
+}
+
+@function rem($px) {
+    @return math.div($px, 16px) * 1rem;
+}
+
+.card {
+    @include flex-center(column);
+    padding: rem(24px);
+    border-radius: $radius;
+    background: lighten($primary, 30%);
+
+    &__title {
+        font-size: 1.25rem;
+        &:hover { color: darken($primary, 10%); }
+    }
+
+    @media (min-width: map-get($breakpoints, large)) {
+        padding: rem(48px);
+    }
+}

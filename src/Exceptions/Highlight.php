@@ -29,4 +29,24 @@ final class Highlight extends \RuntimeException
     {
         return new self('The `themes` option must be a non-empty map of colour key to theme name.');
     }
+
+    public static function decorationsIntersect(string $a, string $b): self
+    {
+        return new self("Decorations {$a} and {$b} intersect.");
+    }
+
+    public static function invalidDecorationRange(string $start, string $end): self
+    {
+        return new self("Invalid decoration range: {$start} - {$end}.");
+    }
+
+    public static function invalidDecorationOffset(int $offset, int $length): self
+    {
+        return new self("Invalid decoration offset: {$offset}. Code length: {$length}");
+    }
+
+    public static function invalidDecorationPosition(string $position): self
+    {
+        return new self("Invalid decoration position {$position}.");
+    }
 }

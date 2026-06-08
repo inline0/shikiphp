@@ -9,6 +9,8 @@ use Shikiphp\Grammar\Grammar;
 use Shikiphp\Grammar\Registry;
 use Shikiphp\Grammar\StateStack;
 use Shikiphp\Grammar\Token;
+use Shikiphp\Hast\Element;
+use Shikiphp\Hast\HastSerializer;
 use Shikiphp\Registry\BundleLoader;
 use Shikiphp\Render\HtmlRenderer;
 use Shikiphp\Render\RenderOptions;
@@ -16,6 +18,10 @@ use Shikiphp\Render\ThemedToken;
 use Shikiphp\Theme\FontStyle;
 use Shikiphp\Theme\StyleAttributes;
 use Shikiphp\Theme\Theme;
+use Shikiphp\Transformer\DecorationsTransformer;
+use Shikiphp\Transformer\PipelineContext;
+use Shikiphp\Transformer\TransformerContext;
+use Shikiphp\Transformer\TransformerPipeline;
 
 /**
  * Orchestrates the pipeline: load a grammar (with its embedded dependencies),
@@ -27,7 +33,15 @@ use Shikiphp\Theme\Theme;
  *     lang: string,
  *     theme?: string,
  *     themes?: array<string, string>,
- *     defaultColor?: string|false
+ *     defaultColor?: string|false,
+ *     transformers?: list<\Shikiphp\Transformer\Transformer>,
+ *     colorReplacements?: array<string, string|array<string,string>>,
+ *     structure?: 'classic'|'inline',
+ *     tabindex?: int|string|false,
+ *     cssVariablePrefix?: string,
+ *     mergeWhitespaces?: bool|'never',
+ *     tokenizeMaxLineLength?: int|null,
+ *     decorations?: list<array<string,mixed>>
  * }
  */
 final class Highlighter
@@ -74,20 +88,9 @@ final class Highlighter
      */
     public function codeToTokens(string $code, array $options): array
     {
-        $grammar = $this->grammar($options['lang']);
         [$themesByKey, $defaultKey] = $this->resolveThemes($options);
 
-        $lines = self::splitLines($code);
-        $state = null;
-
-        $out = [];
-        foreach ($lines as $line) {
-            $result = $grammar->tokenizeLine($line, $state);
-            $state = $result->ruleStack;
-            $out[] = $this->themeLine($line, $result->tokens, $themesByKey, $defaultKey);
-        }
-
-        return $out;
+        return $this->tokenize($code, $options, $themesByKey, $defaultKey);
     }
 
     /**
@@ -95,10 +98,113 @@ final class Highlighter
      */
     public function codeToHtml(string $code, array $options): string
     {
-        $lines = $this->codeToTokens($code, $options);
+        $context = $this->context($code, $options);
+        $pipeline = $context->pipeline;
+
+        $html = HastSerializer::toHtml($this->buildHast($code, $options, $context));
+
+        return $pipeline->postprocess($html, $options, $context->context);
+    }
+
+    /**
+     * Builds the `pre.shiki > code > (span.line > span)*` HAST tree Shiki
+     * builds, ready to serialize or transform.
+     *
+     * @param Options $options
+     */
+    public function codeToHast(string $code, array $options): Element
+    {
+        return $this->buildHast($code, $options, $this->context($code, $options));
+    }
+
+    /**
+     * @param Options $options
+     */
+    private function buildHast(string $code, array $options, PipelineContext $ctx): Element
+    {
         [$themesByKey, $defaultKey] = $this->resolveThemes($options);
 
-        return (new HtmlRenderer())->render($lines, $this->renderOptions($options, $themesByKey, $defaultKey));
+        $source = $ctx->pipeline->preprocess($code, $options, $ctx->context);
+        $source = str_replace("\r\n", "\n", $source);
+        $ctx->context->source = $source;
+
+        $pipeline = $ctx->pipeline;
+        $decorations = $options['decorations'] ?? [];
+        if ($decorations !== []) {
+            $pipeline = new TransformerPipeline([
+                ...$pipeline->transformers,
+                new DecorationsTransformer($source, $decorations),
+            ]);
+        }
+
+        $lines = $this->tokenize($source, $options, $themesByKey, $defaultKey);
+        $lines = self::applyMergeWhitespaces($lines, $options['mergeWhitespaces'] ?? true);
+        $lines = $pipeline->tokens($lines, $ctx->context);
+
+        return (new HtmlRenderer())->renderToHast(
+            $lines,
+            $this->renderOptions($options, $themesByKey, $defaultKey),
+            $pipeline,
+            $ctx->context,
+        );
+    }
+
+    /**
+     * @param Options $options
+     */
+    private function context(string $code, array $options): PipelineContext
+    {
+        $pipeline = new TransformerPipeline($options['transformers'] ?? []);
+        $themeNames = isset($options['themes'])
+            ? $options['themes']
+            : ['default' => $options['theme'] ?? ''];
+
+        $context = new TransformerContext(
+            options: $options,
+            source: $code,
+            lang: $this->loader->hasLanguage($options['lang']) ? $options['lang'] : null,
+            themes: $themeNames,
+            structure: $options['structure'] ?? 'classic',
+        );
+
+        return new PipelineContext($pipeline, $context);
+    }
+
+    /**
+     * @param Options $options
+     * @param array<string, Theme> $themesByKey
+     * @return list<list<ThemedToken>>
+     */
+    private function tokenize(string $code, array $options, array $themesByKey, string|false $defaultKey): array
+    {
+        $grammar = $this->grammar($options['lang']);
+        $replacements = self::resolveColorReplacements($options, $themesByKey);
+        $maxLineLength = $options['tokenizeMaxLineLength'] ?? null;
+        $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
+
+        $lines = self::splitLines($code);
+        $state = null;
+
+        $out = [];
+        $lineOffset = 0;
+        foreach ($lines as $index => $line) {
+            $lineLen = self::utf16Length($line);
+
+            if ($maxLineLength !== null && $maxLineLength > 0 && $lineLen >= $maxLineLength) {
+                $state = $grammar->initialState();
+                $out[] = $line === ''
+                    ? []
+                    : [new ThemedToken($line, null, FontStyle::NONE, null, null, $lineOffset)];
+            } else {
+                $result = $grammar->tokenizeLine($line, $state);
+                $state = $result->ruleStack;
+                $out[] = $this->themeLine($line, $result->tokens, $themesByKey, $defaultKey, $replacements, $lineOffset, $prefix);
+            }
+
+            $lineOffset += $lineLen + ($index < count($lines) - 1 ? 1 : 0);
+        }
+
+        return $out;
     }
 
     private function grammar(string $lang): Grammar
@@ -145,6 +251,10 @@ final class Highlighter
                 $default = array_key_first($byKey);
             }
 
+            if ($default !== false && array_key_first($byKey) !== $default) {
+                $byKey = [$default => $byKey[$default], ...array_diff_key($byKey, [$default => null])];
+            }
+
             return [$byKey, $default];
         }
 
@@ -155,10 +265,19 @@ final class Highlighter
     /**
      * @param list<Token> $tokens
      * @param array<string, Theme> $themesByKey
+     * @param array<string,string> $replacements lowercased-hex colour remap
+     * @param string $prefix dual-theme CSS-variable prefix
      * @return list<ThemedToken>
      */
-    private function themeLine(string $line, array $tokens, array $themesByKey, string|false $defaultKey): array
-    {
+    private function themeLine(
+        string $line,
+        array $tokens,
+        array $themesByKey,
+        string|false $defaultKey,
+        array $replacements,
+        int $lineOffset,
+        string $prefix,
+    ): array {
         $isDual = !isset($themesByKey['default']) || count($themesByKey) > 1;
 
         $themed = [];
@@ -170,12 +289,69 @@ final class Highlighter
             }
 
             $themed[] = $isDual
-                ? $this->dualToken($content, $token->scopes, $themesByKey, $defaultKey)
-                : $this->singleToken($content, $token->scopes, $themesByKey['default']);
+                ? $this->dualToken($content, $token->scopes, $themesByKey, $defaultKey, $replacements, $lineOffset + $token->startIndex, $prefix)
+                : $this->singleToken($content, $token->scopes, $themesByKey['default'], $replacements, $lineOffset + $token->startIndex);
             $types[] = self::standardTokenType($token->scopes);
         }
 
-        return self::mergeWhitespace(self::coalesce($themed, $types));
+        return self::coalesce($themed, $types);
+    }
+
+    /**
+     * Apply the `mergeWhitespaces` option per line: `true` (default) folds
+     * whitespace-only tokens into the next token; `'never'` splits each token's
+     * leading/trailing whitespace into standalone tokens; `false` leaves tokens
+     * untouched. Mirrors Shiki's `mergeWhitespaceTokens`/`splitWhitespaceTokens`.
+     *
+     * @param list<list<ThemedToken>> $lines
+     * @return list<list<ThemedToken>>
+     */
+    private static function applyMergeWhitespaces(array $lines, bool|string $mode): array
+    {
+        if ($mode === true) {
+            return array_map(self::mergeWhitespace(...), $lines);
+        }
+        if ($mode === 'never') {
+            return array_map(self::splitWhitespace(...), $lines);
+        }
+
+        return $lines;
+    }
+
+    /**
+     * @param list<ThemedToken> $tokens
+     * @return list<ThemedToken>
+     */
+    private static function splitWhitespace(array $tokens): array
+    {
+        $out = [];
+        foreach ($tokens as $token) {
+            if (preg_match('/^\s+$/', $token->content) === 1) {
+                $out[] = $token;
+                continue;
+            }
+            if (preg_match('/^(\s*)(.*?)(\s*)$/su', $token->content, $m) !== 1) {
+                $out[] = $token;
+                continue;
+            }
+            [$leading, $content, $trailing] = [$m[1], $m[2], $m[3]];
+            if ($leading === '' && $trailing === '') {
+                $out[] = $token;
+                continue;
+            }
+
+            $leadLen = self::utf16Length($leading);
+            $contentLen = self::utf16Length($content);
+            if ($leading !== '') {
+                $out[] = new ThemedToken($leading, null, FontStyle::NONE, null, null, $token->offset);
+            }
+            $out[] = $token->withContent($content, $token->offset + $leadLen);
+            if ($trailing !== '') {
+                $out[] = new ThemedToken($trailing, null, FontStyle::NONE, null, null, $token->offset + $leadLen + $contentLen);
+            }
+        }
+
+        return $out;
     }
 
     /**
@@ -216,6 +392,7 @@ final class Highlighter
     {
         $out = [];
         $carry = '';
+        $carryOffset = 0;
         $count = count($tokens);
 
         foreach ($tokens as $idx => $token) {
@@ -223,6 +400,9 @@ final class Highlighter
             $couldMerge = !self::isDecorated($token);
 
             if ($couldMerge && !$isLast && preg_match('/^\s+$/', $token->content) === 1) {
+                if ($carry === '') {
+                    $carryOffset = $token->offset;
+                }
                 $carry .= $token->content;
                 continue;
             }
@@ -239,9 +419,10 @@ final class Highlighter
                     $token->fontStyle,
                     $token->bgColor,
                     $token->htmlStyle,
+                    $carryOffset,
                 );
             } else {
-                $out[] = new ThemedToken($carry, null, FontStyle::NONE);
+                $out[] = new ThemedToken($carry, null, FontStyle::NONE, null, null, $carryOffset);
                 $out[] = $token;
             }
 
@@ -275,6 +456,7 @@ final class Highlighter
                     $previous->fontStyle,
                     $previous->bgColor,
                     $previous->htmlStyle,
+                    $previous->offset,
                 );
                 continue;
             }
@@ -295,13 +477,14 @@ final class Highlighter
 
     /**
      * @param list<string> $scopes
+     * @param array<string,string> $replacements
      */
-    private function singleToken(string $content, array $scopes, Theme $theme): ThemedToken
+    private function singleToken(string $content, array $scopes, Theme $theme, array $replacements, int $offset): ThemedToken
     {
         $style = self::resolveStyle($theme, $scopes);
-        $color = self::normalizeColor($style->foreground ?? $theme->foreground());
+        $color = self::applyColorReplacements(self::normalizeColor($style->foreground ?? $theme->foreground()), $replacements);
 
-        return new ThemedToken($content, $color, self::normalizeFontStyle($style->fontStyle));
+        return new ThemedToken($content, $color, self::normalizeFontStyle($style->fontStyle), null, null, $offset);
     }
 
     /**
@@ -335,16 +518,27 @@ final class Highlighter
     /**
      * @param list<string> $scopes
      * @param array<string, Theme> $themesByKey
+     * @param array<string,string> $replacements
      */
-    private function dualToken(string $content, array $scopes, array $themesByKey, string|false $defaultKey): ThemedToken
-    {
+    private function dualToken(
+        string $content,
+        array $scopes,
+        array $themesByKey,
+        string|false $defaultKey,
+        array $replacements,
+        int $offset,
+        string $prefix = '--shiki-',
+    ): ThemedToken {
         $parts = [];
         $color = null;
         $fontStyle = FontStyle::NONE;
 
         foreach ($themesByKey as $key => $theme) {
             $style = self::resolveStyle($theme, $scopes);
-            $themeColor = self::normalizeColor($style->foreground ?? $theme->foreground());
+            $themeColor = self::applyColorReplacements(
+                self::normalizeColor($style->foreground ?? $theme->foreground()),
+                $replacements,
+            );
 
             if ($key === $defaultKey) {
                 $parts[] = 'color:' . $themeColor;
@@ -353,13 +547,13 @@ final class Highlighter
                 continue;
             }
 
-            $parts[] = '--shiki-' . $key . ':' . $themeColor;
-            foreach (self::fontStyleVarParts($key, $style->fontStyle) as $part) {
+            $parts[] = $prefix . $key . ':' . $themeColor;
+            foreach (self::fontStyleVarParts($prefix, $key, $style->fontStyle) as $part) {
                 $parts[] = $part;
             }
         }
 
-        return new ThemedToken($content, $color, $fontStyle, null, implode(';', $parts));
+        return new ThemedToken($content, $color, $fontStyle, null, implode(';', $parts), $offset);
     }
 
     /**
@@ -369,14 +563,21 @@ final class Highlighter
     private function renderOptions(array $options, array $themesByKey, string|false $defaultKey): RenderOptions
     {
         $langId = $this->loader->hasLanguage($options['lang']) ? $options['lang'] : null;
+        $replacements = self::resolveColorReplacements($options, $themesByKey);
+        $structure = $options['structure'] ?? 'classic';
+        $tabindex = $options['tabindex'] ?? 0;
+        $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
 
         if (!isset($options['themes'])) {
             $theme = $themesByKey['default'];
             return new RenderOptions(
                 themeName: $options['theme'] ?? $theme->name(),
-                fg: $theme->foreground(),
-                bg: $theme->background(),
+                fg: self::applyColorReplacements($theme->foreground(), $replacements),
+                bg: self::applyColorReplacements($theme->background(), $replacements),
                 langId: $langId,
+                cssVariablePrefix: $prefix,
+                tabindex: $tabindex,
+                structure: $structure,
             );
         }
 
@@ -385,8 +586,8 @@ final class Highlighter
         $bgByKey = [];
         foreach ($themesByKey as $key => $theme) {
             $names[$key] = $options['themes'][$key];
-            $fgByKey[$key] = $theme->foreground();
-            $bgByKey[$key] = $theme->background();
+            $fgByKey[$key] = self::applyColorReplacements($theme->foreground(), $replacements) ?? '';
+            $bgByKey[$key] = self::applyColorReplacements($theme->background(), $replacements) ?? '';
         }
 
         return new RenderOptions(
@@ -395,7 +596,54 @@ final class Highlighter
             fgByKey: $fgByKey,
             bgByKey: $bgByKey,
             defaultColor: $defaultKey,
+            cssVariablePrefix: $prefix,
+            tabindex: $tabindex,
+            structure: $structure,
         );
+    }
+
+    /**
+     * Resolve the active colour-replacement map: per-theme nested entries
+     * (`{themeName: {from:to}}`) are merged only for the matching theme name;
+     * string entries are global. Mirrors Shiki's `resolveColorReplacements`.
+     *
+     * @param Options $options
+     * @param array<string, Theme> $themesByKey
+     * @return array<string,string>
+     */
+    private static function resolveColorReplacements(array $options, array $themesByKey): array
+    {
+        $themeNames = [];
+        foreach ($themesByKey as $theme) {
+            $themeNames[$theme->name()] = true;
+        }
+
+        $out = [];
+        foreach ($options['colorReplacements'] ?? [] as $key => $value) {
+            if (is_string($value)) {
+                $out[strtolower($key)] = $value;
+            } elseif (is_array($value) && isset($themeNames[$key])) {
+                foreach ($value as $from => $to) {
+                    if (is_string($to)) {
+                        $out[strtolower((string) $from)] = $to;
+                    }
+                }
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param array<string,string> $replacements
+     */
+    private static function applyColorReplacements(?string $color, array $replacements): ?string
+    {
+        if ($color === null) {
+            return null;
+        }
+
+        return $replacements[strtolower($color)] ?? $color;
     }
 
     private static function normalizeColor(?string $color): ?string
@@ -415,7 +663,7 @@ final class Highlighter
     }
 
     /** @return list<string> */
-    private static function fontStyleVarParts(string $key, int $fontStyle): array
+    private static function fontStyleVarParts(string $prefix, string $key, int $fontStyle): array
     {
         if ($fontStyle <= FontStyle::NONE) {
             return [];
@@ -423,10 +671,10 @@ final class Highlighter
 
         $parts = [];
         if (($fontStyle & FontStyle::ITALIC) !== 0) {
-            $parts[] = '--shiki-' . $key . '-font-style:italic';
+            $parts[] = $prefix . $key . '-font-style:italic';
         }
         if (($fontStyle & FontStyle::BOLD) !== 0) {
-            $parts[] = '--shiki-' . $key . '-font-weight:bold';
+            $parts[] = $prefix . $key . '-font-weight:bold';
         }
 
         $decorations = [];
@@ -437,7 +685,7 @@ final class Highlighter
             $decorations[] = 'line-through';
         }
         if ($decorations !== []) {
-            $parts[] = '--shiki-' . $key . '-text-decoration:' . implode(' ', $decorations);
+            $parts[] = $prefix . $key . '-text-decoration:' . implode(' ', $decorations);
         }
 
         return $parts;
@@ -455,5 +703,10 @@ final class Highlighter
         $utf16 = mb_convert_encoding($utf8, 'UTF-16LE', 'UTF-8');
         $slice = substr($utf16, $startCodeUnit * 2, ($endCodeUnit - $startCodeUnit) * 2);
         return mb_convert_encoding($slice, 'UTF-8', 'UTF-16LE');
+    }
+
+    private static function utf16Length(string $utf8): int
+    {
+        return intdiv(strlen(mb_convert_encoding($utf8, 'UTF-16LE', 'UTF-8')), 2);
     }
 }

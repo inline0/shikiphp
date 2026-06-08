@@ -189,7 +189,7 @@ final class HtmlRendererTest extends TestCase
         ], $options);
 
         $expected = '<pre class="shiki shiki-themes github-light github-dark" '
-            . 'style="--shiki-light-bg:#fff;--shiki-dark-bg:#24292e;--shiki-light:#24292e;--shiki-dark:#e1e4e8" '
+            . 'style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" '
             . 'tabindex="0"><code><span class="line">'
             . '<span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">x</span>'
             . '</span></code></pre>';

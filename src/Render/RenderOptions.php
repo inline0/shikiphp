@@ -28,6 +28,8 @@ final class RenderOptions
         public readonly array $bgByKey = [],
         public readonly string|false $defaultColor = 'light',
         public readonly string $cssVariablePrefix = '--shiki-',
+        public readonly int|string|false $tabindex = 0,
+        public readonly string $structure = 'classic',
     ) {
     }
 

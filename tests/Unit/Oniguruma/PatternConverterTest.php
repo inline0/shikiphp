@@ -7,6 +7,7 @@ namespace Shikiphp\Tests\Unit\Oniguruma;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Shikiphp\Oniguruma\PatternConverter;
+use Shikiphp\Regex\Matcher;
 use Shikiphp\Regex\Parser;
 
 final class PatternConverterTest extends TestCase
@@ -86,6 +87,63 @@ final class PatternConverterTest extends TestCase
         $result = $this->convert('\Gfoo');
         $this->assertSame('foo', $result['pattern']);
         $this->assertStringContainsString('y', $result['flags']);
+    }
+
+    #[Test]
+    public function leading_scan_anchor_after_zero_width_anchors_is_sticky(): void
+    {
+        $this->assertStringContainsString('y', $this->convert('^\Gfoo')['flags']);
+        $this->assertStringContainsString('y', $this->convert('\A\Gfoo')['flags']);
+        $this->assertStringContainsString('y', $this->convert('\Gfoo|bar')['flags']);
+    }
+
+    #[Test]
+    public function non_leading_scan_anchor_emits_real_anchor_without_marking_sticky(): void
+    {
+        foreach (['foo\Gbar', '(?:\G|^)x', '(a)\G', '(?!\G)', 'foo|\Gbar'] as $pattern) {
+            $result = $this->convert($pattern);
+            $this->assertStringNotContainsString('y', $result['flags'], $pattern);
+            $this->assertStringContainsString('\G', $result['pattern'], $pattern);
+        }
+    }
+
+    #[Test]
+    public function non_leading_scan_anchor_matches_only_at_scan_start(): void
+    {
+        // `(^|\G)foo`: the `^` branch matches at any line start; the `\G` branch
+        // only at the scan origin. From offset 0, `\G` succeeds; from offset 1,
+        // the `\G` branch must fail (and `^` does not apply mid-line).
+        $result = $this->converter->convert('(^|\G)foo');
+        $matcher = new Matcher(
+            (new Parser($result['pattern'], $result['flags']))->parse(),
+            $result['flags'],
+        );
+
+        $hit = $matcher->match('foofoo', 0);
+        $this->assertNotNull($hit);
+        $this->assertSame(0, $hit['index']);
+
+        // Starting the scan at 1: `\G` only matches at 1; `foo` is at 3, so the
+        // `\G` branch cannot reach it and `^` does not apply -> no match.
+        $this->assertNull($matcher->match('foofoo', 1));
+    }
+
+    #[Test]
+    public function sticky_matcher_matches_only_at_start_offset(): void
+    {
+        $result = $this->converter->convert('\Gfoo');
+        $matcher = new Matcher(
+            (new Parser($result['pattern'], $result['flags']))->parse(),
+            $result['flags'],
+        );
+
+        $this->assertNotNull($matcher->match('foo', 0));
+        $this->assertNotNull($matcher->match('xxfoo', 2));
+        // The token sits at offset 2 but the scan starts at 0: a sticky pattern
+        // must not advance to find it.
+        $this->assertNull($matcher->match('xxfoo', 0));
+        $this->assertFalse($matcher->matchTest('xxfoo', 0));
+        $this->assertTrue($matcher->matchTest('xxfoo', 2));
     }
 
     #[Test]
@@ -259,8 +317,62 @@ final class PatternConverterTest extends TestCase
     }
 
     #[Test]
+    public function nested_negated_class_treats_leading_bracket_as_literal(): void
+    {
+        $this->assertSame(
+            '(?:(?=[\p{S}\p{P}])[^\]"\'(),;\[_`{}])',
+            $this->convert('[[\p{S}\p{P}]&&[^]"\'(),;\[_`{}]]')['pattern'],
+        );
+    }
+
+    #[Test]
     public function atomic_group_reports_its_injected_slot(): void
     {
         $this->assertSame([1], $this->convert('(?>a+)(b+)')['atomicSlots']);
+    }
+
+    #[Test]
+    public function out_of_order_interval_is_literal(): void
+    {
+        $this->assertSame('\s+\{1,0\}', $this->convert('\s+{1,0}')['pattern']);
+    }
+
+    #[Test]
+    public function out_of_order_interval_matches_literally(): void
+    {
+        $result = $this->convert('\s+{1,0}');
+        $matcher = new Matcher((new Parser($result['pattern'], $result['flags']))->parse(), $result['flags']);
+        $this->assertNotNull($matcher->match(' {1,0}', 0));
+        $this->assertNull($matcher->match(' ', 0));
+    }
+
+    #[Test]
+    public function well_formed_intervals_remain_quantifiers(): void
+    {
+        $this->assertSame('a{2,5}', $this->convert('a{2,5}')['pattern']);
+        $this->assertSame('a{3}', $this->convert('a{3}')['pattern']);
+        $this->assertSame('a{2,}', $this->convert('a{2,}')['pattern']);
+    }
+
+    #[Test]
+    public function absence_operator_expands_to_negated_run(): void
+    {
+        $this->assertSame('(?:(?!\*\/)[\s\S])*', $this->convert('(?~\*/)')['pattern']);
+    }
+
+    #[Test]
+    public function absence_operator_matches_run_without_pattern(): void
+    {
+        $result = $this->convert('(?~\*/)');
+        $matcher = new Matcher((new Parser($result['pattern'], $result['flags']))->parse(), $result['flags']);
+
+        $stop = $matcher->match('abc*/def', 0);
+        $this->assertNotNull($stop);
+        $this->assertSame(0, $stop['index']);
+        $this->assertSame(3, $stop['end']);
+
+        $all = $matcher->match('abcdef', 0);
+        $this->assertNotNull($all);
+        $this->assertSame(6, $all['end']);
     }
 }

@@ -141,6 +141,50 @@ final class OnigScannerTest extends TestCase
     }
 
     #[Test]
+    public function g_anchored_pattern_does_not_match_past_the_anchor(): void
+    {
+        // The token only appears later in the line; a `\G`-anchored pattern
+        // must refuse it (it would over-match without proper anchoring).
+        $this->assertNull($this->scan(['\Gbar'], 'foo bar', 0));
+    }
+
+    #[Test]
+    public function g_anchored_loses_to_forward_searching_pattern_in_same_scanner(): void
+    {
+        // Pattern 0 is `\G`-anchored and cannot match at offset 0 ("xx..."),
+        // so the non-anchored pattern 1 wins by searching forward to "bar".
+        $match = $this->scan(['\Gfoo', 'bar'], 'xxbar', 0);
+        $this->assertNotNull($match);
+        $this->assertSame(1, $match->index);
+        $this->assertSame([[2, 5]], $this->spans($match));
+    }
+
+    #[Test]
+    public function non_g_pattern_still_searches_forward(): void
+    {
+        $match = $this->scan(['foo'], 'xxxfoo', 0);
+        $this->assertNotNull($match);
+        $this->assertSame([[3, 6]], $this->spans($match));
+    }
+
+    #[Test]
+    public function non_leading_g_in_alternation_anchors_to_scan_start(): void
+    {
+        // Markdown fenced-code `while`: `(^|\G)(?!\s*```...$)`. On a closing-fence
+        // line the negative lookahead fails at every valid `^`/`\G` position, so
+        // the scanner must report no match (the block pops). A naive `\G`->empty
+        // would let the empty alternative match mid-line and wrongly continue.
+        $while = '(^|\G)(?!\s*([`~]{3,})\s*$)';
+        $this->assertNull($this->scan([$while], "```\n", 0));
+
+        // On a content line the lookahead passes, so the `while` matches (the
+        // block continues).
+        $cont = $this->scan([$while], "code line\n", 0);
+        $this->assertNotNull($cont);
+        $this->assertSame(0, $cont->index);
+    }
+
+    #[Test]
     public function atomic_group_does_not_leak_a_phantom_capture(): void
     {
         $match = $this->scan(['(?>a+)(b+)'], 'aabb');

@@ -54,6 +54,24 @@ final class PatternConverter
     private int $groupCount = 0;
     private int $atomicCount = 0;
 
+    /** Group nesting depth of the cursor; a `\G` is only leading at depth 0. */
+    private int $groupDepth = 0;
+
+    /**
+     * True while the cursor still sits in a run of leading zero-width anchors
+     * (`^`, `\A`, `\G`) at the start of the current alternative. Reset after
+     * each top-level `|`; cleared by the first width-consuming atom.
+     */
+    private bool $leadingAnchor = true;
+
+    /**
+     * True until the first top-level `|` is crossed. A leading `\G` only anchors
+     * the whole pattern to the scan start (sticky) when it sits in the first
+     * top-level alternative — a `\G` opening a later alternative does not make
+     * the earlier alternatives sticky.
+     */
+    private bool $firstTopLevelAlt = true;
+
     /** @var array<int|string, string> Raw Oniguruma source of each group body, keyed by number and name. */
     private array $groupSources = [];
 
@@ -77,6 +95,9 @@ final class PatternConverter
         $this->sticky = false;
         $this->groupCount = 0;
         $this->atomicCount = 0;
+        $this->groupDepth = 0;
+        $this->leadingAnchor = true;
+        $this->firstTopLevelAlt = true;
         $this->groupSources = [];
         $this->neutralizeGroups = false;
         $this->inlineDepth = [];
@@ -198,6 +219,20 @@ final class PatternConverter
     /** Convert a sequence of alternatives up to a closing `)` (group) or end. */
     private function convertSequence(bool $inGroup): string
     {
+        if ($inGroup) {
+            $this->groupDepth++;
+        }
+        try {
+            return $this->convertSequenceBody($inGroup);
+        } finally {
+            if ($inGroup) {
+                $this->groupDepth--;
+            }
+        }
+    }
+
+    private function convertSequenceBody(bool $inGroup): string
+    {
         $out = '';
         while ($this->pos < $this->len) {
             $ch = $this->src[$this->pos];
@@ -216,15 +251,21 @@ final class PatternConverter
             if ($ch === '|') {
                 $out .= '|';
                 $this->pos++;
+                $this->leadingAnchor = true;
+                if ($this->groupDepth === 0) {
+                    $this->firstTopLevelAlt = false;
+                }
                 continue;
             }
 
             if ($ch === '(') {
+                $this->leadingAnchor = false;
                 $out .= $this->applyQuantifier($this->convertGroup());
                 continue;
             }
 
             if ($ch === '[') {
+                $this->leadingAnchor = false;
                 $out .= $this->applyQuantifier($this->convertCharClass());
                 continue;
             }
@@ -242,16 +283,19 @@ final class PatternConverter
             }
             if ($ch === '$') {
                 $this->pos++;
+                $this->leadingAnchor = false;
                 $out .= '(?=$|\\n)';
                 continue;
             }
             if ($ch === '.') {
                 $this->pos++;
+                $this->leadingAnchor = false;
                 $out .= $this->applyQuantifier($ch);
                 continue;
             }
 
             $this->pos++;
+            $this->leadingAnchor = false;
             $out .= $this->applyQuantifier($this->escapeLiteral($ch));
         }
 
@@ -351,6 +395,13 @@ final class PatternConverter
             $body = $this->convertSequence(true);
             $this->expect(')');
             return $this->atomic($body);
+        }
+
+        if ($c === '~') {
+            $this->pos++;
+            $body = $this->convertSequence(true);
+            $this->expect(')');
+            return '(?:(?!' . $body . ')[\\s\\S])*';
         }
 
         if ($c === '<') {
@@ -603,6 +654,10 @@ final class PatternConverter
             $this->pos++;
         }
         $body = '';
+        if ($this->pos < $this->len && $this->src[$this->pos] === ']') {
+            $body .= '\\]';
+            $this->pos++;
+        }
         while ($this->pos < $this->len && $this->src[$this->pos] !== ']') {
             $ch = $this->src[$this->pos];
             if ($ch === '[' && $this->peekPosix() !== null) {
@@ -709,9 +764,27 @@ final class PatternConverter
         }
         if ($c === 'G') {
             $this->pos++;
-            $this->sticky = true;
-            return '';
+            // A leading top-level `\G` anchors the whole pattern to the scan
+            // start: emit the sticky `y` flag and drop the token (the search
+            // already begins at the anchor, so the assertion is implicit).
+            if (
+                $this->groupDepth === 0
+                && $this->leadingAnchor
+                && $this->firstTopLevelAlt
+                && !$this->neutralizeGroups
+            ) {
+                $this->sticky = true;
+                return '';
+            }
+            // A non-leading `\G` (inside a group, after a width-consuming atom,
+            // or in a later alternative) cannot be expressed as JS stickiness.
+            // Emit a real scan-anchor assertion: the engine's `\G` (Anchor::SCAN)
+            // matches only at the offset the search began.
+            return '\\G';
         }
+
+        $this->leadingAnchor = false;
+
         if ($c === 'R') {
             $this->pos++;
             return '(?:\\r\\n|[\\n\\r\\x0B\\f\\x85\\u2028\\u2029])';
@@ -933,7 +1006,22 @@ final class PatternConverter
             return false;
         }
         $inner = substr($this->src, $this->pos + 1, $close - ($this->pos + 1));
-        return preg_match('/^\\d+(,\\d*)?$/', $inner) === 1;
+        return $this->isValidInterval($inner);
+    }
+
+    /**
+     * A `{n,m}` interval is a quantifier only when it is well-formed and `n <= m`.
+     * Oniguruma treats an out-of-order or malformed `{...}` as literal text.
+     */
+    private function isValidInterval(string $inner): bool
+    {
+        if (preg_match('/^(\\d+)(,(\\d*))?$/', $inner, $m) !== 1) {
+            return false;
+        }
+        if (($m[2] ?? '') === '' || ($m[3] ?? '') === '') {
+            return true;
+        }
+        return (int) $m[1] <= (int) $m[3];
     }
 
     /** Read a quantifier token (`*`, `+`, `?`, `{n,m}`) without its mode suffix. */
@@ -949,7 +1037,7 @@ final class PatternConverter
             return null;
         }
         $inner = substr($this->src, $this->pos + 1, $close - ($this->pos + 1));
-        if (preg_match('/^\\d+(,\\d*)?$/', $inner) !== 1) {
+        if (!$this->isValidInterval($inner)) {
             return null;
         }
         $this->pos = $close + 1;

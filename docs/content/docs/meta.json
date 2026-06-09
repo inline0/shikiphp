@@ -1,0 +1,17 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "getting-started",
+    "api",
+    "options",
+    "transformers",
+    "ansi",
+    "custom-languages-themes",
+    "languages",
+    "themes",
+    "cli",
+    "architecture",
+    "performance"
+  ]
+}

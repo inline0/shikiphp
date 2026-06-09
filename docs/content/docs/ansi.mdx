@@ -1,0 +1,49 @@
+---
+title: ANSI Output
+description: Highlight terminal output and ANSI escape sequences with lang 'ansi'.
+---
+
+# ANSI Output
+
+Set `lang` to `'ansi'` to highlight terminal output — text containing ANSI
+escape sequences — instead of tokenizing with a grammar. shikiphp parses the
+escape codes and colors the text from the theme's ANSI palette, exactly like
+Shiki's `lang: 'ansi'`.
+
+```php
+use Shikiphp\Shikiphp;
+
+echo Shikiphp::codeToHtml("\e[31merror\e[0m: something broke", [
+    'lang'  => 'ansi',
+    'theme' => 'github-dark',
+]);
+```
+
+This is the natural way to render captured CLI output — test runners, build
+logs, `git` output — with its original colors preserved.
+
+## What it understands
+
+The ANSI tokenizer handles the SGR (Select Graphic Rendition) sequences a
+terminal emits: the 16 named colors (and their bright variants), 256-color and
+24-bit true-color sequences, and the bold / dim / italic / underline / strike
+attributes. Colors resolve against the active theme's ANSI palette so they match
+the theme you pick.
+
+## Dual themes
+
+ANSI honors the `themes` map just like grammar-based highlighting, emitting
+CSS-variable variants for the non-default themes:
+
+```php
+echo Shikiphp::codeToHtml($log, [
+    'lang'   => 'ansi',
+    'themes' => ['light' => 'github-light', 'dark' => 'github-dark'],
+]);
+```
+
+## No grammar state
+
+Because ANSI does not use a TextMate grammar, there is no grammar state to carry.
+`getLastGrammarState` throws for `lang: 'ansi'`, and `codeToTokensResult` returns
+a `null` `grammarState`.

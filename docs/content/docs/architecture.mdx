@@ -1,0 +1,86 @@
+---
+title: Architecture
+description: How shikiphp tokenizes and renders — the converter, scanner, tokenizer, theme resolver, and the vendored pure-PHP JS regex engine.
+---
+
+# Architecture
+
+shikiphp turns source code into themed, highlighted HTML using TextMate grammars
+and VS Code themes, with no PHP extensions beyond `json`/`mbstring`, no Node
+runtime, and no native Oniguruma binding. This page summarizes the pipeline; the
+full normative contract lives in `docs/ARCHITECTURE.md` in the repository.
+
+## The pipeline
+
+```
+source code
+  └─ Highlighter::codeToTokens()
+       ├─ Grammar\Registry        loads the grammar (+ its includes / embedded langs)
+       ├─ Grammar\Tokenizer       line by line, driving an OnigScanner per rule state
+       │     └─ Oniguruma\OnigScanner.findNextMatch()
+       │           └─ Oniguruma\PatternConverter   Oniguruma pattern → JS regex
+       │                 └─ Shikiphp\Regex (Parser + Matcher)   JS RegExp runtime
+       ├─ Theme\Theme.match(scopeStack) → StyleAttributes   per token
+       └─ Render\ThemedToken[]   (text + style) per line
+  └─ Render\HtmlRenderer  → <pre class="shiki">…</pre>
+```
+
+Everything operates in **UTF-16 code-unit** offset space — the same space as the
+JS regex engine and as Shiki's tokenizer. For ASCII this equals byte offsets.
+
+## The regex runtime
+
+At the bottom is `Shikiphp\Regex`, a complete pure-PHP ECMAScript regex engine
+**vendored from [`inline0/phasis`](https://github.com/inline0/phasis)** (a
+pure-PHP JavaScript engine). It parses a JS-RegExp source plus flags and runs
+forward searches with Oniguruma `onig_search` semantics.
+
+## Oniguruma → JS conversion
+
+TextMate grammars are written in Oniguruma. `Shikiphp\Oniguruma\PatternConverter`
+is a PHP port of
+[`oniguruma-to-es`](https://github.com/slevithan/oniguruma-to-es): it converts an
+Oniguruma pattern into a JS-RegExp-compatible source and flags string the regex
+engine accepts. This is the same Oniguruma → RegExp path modern Shiki uses, which
+is what lets shikiphp match Shiki's output offset-for-offset. The converter
+handles the real-world constructs grammars use: POSIX classes, possessive
+quantifiers and atomic groups, inline flags, named groups and backreferences,
+Unicode properties, and more.
+
+## The scanner and its PCRE fast-path
+
+`Shikiphp\Oniguruma\OnigScanner` mirrors `vscode-oniguruma`'s scanner: it is built
+once per rule from a list of patterns and finds the leftmost match at or after a
+start position.
+
+The tree-walking matcher is correct but not fast, so the scanner has an
+**equivalence-gated PCRE fast-path**. A `PcreTranslator` rewrites the converter's
+JS source into a native PCRE pattern *only* for the subset it can prove behaves
+identically to the matcher, and rejects everything else (named groups,
+backreferences, `\p{}`, `\b`, atomic emulation, and so on). Safe patterns run via
+PCRE; all others stay on the matcher. The classification is proven by an oracle
+tool that asserts the fast-path result equals the matcher result — index, end,
+and every capture span — across a large corpus, with zero divergences allowed.
+
+## Grammar and theme
+
+- **Grammar** (`Shikiphp\Grammar`) is a faithful port of `vscode-textmate`: a
+  `Registry` resolves grammars by scope name (including `include` references,
+  embedded languages, and injections), and a `Tokenizer` maintains the rule and
+  scope stacks line by line.
+- **Theme** (`Shikiphp\Theme`) ports `vscode-textmate`'s theme matching:
+  foreground and font style resolve by scope-selector specificity with
+  parent-scope matching.
+
+## Render
+
+`Shikiphp\Render\HtmlRenderer` builds the exact `pre.shiki > code > span.line >
+span` HAST tree Shiki builds, then serializes it. Single-theme mode writes plain
+colors; dual-theme mode writes `--shiki-light` / `--shiki-dark` CSS variables.
+
+## Validated against Shiki
+
+Shiki.js itself is the oracle. The `scenarios/` directory holds **214**
+language/theme fixtures; `bin/test-regression` highlights each with both engines
+and asserts the HTML is identical. The non-negotiable rule is that highlighting
+output must not regress against Shiki.

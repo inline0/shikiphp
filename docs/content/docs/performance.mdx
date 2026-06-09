@@ -1,0 +1,44 @@
+---
+title: Performance
+description: What to expect from shikiphp's pure-PHP engine, and how to keep highlighting fast in production.
+---
+
+# Performance
+
+shikiphp does real TextMate tokenization in pure PHP, so it is worth being
+honest about where it is fast and where it is not.
+
+## What to expect
+
+For most languages and reasonable code sizes, highlighting is quick. The
+tokenizer caches compiled rules and scanners, grammars load lazily (a sample
+that never touches an embedded language never pays to decode it), and an
+equivalence-gated PCRE fast-path runs the proven-safe regex subset through native
+`preg_*` rather than the tree-walking matcher.
+
+The cost scales with the complexity of the grammar, not just the length of the
+input. Languages with large, deeply nested grammars — TypeScript and TSX are the
+notable cases — are meaningfully slower in the pure-PHP regex VM than simpler
+grammars, because their patterns exercise the parts of the engine the PCRE
+fast-path cannot safely take over.
+
+## Safety guards
+
+The regex engine includes failure-memoization and ReDoS protection so a
+pathological pattern degrades rather than hanging. You can also cap per-line work
+with [`tokenizeMaxLineLength`](/docs/options#tokenizemaxlinelength), which emits a
+single plain token for any line at or beyond a given length — a guard against
+adversarial single-line inputs.
+
+## Cache in production
+
+The reliable way to keep highlighting off your request path is to **not** run it
+on every request. Highlighting the same code with the same options always
+produces the same HTML, so it caches perfectly:
+
+- Highlight at build time for static sites and documentation.
+- Cache the rendered HTML (keyed by code + options) for user-supplied or
+  database-stored snippets, and reuse it until the source changes.
+
+Within a process, reuse a single highlighter (the `Shikiphp` facade does this for
+you) so grammar and theme caches are shared across calls.

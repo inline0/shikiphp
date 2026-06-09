@@ -1,0 +1,90 @@
+---
+title: Introduction
+description: shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output byte-identical to Shiki, entirely in PHP.
+---
+
+# shikiphp
+
+shikiphp is a pure-PHP port of [Shiki](https://shiki.style), the syntax
+highlighter that powers VS Code's own coloring. It tokenizes code with the same
+**TextMate grammars** and paints it with the same **VS Code themes** Shiki uses,
+producing the same HTML — entirely in PHP.
+
+No Node runtime. No PHP extensions beyond `json` and `mbstring`. No native
+Oniguruma binding. No shelling out to a JavaScript process, and no hosted API.
+
+```php
+use Shikiphp\Shikiphp;
+
+echo Shikiphp::codeToHtml(<<<'PHP'
+<?php
+function greet(string $name): string {
+    return "Hello, {$name}!";
+}
+PHP, [
+    'lang'  => 'php',
+    'theme' => 'github-dark',
+]);
+```
+
+## Why shikiphp
+
+Server-rendered syntax highlighting in PHP usually means one of three
+compromises: shelling out to Node, calling a hosted API, or settling for a
+regex-based highlighter that does not actually understand the language. None of
+those fit cleanly into a Laravel, WordPress, or static-site build step.
+
+shikiphp removes the compromise by porting Shiki's real pipeline to PHP:
+
+- a TextMate grammar tokenizer (a faithful port of
+  [`vscode-textmate`](https://github.com/microsoft/vscode-textmate)), including
+  embedded languages, injections, and nested repositories
+- VS Code theme resolution with scope-selector specificity and parent-scope
+  matching
+- Shiki-compatible HTML: dual light/dark themes via CSS variables, `codeToHast`,
+  transformers (every hook), decorations, `colorReplacements`,
+  `structure: 'inline'`, and ANSI (`lang: 'ansi'`) highlighting
+- the **full Shiki bundle** — every `tm-grammars` language (200+) and
+  `tm-themes` theme (65)
+
+## Byte-identical to Shiki
+
+The output is not "close enough." shikiphp is validated token-for-token against
+Shiki.js by an oracle regression harness of **214 scenarios** spanning the full
+grammar and theme set. Shiki.js itself is the oracle: each scenario highlights a
+sample with both engines and asserts the HTML is identical.
+
+## How it works
+
+shikiphp is built on a vendored pure-PHP **JavaScript regex engine** from
+[`inline0/phasis`](https://github.com/inline0/phasis), fed by a PHP port of
+[`oniguruma-to-es`](https://github.com/slevithan/oniguruma-to-es). Modern Shiki
+converts the Oniguruma patterns in TextMate grammars to JavaScript `RegExp`, so
+a JS regex engine is the natural substrate — it lets shikiphp match Shiki's
+output offset-for-offset.
+
+```
+code → grammar tokenizer → theme resolver → themed tokens → HTML
+              │
+              └─ OnigScanner → PatternConverter (oniguruma-to-es) → Shikiphp\Regex (JS RegExp engine)
+```
+
+See [Architecture](/docs/architecture) for the full pipeline.
+
+## Requirements
+
+- PHP 8.2 or later
+- `ext-json` and `ext-mbstring` (both ship with virtually every PHP build)
+
+## Where to next
+
+- [Getting Started](/docs/getting-started) — install and render your first block.
+- [PHP API](/docs/api) — the full method surface.
+- [Options](/docs/options) — every option `codeToHtml` accepts.
+- [Transformers](/docs/transformers) — the hook pipeline and the built-ins.
+- [CLI](/docs/cli) — `bin/shikiphp highlight`, `langs`, and `themes`.
+
+## License
+
+MIT, copyright inline0. Bundled TextMate grammars and themes retain their
+upstream licenses.

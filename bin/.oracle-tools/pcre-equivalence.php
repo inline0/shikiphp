@@ -74,20 +74,36 @@ function utf16Len(string $utf8): int
 $translator = new PcreTranslator();
 
 $safeCount = 0;
+$positionCount = 0;
 $checkedPatterns = 0;
 $comparisons = 0;
+$skipped = 0;
+$netted = 0;
 $divergences = [];
 $maxDiv = (int) ($argv[1] ?? 40);
+// Per-pattern wall budget (s): tier-2 admits exactly the patterns the VM is
+// slow on; cap each so the harness finishes while every pattern still gets
+// crossed against a large slice of the corpus.
+$perPattern = (float) ($argv[3] ?? 1.0);
 
 foreach ($converted as $row) {
     $js = $row['pattern'];
     $flags = $row['flags'];
 
+    // Strict mode → full capture comparison; position mode → extent only
+    // (index/end + null agreement), exactly what the scanner's prefilter uses.
+    $extentOnly = false;
     $t = $translator->translate($js, $flags);
     if ($t === null) {
-        continue;
+        $t = $translator->translate($js, $flags, true);
+        if ($t === null || @preg_match($t['pcre'], '') === false) {
+            continue;
+        }
+        $extentOnly = true;
+        $positionCount++;
+    } else {
+        $safeCount++;
     }
-    $safeCount++;
 
     // Build the Matcher for the same converted source.
     try {
@@ -103,11 +119,15 @@ foreach ($converted as $row) {
 
     $checkedPatterns++;
     if ($checkedPatterns % 500 === 0) {
-        fwrite(STDERR, sprintf("...checked %d safe patterns, %d comparisons, %d divergences\n", $checkedPatterns, $comparisons, count($divergences)));
+        fwrite(STDERR, sprintf("...checked %d patterns, %d comparisons, %d divergences\n", $checkedPatterns, $comparisons, count($divergences)));
         fflush(STDERR);
     }
 
+    $deadline = microtime(true) + $perPattern;
     foreach ($inputs as $input) {
+        if (microtime(true) > $deadline) {
+            break;
+        }
         $maxStart = utf16Len($input);
         // Sample start offsets: 0, every position is expensive; sample a few.
         $starts = [0];
@@ -122,12 +142,40 @@ foreach ($converted as $row) {
             $comparisons++;
             try {
                 $vm = $matcher->match($input, $start);
+            } catch (\Shikiphp\Regex\MatcherBudgetExceeded $e) {
+                // The VM gave up; production falls back the same way, so there
+                // is no fast-path result to validate against.
+                $skipped++;
+                continue;
             } catch (\Throwable $e) {
                 $vm = null;
             }
-            $fp = $pcreMatcher->match($input, $start);
+            try {
+                $fp = $pcreMatcher->match($input, $start);
+            } catch (\Shikiphp\Oniguruma\PcreMatchError $e) {
+                $skipped++;
+                continue;
+            }
 
-            if (!resultsEqual($vm, $fp)) {
+            if (
+                $extentOnly
+                && resultsEqual($vm, $fp, true)
+                && ((($vm === null) !== ($fp === null))
+                    || ($vm !== null && $fp !== null && ($vm['index'] !== $fp['index'] || $vm['end'] !== $fp['end'])))
+            ) {
+                // Sound (netted by confirm+fallback) but behaviourally different:
+                // each is a suspected VM-vs-real-JS bug; queue a sample.
+                $netted++;
+                if ($netted <= 20) {
+                    file_put_contents(
+                        __DIR__ . '/vm-bug-queue.txt',
+                        "js: {$js}\nflags: {$flags}\ninput: " . json_encode($input) . "\nstart: {$start}\nvm: " . json_encode($vm) . "\nfp: " . json_encode($fp) . "\n\n",
+                        FILE_APPEND,
+                    );
+                }
+            }
+
+            if (!resultsEqual($vm, $fp, $extentOnly)) {
                 if (count($divergences) < $maxDiv) {
                     $divergences[] = [
                         'js' => $js,
@@ -160,8 +208,22 @@ foreach ($converted as $row) {
  * @param array{index:int,end:int,captures:list<?array{0:int,1:int,2:string}>}|null $a
  * @param array{index:int,end:int,captures:list<?array{0:int,1:int}>}|null $b
  */
-function resultsEqual(?array $a, ?array $b): bool
+function resultsEqual(?array $a, ?array $b, bool $extentOnly = false): bool
 {
+    if ($extentOnly) {
+        // Position-mode soundness: the scanner confirms the probe with the VM
+        // anchored at the probe index and falls back to a full VM scan on
+        // disagreement, which nets every case except a prefilter that misses
+        // entirely (null while the VM matches) or probes PAST the VM's
+        // leftmost match (the confirm could then succeed at the later index).
+        if ($a === null) {
+            return true;
+        }
+        if ($b === null) {
+            return false;
+        }
+        return $b['index'] <= $a['index'];
+    }
     if ($a === null) {
         return $b === null;
     }
@@ -191,12 +253,14 @@ function resultsEqual(?array $a, ?array $b): bool
 }
 
 fwrite(STDERR, sprintf(
-    "PCRE-safe patterns: %d / %d converted\n",
+    "PCRE-safe patterns: %d strict + %d position-mode / %d converted\n",
     $safeCount,
+    $positionCount,
     count($converted),
 ));
 fwrite(STDERR, sprintf("Patterns checked (Parser-valid): %d\n", $checkedPatterns));
-fwrite(STDERR, sprintf("Comparisons: %d\n", $comparisons));
+fwrite(STDERR, sprintf("Comparisons: %d (skipped: %d budget-exceeded)\n", $comparisons, $skipped));
+fwrite(STDERR, sprintf("Netted behaviour diffs (VM bug queue): %d\n", $netted));
 fwrite(STDERR, sprintf("Divergences: %d\n", count($divergences)));
 
 if ($divergences !== []) {

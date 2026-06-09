@@ -32,26 +32,40 @@ final class PcreTranslator
     /** PCRE class body for ECMAScript `\w`. */
     private const WORD = '0-9A-Za-z_';
 
+    /** PCRE lookarounds for the exact ECMAScript (ASCII-`\w`) word boundary. */
+    private const WORD_B = '(?:(?<=[0-9A-Za-z_])(?![0-9A-Za-z_])|(?<![0-9A-Za-z_])(?=[0-9A-Za-z_]))';
+    private const WORD_NB = '(?:(?<=[0-9A-Za-z_])(?=[0-9A-Za-z_])|(?<![0-9A-Za-z_])(?![0-9A-Za-z_]))';
+
     private string $src = '';
     private int $pos = 0;
     private int $len = 0;
     private bool $safe = true;
     private bool $dotAll = false;
+    private bool $positionMode = false;
 
     /**
      * Translate JS source+flags to a delimited PCRE pattern, or null if the
      * pattern is not provably equivalent to the Matcher.
      *
+     * In `$positionMode` capture fidelity is NOT required — the caller only uses
+     * the match position/extent and re-runs the VM Matcher there for true ES
+     * captures — so capture-divergent constructs are admitted (quantified
+     * captures, capture groups become non-capturing, capture-bearing lookbehind,
+     * scoped-flag groups, atomic emulation as native `(?>…)`, `\p{…}` passed
+     * through gated by PCRE compilation, `\b`/`\B` as exact ASCII lookarounds).
+     * Extent-divergent constructs (backreferences, `\G`) remain rejected.
+     *
      * @return array{pcre: string, anchored: bool}|null `anchored` is set for the
      *   sticky (`y`) flag: the caller runs with PREG_ANCHORED at the offset.
      */
-    public function translate(string $jsSource, string $jsFlags): ?array
+    public function translate(string $jsSource, string $jsFlags, bool $positionMode = false): ?array
     {
         $this->src = $jsSource;
         $this->len = strlen($jsSource);
         $this->pos = 0;
         $this->safe = true;
         $this->dotAll = str_contains($jsFlags, 's');
+        $this->positionMode = $positionMode;
 
         [$body] = $this->convert();
         if (!$this->safe || $this->pos !== $this->len) {
@@ -146,8 +160,9 @@ final class PcreTranslator
 
             $quant = $this->peekQuantifier();
             if ($quant !== '') {
-                if ($atomHasCapture) {
-                    // Quantifying a capture diverges (ES resets per iteration).
+                if ($atomHasCapture && !$this->positionMode) {
+                    // Quantifying a capture diverges (ES resets per iteration);
+                    // irrelevant in position mode, where captures are discarded.
                     $this->safe = false;
                     return [$out, $seqHasCapture];
                 }
@@ -175,7 +190,9 @@ final class PcreTranslator
 
         if ($this->src[$this->pos] !== '?') {
             [$body] = $this->convertParenBody();
-            return ['(' . $body . ')', true];
+            // Position mode discards captures, so a plain capture group becomes
+            // non-capturing (cheaper, and immune to PCRE numbering concerns).
+            return [$this->positionMode ? '(?:' . $body . ')' : '(' . $body . ')', true];
         }
 
         $this->pos++; // ?
@@ -188,6 +205,9 @@ final class PcreTranslator
         }
 
         if ($c === '=' || $c === '!') {
+            if ($c === '=' && $this->positionMode && str_starts_with(substr($this->src, $this->pos + 1, 9), '(?<atomic')) {
+                return [$this->convertAtomicEmulation(), false];
+            }
             $this->pos++;
             [$body, $hasCapture] = $this->convertParenBody();
             // A capture inside a lookahead participates per ES; PCRE agrees for
@@ -202,8 +222,9 @@ final class PcreTranslator
                 $this->pos += 2;
                 $rawStart = $this->pos;
                 [$body, $hasCapture] = $this->convertParenBody();
-                if ($hasCapture) {
+                if ($hasCapture && !$this->positionMode) {
                     // ES lookbehind captures right-to-left; PCRE left-to-right.
+                    // Extent-equal either way, so position mode admits it.
                     $this->safe = false;
                     return ['', false];
                 }
@@ -221,19 +242,56 @@ final class PcreTranslator
                 }
                 return ['(?<' . $n . $body . ')', false];
             }
+            if ($this->positionMode && preg_match('/\\G\\(\\?<([A-Za-z_][A-Za-z0-9_]*)>/', $this->src, $m, 0, $this->pos - 2) === 1) {
+                // Real named capture (atomic emulation was handled above): emit
+                // non-capturing; a later `\k<name>` backref still rejects.
+                $this->pos += strlen($m[1]) + 2;
+                [$body] = $this->convertParenBody();
+                return ['(?:' . $body . ')', true];
+            }
             // Named group → VM (atomic emulation / real named captures carry
             // backref semantics routed to the Matcher).
             $this->safe = false;
             return ['', false];
         }
 
-        // Inline-flag group `(?flags:…)`, atomic group, inline-comment group, or
-        // anything else: route to VM. The vendored Matcher mis-backtracks across
-        // alternatives inside a scoped-flag group when a following atom rejects
-        // the shorter branch, so PCRE (which backtracks correctly) would diverge
-        // from the source-of-truth Matcher — these must stay on the VM.
+        if ($this->positionMode && preg_match('/\\G([is]*(?:-[is]+)?):/', $this->src, $m, 0, $this->pos) === 1) {
+            // Scoped-flag group: PCRE shares the syntax and (under /u) the
+            // simple-case-folding semantics; extent-equal, position mode only.
+            $this->pos += strlen($m[0]);
+            [$body, $hasCapture] = $this->convertParenBody();
+            return ['(?' . $m[1] . ':' . $body . ')', $hasCapture];
+        }
+
+        // Inline-flag group `(?flags:…)` (strict mode), inline-comment group, or
+        // anything else: route to VM.
         $this->safe = false;
         return ['', false];
+    }
+
+    /**
+     * Translate the converter's atomic-group emulation `(?=(?<atomicN>X))\k<atomicN>`
+     * into PCRE's native `(?>X)`. Cursor sits on the `=` of the lookahead.
+     * Position mode only: the named-capture slot is discarded anyway.
+     */
+    private function convertAtomicEmulation(): string
+    {
+        if (preg_match('/\\G=\\(\\?<(atomic\\d+)>/', $this->src, $m, 0, $this->pos) !== 1) {
+            $this->safe = false;
+            return '';
+        }
+        $name = $m[1];
+        $this->pos += strlen($m[0]);
+        [$body] = $this->convertParenBody();
+        // convertParenBody consumed the named group's `)`; the lookahead's `)`
+        // and the backref must follow exactly as the converter emits them.
+        $tail = ')\\k<' . $name . '>';
+        if (!$this->safe || substr($this->src, $this->pos, strlen($tail)) !== $tail) {
+            $this->safe = false;
+            return '';
+        }
+        $this->pos += strlen($tail);
+        return '(?>' . $body . ')';
     }
 
     /**
@@ -321,6 +379,9 @@ final class PcreTranslator
             $this->pos++;
             return self::WS;
         }
+        if (($c === 'p' || $c === 'P') && $this->positionMode) {
+            return $this->copyUnicodeProperty();
+        }
         if ($c === 'D' || $c === 'W' || $c === 'S' || $c === 'p' || $c === 'P') {
             // Negated shorthands and Unicode properties inside a class can't be
             // expressed as range members equivalently → VM.
@@ -380,6 +441,19 @@ final class PcreTranslator
         if ($c === 'S') {
             $this->pos++;
             return '[^' . self::WS . ']';
+        }
+        if ($c === 'b' && $this->positionMode) {
+            // PHP's /u implies UCP, making PCRE `\b` Unicode-aware; ES `\b` is
+            // ASCII-`\w`-based. Rewrite to exact lookarounds.
+            $this->pos++;
+            return self::WORD_B;
+        }
+        if ($c === 'B' && $this->positionMode) {
+            $this->pos++;
+            return self::WORD_NB;
+        }
+        if (($c === 'p' || $c === 'P') && $this->positionMode) {
+            return $this->copyUnicodeProperty();
         }
         if ($c === 'b' || $c === 'B' || $c === 'p' || $c === 'P' || $c === 'G' || $c === 'k') {
             // Word boundary (Unicode-aware in PCRE2/u), Unicode property
@@ -449,6 +523,24 @@ final class PcreTranslator
     private function isLoneSurrogate(int $cp): bool
     {
         return $cp >= 0xD800 && $cp <= 0xDFFF;
+    }
+
+    /**
+     * Copy `\p{Name}` / `\P{Name}` through to PCRE (position mode). Bare names
+     * only — PCRE2 shares the General_Category and Script names; `Name=Value`
+     * forms and anything PCRE doesn't recognise are rejected (the latter by the
+     * caller's compile check). Cursor sits on the `p`/`P`.
+     */
+    private function copyUnicodeProperty(): string
+    {
+        $c = $this->src[$this->pos];
+        $this->pos++;
+        if (preg_match('/\\G\\{([A-Za-z_]+)\\}/', $this->src, $m, 0, $this->pos) !== 1) {
+            $this->safe = false;
+            return '';
+        }
+        $this->pos += strlen($m[0]);
+        return '\\' . $c . '{' . $m[1] . '}';
     }
 
     /**

@@ -20,7 +20,7 @@ final class OnigScanner
      * resets its per-input state on every match(), so the same compiled state is
      * safely shared across every scanner that lists an identical pattern.
      *
-     * @var array<string, array{matcher: Matcher|null, pcre: PcreMatcher|null, sticky: bool, atomicSlots: list<int>}>
+     * @var array<string, array{matcher: Matcher|null, pcre: PcreMatcher|null, prefilter: PcreMatcher|null, sticky: bool, atomicSlots: list<int>}>
      */
     private static array $compileCache = [];
 
@@ -32,6 +32,15 @@ final class OnigScanner
 
     /** @var array<int, PcreMatcher|null> PCRE fast-path matchers for provably-equivalent patterns; null = use VM. */
     private array $pcre = [];
+
+    /**
+     * Position-mode PCRE matchers (see PcreTranslator): extent-equivalent but not
+     * capture-faithful, used to locate the match position fast; the VM then
+     * confirms anchored at that position and supplies the true ES captures.
+     *
+     * @var array<int, PcreMatcher|null>
+     */
+    private array $prefilter = [];
 
     /** @var array<int, true> */
     private array $failed = [];
@@ -63,20 +72,7 @@ final class OnigScanner
                 continue;
             }
 
-            try {
-                $pcre = $this->pcre[$i] ?? null;
-                try {
-                    $result = $pcre !== null
-                        ? $pcre->match($string->content, $startPosition)
-                        : $matcher->match($string->content, $startPosition);
-                } catch (PcreMatchError) {
-                    // PCRE errored at runtime: fall back to the VM Matcher so the
-                    // result stays identical to the source of truth.
-                    $result = $matcher->match($string->content, $startPosition);
-                }
-            } catch (\Throwable) {
-                continue;
-            }
+            $result = $this->runMatch($i, $matcher, $string->content, $startPosition, $best['index'] ?? null);
             if ($result === null) {
                 continue;
             }
@@ -100,6 +96,51 @@ final class OnigScanner
         return new OnigMatch($bestIndex, $this->buildCaptureIndices($best, $this->atomicSlots[$bestIndex] ?? []));
     }
 
+    /**
+     * Run pattern $i from $startPosition: proven-equivalent PCRE directly, else
+     * position-mode PCRE to find the match position with an anchored VM confirm
+     * there (full VM scan if the confirm disagrees), else the VM. $cap is the
+     * best match index so far — a probe at or past it can't win, so the confirm
+     * is skipped.
+     *
+     * @return array{index:int,end:int,captures:list<?array{0:int,1:int,2:string}>}|null
+     */
+    private function runMatch(int $i, Matcher $matcher, string $content, int $startPosition, ?int $cap): ?array
+    {
+        try {
+            try {
+                $pcre = $this->pcre[$i] ?? null;
+                if ($pcre !== null) {
+                    return $pcre->match($content, $startPosition);
+                }
+
+                $prefilter = $this->prefilter[$i] ?? null;
+                if ($prefilter !== null && !($this->sticky[$i] ?? false)) {
+                    $probe = $prefilter->match($content, $startPosition);
+                    if ($probe === null) {
+                        return null;
+                    }
+                    if ($cap !== null && $probe['index'] >= $cap) {
+                        return null;
+                    }
+                    $confirmed = $matcher->match($content, $probe['index'], true);
+                    if ($confirmed !== null) {
+                        return $confirmed;
+                    }
+                    return $matcher->match($content, $startPosition);
+                }
+
+                return $matcher->match($content, $startPosition);
+            } catch (PcreMatchError) {
+                // PCRE errored at runtime: fall back to the VM Matcher so the
+                // result stays identical to the source of truth.
+                return $matcher->match($content, $startPosition);
+            }
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
     private function matcherFor(int $i): ?Matcher
     {
         if (isset($this->failed[$i])) {
@@ -118,12 +159,13 @@ final class OnigScanner
             return null;
         }
         $this->pcre[$i] = $entry['pcre'];
+        $this->prefilter[$i] = $entry['prefilter'];
         $this->sticky[$i] = $entry['sticky'];
         $this->atomicSlots[$i] = $entry['atomicSlots'];
         return $entry['matcher'];
     }
 
-    /** @return array{matcher: Matcher|null, pcre: PcreMatcher|null, sticky: bool, atomicSlots: list<int>} */
+    /** @return array{matcher: Matcher|null, pcre: PcreMatcher|null, prefilter: PcreMatcher|null, sticky: bool, atomicSlots: list<int>} */
     private function compile(string $source): array
     {
         $this->converter ??= new PatternConverter();
@@ -135,23 +177,31 @@ final class OnigScanner
             // Equivalence-gated PCRE fast-path: only patterns the translator
             // proves identical to the Matcher (verified by the bundled
             // equivalence harness over the grammar corpus) run via PCRE; all
-            // others stay on the VM Matcher.
+            // others stay on the VM Matcher — with a position-mode prefilter
+            // (extent-equivalent only) when available; see runMatch().
             $pcre = null;
+            $prefilter = null;
             if (getenv('SHIKIPHP_NO_PCRE') === false) {
                 $translated = $this->translator->translate($converted['pattern'], $converted['flags']);
                 if ($translated !== null && @preg_match($translated['pcre'], '') !== false) {
                     $pcre = new PcreMatcher($translated['pcre']);
+                } else {
+                    $position = $this->translator->translate($converted['pattern'], $converted['flags'], true);
+                    if ($position !== null && @preg_match($position['pcre'], '') !== false) {
+                        $prefilter = new PcreMatcher($position['pcre']);
+                    }
                 }
             }
 
             $entry = [
                 'matcher' => new Matcher($pattern, $converted['flags']),
                 'pcre' => $pcre,
+                'prefilter' => $prefilter,
                 'sticky' => str_contains($converted['flags'], 'y'),
                 'atomicSlots' => $converted['atomicSlots'],
             ];
         } catch (\Throwable) {
-            $entry = ['matcher' => null, 'pcre' => null, 'sticky' => false, 'atomicSlots' => []];
+            $entry = ['matcher' => null, 'pcre' => null, 'prefilter' => null, 'sticky' => false, 'atomicSlots' => []];
         }
 
         return self::$compileCache[$source] = $entry;

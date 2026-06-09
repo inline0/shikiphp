@@ -10,17 +10,19 @@ honest about where it is fast and where it is not.
 
 ## What to expect
 
-For most languages and reasonable code sizes, highlighting is quick. The
-tokenizer caches compiled rules and scanners, grammars load lazily (a sample
-that never touches an embedded language never pays to decode it), and an
-equivalence-gated PCRE fast-path runs the proven-safe regex subset through native
-`preg_*` rather than the tree-walking matcher.
+Highlighting is fast across the board. The tokenizer caches compiled rules and
+scanners, grammars load lazily (a sample that never touches an embedded language
+never pays to decode it), and a two-tier, equivalence-gated PCRE fast-path runs
+~93% of all grammar patterns through native `preg_*`: proven-identical patterns
+run on PCRE outright, and extent-equivalent ones use PCRE to locate the match
+position with the spec-faithful matcher confirming there (full fallback on any
+disagreement, validated by a 20M-comparison differential harness).
 
-The cost scales with the complexity of the grammar, not just the length of the
-input. Languages with large, deeply nested grammars — TypeScript and TSX are the
-notable cases — are meaningfully slower in the pure-PHP regex VM than simpler
-grammars, because their patterns exercise the parts of the engine the PCRE
-fast-path cannot safely take over.
+Ballpark figures for a ~90-line file on stock PHP (warm process): simple grammars
+like JSON or YAML in the tens of milliseconds; CSS, HTML, Bash around 50–120ms;
+PHP, Python, Rust, Go around 200–280ms; and the heaviest grammars in the bundle,
+TypeScript and TSX, around 330ms. Cost scales with grammar complexity and input
+size; the first call per language additionally pays one-time grammar compilation.
 
 ## Safety guards
 

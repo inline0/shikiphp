@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo</title>
+  <style>
+    body { font-family: sans-serif; }
+    .highlight { color: #f00; }
+  </style>
+</head>
+<body>
+  <h1 id="main">Hello &amp; welcome</h1>
+  <p class="highlight">Click <a href="#main">here</a></p>
+  <script>
+    const el = document.getElementById("main");
+    el.addEventListener("click", () => console.log("clicked"));
+  </script>
+</body>
+</html>

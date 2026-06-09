@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Example]
+"Version"="1.0.0"
+"Enabled"=dword:00000001
+"Path"=hex(2):25,00,50,00,41,00,54,00,48,00,25,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Example\Settings]
+"Timeout"=dword:0000001e
+@="default"

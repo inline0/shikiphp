@@ -1,0 +1,3 @@
+export const config = { servers: ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "omicron", "pi", "rho", "sigma", "tau", "upsilon"], retries: 3, timeout: 30000, backoff: { initial: 100, max: 10000, factor: 2, jitter: true } } as const;
+type AllKeys = "alpha" | "beta" | "gamma" | "delta" | "epsilon" | "zeta" | "eta" | "theta" | "iota" | "kappa" | "lambda" | "mu" | "nu" | "xi" | "omicron" | "pi" | "rho" | "sigma" | "tau" | "upsilon";
+const lookup: Record<string, number> = Object.fromEntries(config.servers.map((s, i) => [s, i * 100 + Math.floor(Math.random() * 50) - 25]));

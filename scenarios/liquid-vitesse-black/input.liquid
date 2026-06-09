@@ -1,0 +1,13 @@
+{% assign total = 0 %}
+<ul>
+{% for product in collection.products %}
+  {% if product.available %}
+    <li class="item">
+      {{ product.title | upcase }} - {{ product.price | money }}
+      {% assign total = total | plus: product.price %}
+    </li>
+  {% endif %}
+{% endfor %}
+</ul>
+<p>Total: {{ total | money }}</p>
+{% comment %} done {% endcomment %}

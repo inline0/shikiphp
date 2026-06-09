@@ -1,0 +1,19 @@
+{
+  # comment style
+  name: shikiphp
+  version: "1.0"
+  features: [
+    grammars
+    themes
+    rendering
+  ]
+  config: {
+    debug: true
+    retries: 3
+  }
+  multiline:
+    '''
+    line one
+    line two
+    '''
+}

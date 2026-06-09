@@ -1,0 +1,18 @@
+package example:calculator@1.0.0;
+
+interface types {
+    record point {
+        x: f64,
+        y: f64,
+    }
+
+    enum op {
+        add,
+        subtract,
+    }
+}
+
+world calculator {
+    use types.{point, op};
+    export compute: func(a: point, b: point, kind: op) -> point;
+}

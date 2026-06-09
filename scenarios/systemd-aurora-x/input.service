@@ -1,0 +1,15 @@
+[Unit]
+Description=My Web Service
+After=network.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+ExecStart=/usr/bin/myapp --port 8080
+Restart=on-failure
+RestartSec=5
+Environment="LOG_LEVEL=info" "MODE=prod"
+
+[Install]
+WantedBy=multi-user.target

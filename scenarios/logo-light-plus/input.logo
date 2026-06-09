@@ -1,0 +1,17 @@
+to square :size
+  repeat 4 [
+    forward :size
+    right 90
+  ]
+end
+
+to spiral :n :angle
+  if :n > 100 [stop]
+  forward :n
+  right :angle
+  spiral :n + 5 :angle
+end
+
+clearscreen
+square 50
+spiral 10 91

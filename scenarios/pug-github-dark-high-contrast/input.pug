@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    style.
+      body { margin: 0; }
+  body
+    h1.headline Welcome #{user.name}
+    ul
+      each item in items
+        li.item= item.label
+    if loggedIn
+      a(href="/logout") Log out
+    else
+      a(href="/login") Log in

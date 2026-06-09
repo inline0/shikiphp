@@ -1,0 +1,13 @@
+# Default owners
+* @org/core-team
+
+# Frontend
+/src/web/ @org/frontend @alice
+*.css @design-team
+
+# Docs
+/docs/ @org/docs-team
+README.md @bob @carol
+
+# Build config
+/.github/ @org/devops

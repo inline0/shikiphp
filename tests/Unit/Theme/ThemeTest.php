@@ -224,7 +224,24 @@ final class ThemeTest extends TestCase
     {
         $theme = Theme::fromRaw(['name' => 'bare', 'type' => 'light', 'tokenColors' => []]);
 
-        self::assertSame('#333333', $theme->foreground());
+        self::assertSame('#bbbbbb', $theme->foreground());
         self::assertSame('#ffffff', $theme->background());
+    }
+
+    #[Test]
+    public function empty_scope_array_does_not_seed_the_default_foreground(): void
+    {
+        $raw = [
+            'name' => 'empty-scope',
+            'type' => 'dark',
+            'colors' => ['editor.foreground' => '#ffffff'],
+            'tokenColors' => [
+                ['scope' => [], 'settings' => ['foreground' => '#ffb85b']],
+            ],
+        ];
+
+        $theme = Theme::fromRaw($raw);
+
+        self::assertSame('#ffffff', $theme->foreground());
     }
 }

@@ -1,0 +1,16 @@
+description: |
+  This is a literal block.
+  Newlines are preserved.
+    Indentation too.
+folded: >
+  This is folded
+  into a single line
+  with spaces.
+unicode: "日本語 🎌 café"
+list:
+  - &item one
+  - *item
+  - { inline: map, with: [nested, list] }
+multiline_key: "value with: colon and # hash"
+empty:
+nullval: ~

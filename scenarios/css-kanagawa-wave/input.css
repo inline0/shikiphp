@@ -1,0 +1,20 @@
+:root {
+  --primary: #3498db;
+  --gap: clamp(1rem, 2vw, 2rem);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--gap);
+  background: linear-gradient(135deg, var(--primary), #2980b9);
+}
+
+@media (max-width: 600px) {
+  .card { grid-template-columns: 1fr; }
+}
+
+.card:hover::after {
+  content: "→";
+  opacity: 0.5;
+}

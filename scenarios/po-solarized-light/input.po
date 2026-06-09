@@ -1,0 +1,15 @@
+# Translation file
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+
+#: src/app.c:42
+msgid "Hello, world!"
+msgstr "Bonjour le monde!"
+
+#: src/app.c:50
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d fichier"
+msgstr[1] "%d fichiers"

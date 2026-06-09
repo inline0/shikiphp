@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+const title = "Home";
+const items = ["alpha", "beta", "gamma"];
+const count = items.length;
+---
+
+<Layout title={title}>
+  <h1>{title} ({count})</h1>
+  <ul>
+    {items.map((item) => (
+      <li class="item">{item.toUpperCase()}</li>
+    ))}
+  </ul>
+  <style>
+    .item { color: var(--accent); }
+  </style>
+</Layout>

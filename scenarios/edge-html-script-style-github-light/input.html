@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+  @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+  .box::before { content: "\2022"; }
+</style>
+<script type="application/json" id="data">
+  { "key": "value", "nested": [1, 2, 3] }
+</script>
+</head>
+<body>
+<script>
+  const data = JSON.parse(document.getElementById("data").textContent);
+  document.title = `Loaded ${data.nested.length} items`;
+</script>
+</body>
+</html>

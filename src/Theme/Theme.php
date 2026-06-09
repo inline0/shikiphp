@@ -12,7 +12,7 @@ final class Theme
 {
     private const DEFAULT_FOREGROUND_DARK = '#bbbbbb';
     private const DEFAULT_BACKGROUND_DARK = '#1e1e1e';
-    private const DEFAULT_FOREGROUND_LIGHT = '#333333';
+    private const DEFAULT_FOREGROUND_LIGHT = '#bbbbbb';
     private const DEFAULT_BACKGROUND_LIGHT = '#ffffff';
 
     private readonly ThemeTrieElement $root;
@@ -270,7 +270,7 @@ final class Theme
             $foreground = self::normalizeColor($settings['foreground'] ?? null);
             $background = self::normalizeColor($settings['background'] ?? null);
 
-            $scopes = self::normalizeScopes($entry['scope'] ?? null);
+            $scopes = self::normalizeScopes($entry['scope'] ?? null, array_key_exists('scope', $entry));
 
             foreach ($scopes as $scope) {
                 $segments = preg_split('/\s+/', trim($scope)) ?: [];
@@ -297,7 +297,7 @@ final class Theme
     /**
      * @return list<string>
      */
-    private static function normalizeScopes(mixed $scope): array
+    private static function normalizeScopes(mixed $scope, bool $scopeKeyPresent): array
     {
         if (is_string($scope)) {
             $scope = explode(',', $scope);
@@ -313,7 +313,11 @@ final class Theme
             }
         }
 
-        return $out === [] ? [''] : $out;
+        if ($out !== []) {
+            return $out;
+        }
+
+        return $scopeKeyPresent ? [] : [''];
     }
 
     private static function normalizeColor(mixed $color): ?string

@@ -1,0 +1,17 @@
+{
+  "name": "demo-package",
+  "version": "2.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "config": {
+    "ports": [8080, 8443],
+    "flags": { "debug": false, "verbose": true },
+    "nullable": null
+  }
+}

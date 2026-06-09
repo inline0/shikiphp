@@ -1,0 +1,17 @@
+== Introduction ==
+
+This is a '''bold''' word and an ''italic'' one.
+
+* First item
+* Second item
+** Nested item
+
+{| class="wikitable"
+! Header 1 !! Header 2
+|-
+| Cell A || Cell B
+|}
+
+[[Main Page|home]] and [https://example.com external link].
+
+{{Infobox | name = Example | type = demo }}

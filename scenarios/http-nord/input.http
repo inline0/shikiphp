@@ -1,0 +1,9 @@
+POST /api/v1/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Authorization: Bearer abc123
+
+{
+  "name": "Alice",
+  "email": "alice@example.com"
+}

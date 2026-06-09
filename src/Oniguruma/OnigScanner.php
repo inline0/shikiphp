@@ -103,7 +103,7 @@ final class OnigScanner
      * best match index so far — a probe at or past it can't win, so the confirm
      * is skipped.
      *
-     * @return array{index:int,end:int,captures:list<?array{0:int,1:int,2:string}>}|null
+     * @return array{index:int,end:int,captures:list<?array{0:int,1:int,2?:string}>}|null
      */
     private function runMatch(int $i, Matcher $matcher, string $content, int $startPosition, ?int $cap): ?array
     {

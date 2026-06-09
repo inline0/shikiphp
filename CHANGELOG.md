@@ -17,18 +17,28 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - VS Code theme resolution with scope-selector specificity and parent-scope
     selectors.
   - Shiki-compatible HTML renderer (single and dual light/dark themes).
-- Public API: `Shikiphp::codeToHtml()`, `codeToTokens()`, and a `Highlighter`
+- Public API: `Shikiphp::codeToHtml()`, `codeToTokens()`, `codeToTokensBase()`,
+  `codeToTokensResult()` (a `TokensResult` with `fg`/`bg`/`themeName`/`rootStyle`/
+  `grammarState`), `codeToTokensWithThemes()` (per-token theme variants),
+  `getLastGrammarState()` (resume tokenization across chunks), and a `Highlighter`
   with `codeToHast()`.
+- Custom-loading API: `Highlighter::loadGrammar()` / `loadTheme()` for user-supplied
+  grammars/themes, plus `bundledLanguages()` / `bundledThemes()` accessors.
 - Transformer pipeline with all Shiki hooks (`preprocess`, `tokens`, `root`,
   `pre`, `code`, `line`, `span`, `postprocess`) and `enforce` ordering.
+- All `@shikijs/transformers` built-ins: notation comments (highlight, diff,
+  focus, error-level, word), meta highlight/word, render-whitespace,
+  compact-line-options, remove-notation-escape, remove-line-break, and
+  style-to-class (with `getCSS()`).
 - `codeToHtml` options: `transformers`, `decorations`, `colorReplacements`,
   `structure` (`classic`/`inline`), `tabindex`, `cssVariablePrefix`,
-  `mergeWhitespaces`, `tokenizeMaxLineLength`, `defaultColor`.
+  `mergeWhitespaces`, `tokenizeMaxLineLength`, `defaultColor`, `meta`.
 - ANSI highlighting (`lang: 'ansi'`): SGR parser, 16/256/truecolor palette with
   theme `terminal.ansi*` overrides and Shiki's default fallback.
 - The full Shiki bundle: every `tm-grammars` language (200+) and `tm-themes`
   theme (65). The Oniguruma→JS converter handles all 32k+ grammar patterns with
   zero failures, and every language tokenizes without error.
-- CLI (`bin/shikiphp`) and a Shiki.js oracle regression harness (78 scenarios).
+- CLI (`bin/shikiphp`) and a Shiki.js oracle regression harness (124 scenarios
+  across ~77 languages, validated token-for-token).
 
 [Unreleased]: https://github.com/inline0/shikiphp/commits/main

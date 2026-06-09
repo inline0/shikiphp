@@ -45,7 +45,8 @@ use Shikiphp\Transformer\TransformerPipeline;
  *     mergeWhitespaces?: bool|'never',
  *     tokenizeMaxLineLength?: int|null,
  *     decorations?: list<array<string,mixed>>,
- *     meta?: array<string,mixed>
+ *     meta?: array<string,mixed>,
+ *     grammarState?: \Shikiphp\GrammarState
  * }
  */
 final class Highlighter
@@ -127,14 +128,161 @@ final class Highlighter
     }
 
     /**
+     * Bare 2D token grid for a single theme (Shiki's `codeToTokensBase`). This is
+     * what {@see codeToTokens()} has always returned; kept stable for callers.
+     *
      * @param Options $options
      * @return list<list<ThemedToken>>
      */
     public function codeToTokens(string $code, array $options): array
     {
         [$themesByKey, $defaultKey] = $this->resolveThemes($options);
+        $initial = $this->resumeState($options);
 
-        return $this->tokenize($code, $options, $themesByKey, $defaultKey);
+        $finalState = null;
+        return $this->tokenize($code, $options, $themesByKey, $defaultKey, $finalState, $initial);
+    }
+
+    /**
+     * Alias of {@see codeToTokens()} matching Shiki's `codeToTokensBase` name.
+     *
+     * @param Options $options
+     * @return list<list<ThemedToken>>
+     */
+    public function codeToTokensBase(string $code, array $options): array
+    {
+        return $this->codeToTokens($code, $options);
+    }
+
+    /**
+     * Rich result mirroring Shiki's top-level `codeToTokens`: the token grid plus
+     * `fg`/`bg`/`themeName`, dual-theme `rootStyle`, and the final `grammarState`.
+     *
+     * @param Options $options
+     */
+    public function codeToTokensResult(string $code, array $options): TokensResult
+    {
+        [$themesByKey, $defaultKey] = $this->resolveThemes($options);
+        $initial = $this->resumeState($options);
+        $replacements = self::resolveColorReplacements($options, $themesByKey);
+
+        $finalState = null;
+        $tokens = $this->tokenize($code, $options, $themesByKey, $defaultKey, $finalState, $initial);
+
+        $grammarState = self::isAnsiLang($options['lang'])
+            ? null
+            : $this->grammarStateFor($options, $themesByKey, $finalState);
+
+        if (!isset($options['themes'])) {
+            $theme = $themesByKey['default'];
+            return new TokensResult(
+                tokens: $tokens,
+                fg: self::applyColorReplacements($theme->foreground(), $replacements),
+                bg: self::applyColorReplacements($theme->background(), $replacements),
+                themeName: $options['theme'] ?? $theme->name(),
+                rootStyle: null,
+                grammarState: $grammarState,
+            );
+        }
+
+        $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
+        $names = [];
+        $fgParts = [];
+        $bgParts = [];
+        foreach ($themesByKey as $key => $theme) {
+            $names[] = $theme->name();
+            $fg = self::applyColorReplacements($theme->foreground(), $replacements) ?? '';
+            $bg = self::applyColorReplacements($theme->background(), $replacements) ?? '';
+            if ($key === $defaultKey) {
+                $fgParts[] = $fg;
+                $bgParts[] = $bg;
+            } else {
+                $fgParts[] = $prefix . $key . ':' . $fg;
+                $bgParts[] = $prefix . $key . '-bg:' . $bg;
+            }
+        }
+        $fg = implode(';', $fgParts);
+        $bg = implode(';', $bgParts);
+
+        return new TokensResult(
+            tokens: $tokens,
+            fg: $fg,
+            bg: $bg,
+            themeName: 'shiki-themes ' . implode(' ', $names),
+            rootStyle: $defaultKey !== false ? null : $fg . ';' . $bg,
+            grammarState: $grammarState,
+        );
+    }
+
+    /**
+     * Final grammar state after tokenizing `$code` (Shiki's `getLastGrammarState`),
+     * for resuming tokenization. Pass the result back via the `grammarState` option.
+     *
+     * @param Options $options
+     */
+    public function getLastGrammarState(string $code, array $options): GrammarState
+    {
+        if (self::isAnsiLang($options['lang'])) {
+            throw Highlight::ansiLanguageHasNoGrammarState();
+        }
+
+        [$themesByKey, $defaultKey] = $this->resolveThemes($options);
+        $initial = $this->resumeState($options);
+
+        $finalState = null;
+        $this->tokenize($code, $options, $themesByKey, $defaultKey, $finalState, $initial);
+
+        $state = $this->grammarStateFor($options, $themesByKey, $finalState);
+        assert($state !== null);
+
+        return $state;
+    }
+
+    /**
+     * Build a {@see GrammarState} keyed by every active theme name from the rule
+     * stack reached at the end of tokenization (theme-independent in our pipeline).
+     *
+     * @param Options $options
+     * @param array<string, Theme> $themesByKey
+     */
+    private function grammarStateFor(array $options, array $themesByKey, ?StateStack $finalState): ?GrammarState
+    {
+        if ($finalState === null) {
+            return null;
+        }
+
+        $stacks = [];
+        foreach ($themesByKey as $theme) {
+            $stacks[$theme->name()] = $finalState;
+        }
+
+        return new GrammarState($stacks, $options['lang']);
+    }
+
+    /**
+     * Resolve the `grammarState` resume option to an initial rule stack, validating
+     * the carried language and theme(s) like Shiki's `codeToTokensBase`.
+     *
+     * @param Options $options
+     */
+    private function resumeState(array $options): ?StateStack
+    {
+        $state = $options['grammarState'] ?? null;
+        if ($state === null) {
+            return null;
+        }
+
+        if ($state->lang !== $options['lang']) {
+            throw Highlight::grammarStateLanguageMismatch($state->lang, $options['lang']);
+        }
+
+        $themeName = isset($options['themes'])
+            ? ($state->themes()[0] ?? '')
+            : ($options['theme'] ?? '');
+
+        $stack = $state->getInternalStack($themeName !== '' ? $themeName : null);
+
+        return $stack;
     }
 
     /**
@@ -338,10 +486,17 @@ final class Highlighter
     /**
      * @param Options $options
      * @param array<string, Theme> $themesByKey
+     * @param ?StateStack $finalState set to the rule stack after the last line
      * @return list<list<ThemedToken>>
      */
-    private function tokenize(string $code, array $options, array $themesByKey, string|false $defaultKey): array
-    {
+    private function tokenize(
+        string $code,
+        array $options,
+        array $themesByKey,
+        string|false $defaultKey,
+        ?StateStack &$finalState = null,
+        ?StateStack $initialState = null,
+    ): array {
         if (self::isAnsiLang($options['lang'])) {
             return $this->tokenizeAnsi($code, $options, $themesByKey, $defaultKey);
         }
@@ -352,7 +507,7 @@ final class Highlighter
         $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
 
         $lines = self::splitLines($code);
-        $state = null;
+        $state = $initialState;
 
         $out = [];
         $lineOffset = 0;
@@ -372,6 +527,8 @@ final class Highlighter
 
             $lineOffset += $lineLen + ($index < count($lines) - 1 ? 1 : 0);
         }
+
+        $finalState = $state ?? $grammar->initialState();
 
         return $out;
     }

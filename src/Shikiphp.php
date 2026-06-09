@@ -35,6 +35,31 @@ final class Shikiphp
         return self::highlighter()->codeToTokens($code, $options);
     }
 
+    /**
+     * @param CodeToHtmlOptions $options
+     * @return list<list<\Shikiphp\Render\ThemedToken>>
+     */
+    public static function codeToTokensBase(string $code, array $options): array
+    {
+        return self::highlighter()->codeToTokensBase($code, $options);
+    }
+
+    /**
+     * @param CodeToHtmlOptions $options
+     */
+    public static function codeToTokensResult(string $code, array $options): TokensResult
+    {
+        return self::highlighter()->codeToTokensResult($code, $options);
+    }
+
+    /**
+     * @param CodeToHtmlOptions $options
+     */
+    public static function getLastGrammarState(string $code, array $options): GrammarState
+    {
+        return self::highlighter()->getLastGrammarState($code, $options);
+    }
+
     public static function highlighter(): Highlighter
     {
         return self::$highlighter ??= Highlighter::createBundled();

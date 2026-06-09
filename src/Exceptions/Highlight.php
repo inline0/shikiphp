@@ -40,6 +40,31 @@ final class Highlight extends \RuntimeException
         return new self('The `themes` option must be a non-empty map of colour key to theme name.');
     }
 
+    public static function invalidGrammarState(): self
+    {
+        return new self('Invalid grammar state.');
+    }
+
+    public static function grammarStateLanguageMismatch(string $stateLang, string $lang): self
+    {
+        return new self("Grammar state language \"{$stateLang}\" does not match highlight language \"{$lang}\".");
+    }
+
+    public static function grammarStateThemeMismatch(string $themes, string $theme): self
+    {
+        return new self("Grammar state themes \"{$themes}\" do not contain highlight theme \"{$theme}\".");
+    }
+
+    public static function plainLanguageHasNoGrammarState(): self
+    {
+        return new self('Plain language does not have grammar state.');
+    }
+
+    public static function ansiLanguageHasNoGrammarState(): self
+    {
+        return new self('ANSI language does not have grammar state.');
+    }
+
     public static function decorationsIntersect(string $a, string $b): self
     {
         return new self("Decorations {$a} and {$b} intersect.");

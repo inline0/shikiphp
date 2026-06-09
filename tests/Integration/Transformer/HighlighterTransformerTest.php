@@ -38,7 +38,7 @@ final class HighlighterTransformerTest extends TestCase
     public function preprocess_feeds_modified_code_into_tokenizer(): void
     {
         $replace = new class extends AbstractTransformer {
-            public function preprocess(string $code, array $options, TransformerContext $context): ?string
+            public function preprocess(string $code, array &$options, TransformerContext $context): ?string
             {
                 return str_replace('REPLACE_ME', 'const', $code);
             }

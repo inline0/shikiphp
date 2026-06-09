@@ -43,9 +43,9 @@ final class TransformerPipeline
     }
 
     /**
-     * @param Options $options
+     * @param Options $options mutated in place by transformers (Shiki's `this.options`)
      */
-    public function preprocess(string $code, array $options, TransformerContext $context): string
+    public function preprocess(string $code, array &$options, TransformerContext $context): string
     {
         foreach ($this->transformers as $transformer) {
             $code = $transformer->preprocess($code, $options, $context) ?? $code;

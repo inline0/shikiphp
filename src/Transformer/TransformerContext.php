@@ -21,6 +21,7 @@ final class TransformerContext
      * @param array<string,string> $themes color key → theme name
      * @param list<list<ThemedToken>> $tokens
      * @param list<Element> $lines
+     * @param array<string,mixed> $meta per-render scratch bag shared across hooks (Shiki's `this.meta`)
      */
     public function __construct(
         public array $options,
@@ -33,6 +34,7 @@ final class TransformerContext
         public ?Element $pre = null,
         public ?Element $code = null,
         public array $lines = [],
+        public array $meta = [],
     ) {
     }
 

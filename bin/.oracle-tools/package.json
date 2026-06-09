@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Node oracle + bundler tooling for shikiphp (gitignored).",
   "dependencies": {
+    "@shikijs/transformers": "^4.2.0",
     "oniguruma-to-es": "^4.3.3",
     "shiki": "^3.6.0",
     "tm-grammars": "^1.23.0",

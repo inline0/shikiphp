@@ -44,7 +44,8 @@ use Shikiphp\Transformer\TransformerPipeline;
  *     cssVariablePrefix?: string,
  *     mergeWhitespaces?: bool|'never',
  *     tokenizeMaxLineLength?: int|null,
- *     decorations?: list<array<string,mixed>>
+ *     decorations?: list<array<string,mixed>>,
+ *     meta?: array<string,mixed>
  * }
  */
 final class Highlighter
@@ -290,6 +291,7 @@ final class Highlighter
         $source = $ctx->pipeline->preprocess($code, $options, $ctx->context);
         $source = str_replace("\r\n", "\n", $source);
         $ctx->context->source = $source;
+        $ctx->context->options = $options;
 
         $pipeline = $ctx->pipeline;
         $decorations = $options['decorations'] ?? [];

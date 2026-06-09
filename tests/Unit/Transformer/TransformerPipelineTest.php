@@ -31,7 +31,7 @@ final class TransformerPipelineTest extends TestCase
                     return $this->enforce;
                 }
 
-                public function preprocess(string $code, array $options, TransformerContext $context): ?string
+                public function preprocess(string $code, array &$options, TransformerContext $context): ?string
                 {
                     $this->log[] = $this->id;
                     return null;
@@ -48,7 +48,8 @@ final class TransformerPipelineTest extends TestCase
             $make('post2', 'post'),
         ]);
 
-        $pipeline->preprocess('x', ['lang' => 'txt'], $this->context());
+        $options = ['lang' => 'txt'];
+        $pipeline->preprocess('x', $options, $this->context());
 
         $this->assertSame(['pre1', 'pre2', 'normal1', 'normal2', 'post1', 'post2'], $log);
     }
@@ -57,7 +58,7 @@ final class TransformerPipelineTest extends TestCase
     public function preprocess_replaces_when_returning_a_value_and_keeps_on_null(): void
     {
         $upper = new class extends AbstractTransformer {
-            public function preprocess(string $code, array $options, TransformerContext $context): ?string
+            public function preprocess(string $code, array &$options, TransformerContext $context): ?string
             {
                 return strtoupper($code);
             }
@@ -67,7 +68,8 @@ final class TransformerPipelineTest extends TestCase
 
         $pipeline = new TransformerPipeline([$upper, $noop]);
 
-        $this->assertSame('ABC', $pipeline->preprocess('abc', ['lang' => 'txt'], $this->context()));
+        $options = ['lang' => 'txt'];
+        $this->assertSame('ABC', $pipeline->preprocess('abc', $options, $this->context()));
     }
 
     #[Test]

@@ -22,9 +22,9 @@ interface Transformer
     public function enforce(): ?string;
 
     /**
-     * @param Options $options
+     * @param Options $options mutable by reference (Shiki's `this.options`)
      */
-    public function preprocess(string $code, array $options, TransformerContext $context): ?string;
+    public function preprocess(string $code, array &$options, TransformerContext $context): ?string;
 
     /**
      * @param list<list<ThemedToken>> $tokens

@@ -12,7 +12,7 @@ use Shikiphp\Exceptions\Highlight;
  * id to its theme file. Also mints the scope-name resolver the grammar Registry
  * uses to lazily pull in embedded/included grammars.
  *
- * @phpstan-type LangEntry array{file: string, scopeName: string, aliases: list<string>, embedded: list<string>}
+ * @phpstan-type LangEntry array{file: string, scopeName: string, aliases: list<string>, embedded: list<string>, injects?: bool}
  */
 final class BundleLoader
 {
@@ -124,6 +124,7 @@ final class BundleLoader
             'scopeName' => $scopeName,
             'aliases' => $aliases,
             'embedded' => $embedded,
+            'injects' => is_string($raw['injectionSelector'] ?? null),
         ];
         $this->langIndex[$id] = $id;
         $this->scopeIndex[$scopeName] = $id;
@@ -192,6 +193,27 @@ final class BundleLoader
         }
 
         return array_keys($seen);
+    }
+
+    /**
+     * The raw grammars in a language's dependency closure that carry an
+     * `injectionSelector`. These must be registered before tokenization because
+     * injections are discovered by scanning registered grammars rather than via
+     * an `include`; every other closure grammar resolves lazily through the
+     * Registry's resolver. Only these (typically few or zero) files are decoded.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function injectionGrammars(string $idOrAlias): array
+    {
+        $out = [];
+        foreach ($this->dependencyClosure($idOrAlias) as $depId) {
+            if (!empty($this->languages[$depId]['injects'])) {
+                $out[] = $this->rawGrammar($depId);
+            }
+        }
+
+        return $out;
     }
 
     /** @return array<string, mixed> decoded grammar JSON */

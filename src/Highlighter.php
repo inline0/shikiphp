@@ -686,8 +686,15 @@ final class Highlighter
             throw Highlight::unknownLanguage($lang);
         }
 
-        foreach ($this->loader->dependencyClosure($lang) as $depId) {
-            $this->registry->loadGrammarFromRaw($this->loader->rawGrammar($depId));
+        // Include-based dependencies (`$base`/`$self`/external scopes, embedded
+        // langs) resolve lazily through the Registry's grammar resolver, so a code
+        // sample that touches none of them never pays to read or decode them.
+        // Injection grammars are the exception: they are discovered by scanning
+        // the registered raw grammars (`injectionScopesFor`), not by an `include`,
+        // so any closure grammar carrying an `injectionSelector` must be present
+        // before tokenization or its injection would silently not apply.
+        foreach ($this->loader->injectionGrammars($lang) as $raw) {
+            $this->registry->loadGrammarFromRaw($raw);
         }
 
         return $this->grammars[$lang] = $this->registry->loadGrammar($this->loader->scopeNameFor($lang));

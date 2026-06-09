@@ -60,7 +60,8 @@
       "file": "grammars/angular-expression.json",
       "scopeName": "expression.ng",
       "aliases": [],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "angular-let-declaration": {
       "file": "grammars/angular-let-declaration.json",
@@ -68,7 +69,8 @@
       "aliases": [],
       "embedded": [
         "angular-expression"
-      ]
+      ],
+      "injects": true
     },
     "angular-template": {
       "file": "grammars/angular-template.json",
@@ -76,7 +78,8 @@
       "aliases": [],
       "embedded": [
         "angular-expression"
-      ]
+      ],
+      "injects": true
     },
     "angular-template-blocks": {
       "file": "grammars/angular-template-blocks.json",
@@ -85,7 +88,8 @@
       "embedded": [
         "angular-expression",
         "angular-template"
-      ]
+      ],
+      "injects": true
     },
     "angular-ts": {
       "file": "grammars/angular-ts.json",
@@ -106,7 +110,8 @@
       "aliases": [],
       "embedded": [
         "scss"
-      ]
+      ],
+      "injects": true
     },
     "scss": {
       "file": "grammars/scss.json",
@@ -123,7 +128,8 @@
       "embedded": [
         "angular-html",
         "angular-template"
-      ]
+      ],
+      "injects": true
     },
     "apache": {
       "file": "grammars/apache.json",
@@ -1452,7 +1458,8 @@
         "markdown",
         "yaml",
         "html-derivative"
-      ]
+      ],
+      "injects": true
     },
     "mdx": {
       "file": "grammars/mdx.json",
@@ -1525,7 +1532,8 @@
       "aliases": [
         "mmd"
       ],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "mipsasm": {
       "file": "grammars/mipsasm.json",
@@ -1614,7 +1622,8 @@
       "file": "grammars/markdown-nix.json",
       "scopeName": "markdown.nix.codeblock",
       "aliases": [],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "nushell": {
       "file": "grammars/nushell.json",
@@ -1970,7 +1979,8 @@
         "typescript",
         "css",
         "javascript"
-      ]
+      ],
+      "injects": true
     },
     "es-tag-glsl": {
       "file": "grammars/es-tag-glsl.json",
@@ -1980,7 +1990,8 @@
         "typescript",
         "glsl",
         "javascript"
-      ]
+      ],
+      "injects": true
     },
     "es-tag-html": {
       "file": "grammars/es-tag-html.json",
@@ -1990,7 +2001,8 @@
         "typescript",
         "html",
         "javascript"
-      ]
+      ],
+      "injects": true
     },
     "es-tag-sql": {
       "file": "grammars/es-tag-sql.json",
@@ -1999,7 +2011,8 @@
       "embedded": [
         "typescript",
         "sql"
-      ]
+      ],
+      "injects": true
     },
     "es-tag-xml": {
       "file": "grammars/es-tag-xml.json",
@@ -2007,7 +2020,8 @@
       "aliases": [],
       "embedded": [
         "xml"
-      ]
+      ],
+      "injects": true
     },
     "tsv": {
       "file": "grammars/tsv.json",
@@ -2112,19 +2126,22 @@
       "file": "grammars/markdown-vue.json",
       "scopeName": "markdown.vue.codeblock",
       "aliases": [],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "vue-directives": {
       "file": "grammars/vue-directives.json",
       "scopeName": "vue.directives",
       "aliases": [],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "vue-interpolations": {
       "file": "grammars/vue-interpolations.json",
       "scopeName": "vue.interpolations",
       "aliases": [],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "vue-sfc-style-variable-injection": {
       "file": "grammars/vue-sfc-style-variable-injection.json",
@@ -2132,7 +2149,8 @@
       "aliases": [],
       "embedded": [
         "javascript"
-      ]
+      ],
+      "injects": true
     },
     "vue-html": {
       "file": "grammars/vue-html.json",
@@ -3080,7 +3098,8 @@
       "aliases": [
         "mmd"
       ],
-      "embedded": []
+      "embedded": [],
+      "injects": true
     },
     "mips": {
       "file": "grammars/mipsasm.json",

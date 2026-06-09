@@ -100,6 +100,21 @@ UTF-16 code units). A group that did not participate is an empty span
 `[start==end]`. Value objects (`OnigString`, `OnigMatch`, `OnigCaptureIndex`)
 already exist in `src/Oniguruma/`.
 
+**Equivalence-gated PCRE fast-path.** Native `preg_match` is far faster than the
+tree-walking Matcher, but PCRE2 under `/u` diverges from ECMAScript in several
+places (Unicode `\d\w\s\b`, `.`, capture-reset on repetition, lookbehind capture
+direction, `\p{}` table version, lone surrogates, `\G`). `PcreTranslator` rewrites
+the converter's JS source into a PCRE pattern **only** for the subset it can prove
+identical to the Matcher — rewriting `\d\w\s`/`.`/`^`/`$` to their spec forms and
+rejecting everything else (named groups, backrefs, `\p{}`, `\b`, atomic emulation,
+quantified or lookbehind captures, unbounded-length lookbehind, …). Safe patterns
+run via `PcreMatcher` (byte↔UTF-16 offset mapping; sticky `\G` → PCRE `A` modifier);
+all others stay on the Matcher. `OnigScanner` also rejects any translation PCRE
+fails to compile. The classification is proven by `bin/.oracle-tools/`
+`pcre-equivalence.php`, which asserts the fast-path result equals the Matcher
+result (index, end, every capture span) for every PCRE-safe pattern in the bundled
+grammars across a large input corpus — **zero divergences required**.
+
 ## 4. Grammar — `Shikiphp\Grammar`
 
 A faithful port of [vscode-textmate](https://github.com/microsoft/vscode-textmate).

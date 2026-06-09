@@ -8,3 +8,4 @@ composer.lock
 node_modules/
 docs/node_modules/
 docs/.next/
+bin/.oracle-tools/converted-patterns.json

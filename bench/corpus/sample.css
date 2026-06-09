@@ -1,0 +1,81 @@
+:root {
+  --color-bg: #0d1117;
+  --color-fg: #e6edf3;
+  --color-accent: #2f81f7;
+  --radius: 0.5rem;
+  --space: clamp(0.5rem, 2vw, 1.5rem);
+  --font-sans: -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  padding: var(--space);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #161b22 0%, #21262d 100%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
+  transition: transform 200ms ease-in-out, opacity 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.card[data-state="active"] > .title::after {
+  content: " \2022 active";
+  color: var(--color-accent);
+}
+
+@media (max-width: 600px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.spinner {
+  animation: pulse 1.2s infinite ease;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .glass {
+    backdrop-filter: blur(10px) saturate(180%);
+    background: hsl(220deg 13% 18% / 70%);
+  }
+}
+
+a:focus-visible {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: 2px;
+}

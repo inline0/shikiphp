@@ -1,0 +1,55 @@
+{
+  "name": "example-package",
+  "version": "2.4.1",
+  "description": "A representative package manifest for benchmarking.",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run --coverage",
+    "lint": "eslint . --ext .ts,.tsx",
+    "release": "changeset publish"
+  },
+  "keywords": ["benchmark", "json", "sample", "fixture"],
+  "author": {
+    "name": "Jane Developer",
+    "email": "jane@example.com",
+    "url": "https://example.com"
+  },
+  "license": "MIT",
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "zod": "^3.23.8",
+    "picocolors": "^1.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "eslint": "^9.9.0",
+    "tsup": "^8.2.4"
+  },
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/example/example-package.git"
+  },
+  "config": {
+    "ports": [3000, 3001, 8080],
+    "flags": { "experimental": true, "verbose": false },
+    "ratio": 1.6180339887,
+    "fallback": null
+  }
+}

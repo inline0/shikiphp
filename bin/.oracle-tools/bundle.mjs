@@ -72,19 +72,27 @@ mkdirSync(grammarsOutDir, { recursive: true });
 mkdirSync(themesOutDir, { recursive: true });
 
 const manifestLanguages = {};
+const injectingScopes = new Set();
 
 for (const [name, grammar] of closure) {
   const json = loadGrammarJson(name);
+  if (typeof json.injectionSelector === 'string') {
+    injectingScopes.add(grammar.scopeName);
+  }
   writeFileSync(resolve(grammarsOutDir, `${name}.json`), JSON.stringify(json));
 }
 
 function manifestEntry(grammar) {
-  return {
+  const entry = {
     file: `grammars/${grammar.name}.json`,
     scopeName: grammar.scopeName,
     aliases: grammar.aliases ?? [],
     embedded: grammar.embedded ?? [],
   };
+  if (injectingScopes.has(grammar.scopeName)) {
+    entry.injects = true;
+  }
+  return entry;
 }
 
 for (const [, grammar] of closure) {

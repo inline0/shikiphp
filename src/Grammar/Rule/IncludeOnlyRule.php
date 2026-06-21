@@ -13,6 +13,8 @@ final class IncludeOnlyRule extends Rule
 {
     public readonly bool $hasMissingPatterns;
 
+    private ?RegExpSourceList $cachedCompiled = null;
+
     /** @param list<int> $patterns sub-rule ids (Include rules are resolved at compile time) */
     public function __construct(
         int $id,
@@ -35,8 +37,16 @@ final class IncludeOnlyRule extends Rule
 
     public function compile(array $rulesById, ?string $endRegexSource, bool $allowA, bool $allowG): RegExpSourceList
     {
-        $out = new RegExpSourceList();
-        $this->collectPatterns($rulesById, $out);
-        return $out;
+        // The expanded pattern list is static (rulesById is fixed for the rule's
+        // grammar) and independent of the anchor flags, which the returned list's
+        // own compile() resolves per variant. Build it once.
+        $cached = $this->cachedCompiled;
+        if ($cached === null) {
+            $cached = new RegExpSourceList();
+            $this->collectPatterns($rulesById, $cached);
+            $this->cachedCompiled = $cached;
+        }
+
+        return $cached;
     }
 }

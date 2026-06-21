@@ -23,10 +23,16 @@ final class PcreMatcher
     }
 
     /**
+     * @param ?bool $ascii Whether $inputUtf8 is pure ASCII (byte offset == UTF-16
+     *   code-unit offset, so no conversion is needed). Detected if null.
      * @return array{index:int, end:int, captures:list<?array{0:int,1:int}>}|null
      */
-    public function match(string $inputUtf8, int $startCodeUnit): ?array
+    public function match(string $inputUtf8, int $startCodeUnit, ?bool $ascii = null): ?array
     {
+        if ($ascii ?? !preg_match('/[\x80-\xFF]/', $inputUtf8)) {
+            return $this->matchAscii($inputUtf8, $startCodeUnit);
+        }
+
         $byteOffset = self::utf16ToByteOffset($inputUtf8, $startCodeUnit);
         if ($byteOffset === null) {
             return null;
@@ -77,6 +83,45 @@ final class PcreMatcher
             $cs = $convert($cap[1]);
             $ce = $convert($cap[1] + strlen((string) $cap[0]));
             $captures[] = [$cs, $ce];
+        }
+
+        return ['index' => $index, 'end' => $end, 'captures' => $captures];
+    }
+
+    /**
+     * ASCII fast-path: byte offsets are UTF-16 code-unit offsets, so preg_match
+     * runs at the start offset directly and result offsets pass through unconverted.
+     *
+     * @return array{index:int, end:int, captures:list<?array{0:int,1:int}>}|null
+     */
+    private function matchAscii(string $input, int $startCodeUnit): ?array
+    {
+        if ($startCodeUnit < 0 || $startCodeUnit > strlen($input)) {
+            return null;
+        }
+
+        $matches = [];
+        $r = @preg_match($this->pcre, $input, $matches, PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL, $startCodeUnit);
+        if ($r === false) {
+            throw new PcreMatchError(preg_last_error_msg());
+        }
+        if ($r !== 1) {
+            return null;
+        }
+
+        $whole = $matches[0];
+        $index = $whole[1];
+        $end = $whole[1] + strlen((string) $whole[0]);
+
+        $captures = [[$index, $end]];
+        $n = count($matches);
+        for ($i = 1; $i < $n; $i++) {
+            $cap = $matches[$i];
+            if ($cap[0] === null || $cap[1] < 0) {
+                $captures[] = null;
+                continue;
+            }
+            $captures[] = [$cap[1], $cap[1] + strlen((string) $cap[0])];
         }
 
         return ['index' => $index, 'end' => $end, 'captures' => $captures];

@@ -55,6 +55,20 @@ final class OnigScanner
 
     private ?PcreTranslator $translator = null;
 
+    /** Content the per-pattern match cache is valid for (reset when the input changes). */
+    private string $cacheKey = '';
+
+    /**
+     * vscode-oniguruma's result cache: per pattern, the leftmost match found from
+     * an earlier start offset. A non-sticky pattern's leftmost match from offset F
+     * is still the leftmost for any start in [F, matchStart], so it is not re-run
+     * while the cursor stays at or before it — the dominant speedup for the
+     * many-pattern scanners of grammars like markdown.
+     *
+     * @var array<int, array{from: int, result: array{index:int,end:int,captures:list<?array{0:int,1:int,2?:string}>}|null}>
+     */
+    private array $cache = [];
+
     /** @param list<string> $patterns Oniguruma source patterns. */
     public function __construct(array $patterns)
     {
@@ -63,6 +77,17 @@ final class OnigScanner
 
     public function findNextMatch(OnigString $string, int $startPosition): ?OnigMatch
     {
+        $content = $string->content;
+        if ($content !== $this->cacheKey) {
+            $this->cacheKey = $content;
+            $this->cache = [];
+        }
+
+        // ASCII content (the common case) means UTF-16 code-unit offsets equal
+        // byte offsets, so the PCRE matchers skip all offset conversion. Computed
+        // once per scan and threaded down.
+        $ascii = !preg_match('/[\x80-\xFF]/', $content);
+
         $best = null;
         $bestIndex = -1;
 
@@ -72,11 +97,18 @@ final class OnigScanner
                 continue;
             }
 
-            $result = $this->runMatch($i, $matcher, $string->content, $startPosition, $best['index'] ?? null);
-            if ($result === null) {
-                continue;
+            if ($this->sticky[$i] ?? false) {
+                // \G-anchored: matches only at the scan start, so it is position-
+                // dependent and not cacheable across positions.
+                $result = $this->runMatch($i, $matcher, $content, $startPosition, $ascii);
+                if ($result !== null && $result['index'] !== $startPosition) {
+                    $result = null;
+                }
+            } else {
+                $result = $this->cachedMatch($i, $matcher, $content, $startPosition, $ascii);
             }
-            if (($this->sticky[$i] ?? false) && $result['index'] !== $startPosition) {
+
+            if ($result === null) {
                 continue;
             }
 
@@ -97,33 +129,54 @@ final class OnigScanner
     }
 
     /**
-     * Run pattern $i from $startPosition: proven-equivalent PCRE directly, else
-     * position-mode PCRE to find the match position with an anchored VM confirm
-     * there (full VM scan if the confirm disagrees), else the VM. $cap is the
-     * best match index so far — a probe at or past it can't win, so the confirm
-     * is skipped.
+     * Leftmost match for pattern $i at/after $startPosition, reusing the cached
+     * result while the cursor has not advanced past it (see {@see $cache}).
      *
      * @return array{index:int,end:int,captures:list<?array{0:int,1:int,2?:string}>}|null
      */
-    private function runMatch(int $i, Matcher $matcher, string $content, int $startPosition, ?int $cap): ?array
+    private function cachedMatch(int $i, Matcher $matcher, string $content, int $startPosition, bool $ascii): ?array
+    {
+        $entry = $this->cache[$i] ?? null;
+        if ($entry !== null && $entry['from'] <= $startPosition) {
+            $cached = $entry['result'];
+            if ($cached === null) {
+                return null;
+            }
+            if ($cached['index'] >= $startPosition) {
+                return $cached;
+            }
+        }
+
+        $result = $this->runMatch($i, $matcher, $content, $startPosition, $ascii);
+        $this->cache[$i] = ['from' => $startPosition, 'result' => $result];
+
+        return $result;
+    }
+
+    /**
+     * Run pattern $i from $startPosition: proven-equivalent PCRE directly, else
+     * position-mode PCRE to find the match position with an anchored VM confirm
+     * there (full VM scan if the confirm disagrees), else the VM. Returns the true
+     * leftmost match (no best-so-far cap) so the result is cacheable.
+     *
+     * @return array{index:int,end:int,captures:list<?array{0:int,1:int,2?:string}>}|null
+     */
+    private function runMatch(int $i, Matcher $matcher, string $content, int $startPosition, bool $ascii): ?array
     {
         try {
             try {
                 $pcre = $this->pcre[$i] ?? null;
                 if ($pcre !== null) {
-                    return $pcre->match($content, $startPosition);
+                    return $pcre->match($content, $startPosition, $ascii);
                 }
 
                 $prefilter = $this->prefilter[$i] ?? null;
                 if ($prefilter !== null && !($this->sticky[$i] ?? false)) {
-                    $probe = $prefilter->match($content, $startPosition);
+                    $probe = $prefilter->match($content, $startPosition, $ascii);
                     if ($probe === null) {
                         return null;
                     }
-                    if ($cap !== null && $probe['index'] >= $cap) {
-                        return null;
-                    }
-                    $confirmed = $matcher->match($content, $probe['index'], true);
+                    $confirmed = $matcher->match($content, $probe['index'], true, $startPosition);
                     if ($confirmed !== null) {
                         return $confirmed;
                     }

@@ -455,6 +455,15 @@ final class PcreTranslator
         if (($c === 'p' || $c === 'P') && $this->positionMode) {
             return $this->copyUnicodeProperty();
         }
+        if ($c === 'G' && $this->positionMode) {
+            // Scan-anchor. PCRE pins `\G` to the preg_match offset exactly as the
+            // VM pins it to the scan start, so the prefilter's match positions
+            // coincide with the VM's (no overshoot — see the equivalence harness).
+            // Capture fidelity is not required here; the VM confirm, run with the
+            // original scan start as its `\G` anchor, supplies the true captures.
+            $this->pos++;
+            return '\\G';
+        }
         if ($c === 'b' || $c === 'B' || $c === 'p' || $c === 'P' || $c === 'G' || $c === 'k') {
             // Word boundary (Unicode-aware in PCRE2/u), Unicode property
             // (table skew), scan-anchor, named backref → VM.

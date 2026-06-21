@@ -31,6 +31,9 @@ final class BeginEndRule extends Rule
         parent::__construct($id, $name, $contentName);
     }
 
+    /** @var array<string, RegExpSourceList> compiled list keyed by the resolved end source */
+    private array $cachedCompiled = [];
+
     public function endHasBackReferences(): bool
     {
         return $this->end->hasBackReferences;
@@ -43,6 +46,15 @@ final class BeginEndRule extends Rule
 
     public function compile(array $rulesById, ?string $endRegexSource, bool $allowA, bool $allowG): RegExpSourceList
     {
+        // Cache the assembled list keyed by the resolved end source: a static end
+        // (no back-references) yields one entry; a dynamic end caches per distinct
+        // resolved string. The list is independent of the anchor flags, which its
+        // own compile() resolves per variant.
+        $key = $endRegexSource ?? "\0";
+        if (isset($this->cachedCompiled[$key])) {
+            return $this->cachedCompiled[$key];
+        }
+
         $out = new RegExpSourceList();
 
         $endSource = $endRegexSource !== null
@@ -57,7 +69,7 @@ final class BeginEndRule extends Rule
             $this->collectChildPatterns($rulesById, $out);
         }
 
-        return $out;
+        return $this->cachedCompiled[$key] = $out;
     }
 
     /** @param array<int, Rule> $rulesById */

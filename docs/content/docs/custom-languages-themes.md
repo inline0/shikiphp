@@ -1,6 +1,11 @@
 ---
-title: Custom Languages & Themes
-description: Register your own TextMate grammars and VS Code themes with loadGrammar() and loadTheme().
+title: "Custom Languages & Themes"
+description: "Register your own TextMate grammars and VS Code themes with loadGrammar() and loadTheme()."
+path: "custom-languages-themes"
+order: 5
+section: "Documentation"
+meta_title: "Custom Languages & Themes"
+meta_description: "Register your own TextMate grammars and VS Code themes with loadGrammar() and loadTheme()."
 ---
 
 # Custom Languages & Themes

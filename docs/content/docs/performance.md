@@ -1,6 +1,11 @@
 ---
-title: Performance
-description: What to expect from shikiphp's pure-PHP engine, and how to keep highlighting fast in production.
+title: "Performance"
+description: "What to expect from shikiphp's pure-PHP engine, and how to keep highlighting fast in production."
+path: "performance"
+order: 9
+section: "Documentation"
+meta_title: "Performance"
+meta_description: "What to expect from shikiphp's pure-PHP engine, and how to keep highlighting fast in production."
 ---
 
 # Performance

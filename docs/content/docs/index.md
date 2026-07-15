@@ -1,6 +1,11 @@
 ---
-title: Introduction
-description: shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output byte-identical to Shiki, entirely in PHP.
+title: "Introduction"
+description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output byte-identical to Shiki, entirely in PHP."
+path: "."
+order: 0
+section: "Documentation"
+meta_title: "Introduction"
+meta_description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output byte-identical to Shiki, entirely in PHP."
 ---
 
 # shikiphp

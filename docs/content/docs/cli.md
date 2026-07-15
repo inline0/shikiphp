@@ -1,6 +1,11 @@
 ---
-title: CLI
-description: The bin/shikiphp command — highlight a file to HTML, or list bundled languages and themes.
+title: "CLI"
+description: "The bin/shikiphp command — highlight a file to HTML, or list bundled languages and themes."
+path: "cli"
+order: 10
+section: "Documentation"
+meta_title: "CLI"
+meta_description: "The bin/shikiphp command — highlight a file to HTML, or list bundled languages and themes."
 ---
 
 # CLI

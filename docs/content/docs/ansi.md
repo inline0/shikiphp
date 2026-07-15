@@ -1,6 +1,11 @@
 ---
-title: ANSI Output
-description: Highlight terminal output and ANSI escape sequences with lang 'ansi'.
+title: "ANSI Output"
+description: "Highlight terminal output and ANSI escape sequences with lang 'ansi'."
+path: "ansi"
+order: 4
+section: "Documentation"
+meta_title: "ANSI Output"
+meta_description: "Highlight terminal output and ANSI escape sequences with lang 'ansi'."
 ---
 
 # ANSI Output

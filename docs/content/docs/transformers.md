@@ -1,6 +1,11 @@
 ---
-title: Transformers
-description: The transformer pipeline and hooks, how to write your own, and the built-in notation, meta, and whitespace transformers.
+title: "Transformers"
+description: "The transformer pipeline and hooks, how to write your own, and the built-in notation, meta, and whitespace transformers."
+path: "transformers"
+order: 3
+section: "Documentation"
+meta_title: "Transformers"
+meta_description: "The transformer pipeline and hooks, how to write your own, and the built-in notation, meta, and whitespace transformers."
 ---
 
 # Transformers

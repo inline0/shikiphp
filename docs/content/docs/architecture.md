@@ -1,6 +1,11 @@
 ---
-title: Architecture
-description: How shikiphp tokenizes and renders — the converter, scanner, tokenizer, theme resolver, and the vendored pure-PHP JS regex engine.
+title: "Architecture"
+description: "How shikiphp tokenizes and renders — the converter, scanner, tokenizer, theme resolver, and the vendored pure-PHP JS regex engine."
+path: "architecture"
+order: 8
+section: "Documentation"
+meta_title: "Architecture"
+meta_description: "How shikiphp tokenizes and renders — the converter, scanner, tokenizer, theme resolver, and the vendored pure-PHP JS regex engine."
 ---
 
 # Architecture

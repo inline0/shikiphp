@@ -1,6 +1,11 @@
 ---
-title: Options
-description: Every option codeToHtml, codeToTokens, and codeToHast accept — lang, theme(s), transformers, decorations, structure, and more.
+title: "Options"
+description: "Every option codeToHtml, codeToTokens, and codeToHast accept — lang, theme(s), transformers, decorations, structure, and more."
+path: "options"
+order: 2
+section: "Documentation"
+meta_title: "Options"
+meta_description: "Every option codeToHtml, codeToTokens, and codeToHast accept — lang, theme(s), transformers, decorations, structure, and more."
 ---
 
 # Options

@@ -2,8 +2,8 @@
 title: "Languages"
 description: "The full tm-grammars catalog (200+ languages) ships with shikiphp, and how to list what's available."
 path: "languages"
-order: 6
-section: "Documentation"
+order: 60
+section: "Languages & Themes"
 meta_title: "Languages"
 meta_description: "The full tm-grammars catalog (200+ languages) ships with shikiphp, and how to list what's available."
 ---

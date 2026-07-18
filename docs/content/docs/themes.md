@@ -2,8 +2,8 @@
 title: "Themes"
 description: "The full tm-themes catalog (65 themes) ships with shikiphp, and how to list what's available."
 path: "themes"
-order: 7
-section: "Documentation"
+order: 70
+section: "Languages & Themes"
 meta_title: "Themes"
 meta_description: "The full tm-themes catalog (65 themes) ships with shikiphp, and how to list what's available."
 ---

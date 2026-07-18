@@ -2,8 +2,8 @@
 title: "API"
 description: "The full shikiphp API surface — the Shikiphp facade, the Highlighter, and the TokensResult and GrammarState value objects."
 path: "api"
-order: 11
-section: "Documentation"
+order: 120
+section: "Reference"
 meta_title: "API"
 meta_description: "The full shikiphp API surface — the Shikiphp facade, the Highlighter, and the TokensResult and GrammarState value objects."
 ---

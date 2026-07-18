@@ -2,8 +2,8 @@
 title: "CLI"
 description: "The bin/shikiphp command — highlight a file to HTML, or list bundled languages and themes."
 path: "cli"
-order: 10
-section: "Documentation"
+order: 110
+section: "Reference"
 meta_title: "CLI"
 meta_description: "The bin/shikiphp command — highlight a file to HTML, or list bundled languages and themes."
 ---

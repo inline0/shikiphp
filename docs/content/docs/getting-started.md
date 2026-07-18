@@ -3,7 +3,6 @@ title: "Getting Started"
 description: "Install shikiphp with Composer and render your first themed code block, including dual light/dark themes."
 path: "getting-started"
 order: 20
-section: "Introduction"
 meta_title: "Getting Started"
 meta_description: "Install shikiphp with Composer and render your first themed code block, including dual light/dark themes."
 ---

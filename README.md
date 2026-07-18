@@ -112,7 +112,7 @@ vendor/bin/shikiphp themes
 
 ## How it works
 
-See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for the full pipeline. In short:
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full pipeline. In short:
 
 ```
 code → grammar tokenizer → theme resolver → themed tokens → HTML

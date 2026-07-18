@@ -6,7 +6,5 @@ composer.lock
 .DS_Store
 .shikiphp/
 node_modules/
-docs/node_modules/
-docs/.next/
 bin/.oracle-tools/converted-patterns.json
 bin/.oracle-tools/vm-bug-queue.txt

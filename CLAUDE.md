@@ -4,7 +4,7 @@ Pure PHP port of [Shiki](https://shiki.style). Tokenizes code with TextMate
 grammars and paints it with VS Code themes, producing Shiki-compatible HTML —
 no extensions beyond `json`/`mbstring`, no Node, no native Oniguruma binding.
 
-Read **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** first — it is the
+Read **[ARCHITECTURE.md](./ARCHITECTURE.md)** first — it is the
 normative contract for every subsystem (value-object shapes, method signatures,
 the pipeline). Do not diverge from it without updating it.
 

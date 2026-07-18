@@ -13,7 +13,7 @@ meta_description: "How shikiphp tokenizes and renders — the converter, scanner
 shikiphp turns source code into themed, highlighted HTML using TextMate grammars
 and VS Code themes, with no PHP extensions beyond `json`/`mbstring`, no Node
 runtime, and no native Oniguruma binding. This page summarizes the pipeline; the
-full normative contract lives in `docs/ARCHITECTURE.md` in the repository.
+full normative contract lives in `ARCHITECTURE.md` in the repository.
 
 ## The pipeline
 

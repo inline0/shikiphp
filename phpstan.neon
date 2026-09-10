@@ -5,4 +5,4 @@ parameters:
         - src
     excludePaths:
         - src/Regex/*
-    tmpDir: .phpstan.cache
+    tmpDir: .phpstan

@@ -375,7 +375,7 @@ abstract class CommentNotationTransformer extends AbstractTransformer
 
             $groups = [];
             foreach ($m as $g) {
-                $groups[] = ($g[1] === -1) ? null : $g[0];
+                $groups[] = ($g[1] < 0) ? null : $g[0];
             }
             $out .= $callback($groups);
 

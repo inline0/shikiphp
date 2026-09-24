@@ -75,8 +75,8 @@ final class PcreMatcher
         for ($i = 1; $i < $n; $i++) {
             $cap = $matches[$i];
             // PREG_UNMATCHED_AS_NULL reports a non-participating group as
-            // [null, -1]: null text, -1 offset.
-            if ($cap[0] === null || $cap[1] < 0) {
+            // [null, -1]: null text, -1 offset. The offset alone decides it.
+            if ($cap[1] < 0) {
                 $captures[] = null;
                 continue;
             }
@@ -117,7 +117,7 @@ final class PcreMatcher
         $n = count($matches);
         for ($i = 1; $i < $n; $i++) {
             $cap = $matches[$i];
-            if ($cap[0] === null || $cap[1] < 0) {
+            if ($cap[1] < 0) {
                 $captures[] = null;
                 continue;
             }

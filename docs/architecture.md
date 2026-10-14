@@ -46,8 +46,9 @@ TextMate grammars are written in Oniguruma. `Shikiphp\Oniguruma\PatternConverter
 is a PHP port of
 [`oniguruma-to-es`](https://github.com/slevithan/oniguruma-to-es): it converts an
 Oniguruma pattern into a JS-RegExp-compatible source and flags string the regex
-engine accepts. This is the same Oniguruma → RegExp path modern Shiki uses, which
-is what lets shikiphp match Shiki's output offset-for-offset. The converter
+engine accepts. This is the same Oniguruma → RegExp path Shiki's JavaScript
+regex engine takes, which is what lets shikiphp match that engine's output
+offset-for-offset. The converter
 handles the real-world constructs grammars use: POSIX classes, possessive
 quantifiers and atomic groups, inline flags, named groups and backreferences,
 Unicode properties, and more.
@@ -59,13 +60,28 @@ once per rule from a list of patterns and finds the leftmost match at or after a
 start position.
 
 The tree-walking matcher is correct but not fast, so the scanner has an
-**equivalence-gated PCRE fast-path**. A `PcreTranslator` rewrites the converter's
-JS source into a native PCRE pattern *only* for the subset it can prove behaves
-identically to the matcher, and rejects everything else (named groups,
-backreferences, `\p{}`, `\b`, atomic emulation, and so on). Safe patterns run via
-PCRE; all others stay on the matcher. The classification is proven by an oracle
-tool that asserts the fast-path result equals the matcher result — index, end,
-and every capture span — across a large corpus, with zero divergences allowed.
+**equivalence-gated PCRE fast-path** with two tiers. A `PcreTranslator` rewrites
+the converter's JS source into a native PCRE pattern only where it can prove the
+result:
+
+- **Full match.** When the translation behaves identically to the matcher,
+  including every capture, the pattern runs on PCRE outright. Named groups,
+  backreferences, `\p{}`, `\b`, `\G`, atomic emulation, and captures whose
+  JavaScript semantics differ from PCRE (inside a quantified group or a
+  lookbehind) are rejected from this tier.
+- **Position only.** When only captures could differ, a second translation
+  admits those constructs (`\b` and `\B` as exact ASCII lookarounds, atomic
+  groups as native `(?>…)`, `\p{…}` when PCRE compiles it). PCRE then only
+  finds where the next match is, and the matcher re-runs at that offset to
+  produce the real captures. Backreferences and `\G` stay rejected here too.
+
+Everything else runs on the matcher alone. For the bundled grammars at Shiki
+3.23.0, about 39% of the 14,234 distinct patterns run fully on PCRE, about 57%
+use the position tier, and about 4% stay on the matcher. The classification is
+checked by a development tool in the repository
+(`bin/.oracle-tools/pcre-equivalence.php`) that compares the fast path with the
+matcher — index, end, and, for the first tier, every capture span — over the
+scenario inputs and a set of synthetic strings, with zero divergences allowed.
 
 ## Grammar and theme
 
@@ -85,7 +101,12 @@ colors; dual-theme mode writes `--shiki-light` / `--shiki-dark` CSS variables.
 
 ## Validated against Shiki
 
-Shiki.js itself is the oracle. The `scenarios/` directory holds **214**
-language/theme fixtures; `bin/test-regression` highlights each with both engines
-and asserts the HTML is identical. The non-negotiable rule is that highlighting
-output must not regress against Shiki.
+Shiki itself is the oracle, pinned to `shiki` 3.23.0 with its JavaScript regex
+engine. The `scenarios/` directory holds **214** fixtures, each one input in one
+language and one theme; together they cover 167 of the 253 bundled grammars,
+`lang: 'ansi'`, and all 65 themes. `bin/test-regression` highlights each with
+both engines and asserts the HTML is identical once leading and trailing
+whitespace is trimmed. Options and transformers are checked by parity tests
+against output captured from the same Shiki and `@shikijs/transformers` 4.2.0.
+The non-negotiable rule is that highlighting output must not regress against
+Shiki.

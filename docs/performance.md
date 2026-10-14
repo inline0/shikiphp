@@ -15,19 +15,30 @@ honest about where it is fast and where it is not.
 
 ## What to expect
 
-Highlighting is fast across the board. The tokenizer caches compiled rules and
-scanners, grammars load lazily (a sample that never touches an embedded language
-never pays to decode it), and a two-tier, equivalence-gated PCRE fast-path runs
-~93% of all grammar patterns through native `preg_*`: proven-identical patterns
-run on PCRE outright, and extent-equivalent ones use PCRE to locate the match
-position with the spec-faithful matcher confirming there (full fallback on any
-disagreement, validated by a 20M-comparison differential harness).
+Expect tens to hundreds of milliseconds per file, not microseconds. The
+tokenizer caches compiled rules and scanners, grammars load lazily (a sample
+that never touches an embedded language never pays to decode it), and most
+grammar patterns run through native `preg_*` on an equivalence-gated PCRE fast
+path, with the pure-PHP matcher handling the rest (see
+[Architecture](/docs/architecture#the-scanner-and-its-pcre-fast-path)).
 
-Ballpark figures for a ~90-line file on stock PHP (warm process): simple grammars
-like JSON or YAML in the tens of milliseconds; CSS, HTML, Bash around 50–120ms;
-PHP, Python, Rust, Go around 200–280ms; and the heaviest grammars in the bundle,
-TypeScript and TSX, around 330ms. Cost scales with grammar complexity and input
-size; the first call per language additionally pays one-time grammar compilation.
+These are warm, single-call times from the repository's benchmark
+(`bench/bench.php`, theme `github-dark`) on one machine, for corpus files of
+roughly 55 to 105 lines:
+
+| Grammar | PHP 8.2 | PHP 8.4 |
+| --- | --- | --- |
+| JSON, YAML | 30–65 ms | 25–45 ms |
+| CSS, HTML | 100–120 ms | 80–100 ms |
+| Python, Rust, Go, Bash, Markdown | 190–220 ms | 125–175 ms |
+| PHP | about 290 ms | about 170 ms |
+| TypeScript, TSX | 490–510 ms | 310–370 ms |
+
+The first call for a language in a process also pays one-time grammar loading
+and compilation: in the same runs that ranged from 50–70 ms for JSON to just
+over a second for Markdown. Cost scales with grammar complexity and input size,
+and the figures move with hardware, so measure on your own: in a clone of the
+repository, run `composer install` and then `composer bench`.
 
 ## Safety guards
 

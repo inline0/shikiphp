@@ -21,9 +21,10 @@
 ## What is shikiphp?
 
 shikiphp is a pure PHP port of [Shiki](https://shiki.style), the syntax
-highlighter that powers VS Code's own coloring. It tokenizes code with the same
-**TextMate grammars** and paints it with the same **VS Code themes** Shiki uses,
-producing identical HTML — entirely in PHP.
+highlighter that colors code with the same TextMate grammars and themes as VS
+Code. It tokenizes code with the same **TextMate grammars** and paints it with
+the same **VS Code themes** Shiki uses, producing the HTML Shiki 3.23.0 produces
+— entirely in PHP.
 
 **The problem:** server-rendered syntax highlighting in PHP usually means either
 shelling out to Node, calling a hosted API, or settling for a regex-based
@@ -36,14 +37,17 @@ Laravel/WordPress/static-site build step.
   embedded languages, injections, and nested repositories
 - VS Code theme resolution with scope-selector specificity (`vscode-textmate`'s theme matching)
 - A pure-PHP **JavaScript regex engine** as the grammar regex runtime, fed by an
-  `oniguruma-to-es` port — the same Oniguruma→RegExp path modern Shiki uses
+  `oniguruma-to-es` port — the Oniguruma→RegExp path Shiki's JavaScript regex
+  engine takes
 - Shiki-compatible HTML output: dual light/dark themes via CSS variables,
   `codeToHast`, transformers (all hooks), decorations, `colorReplacements`,
   `structure: inline`, and ANSI (`lang: 'ansi'`) highlighting
-- the **full Shiki bundle** — every `tm-grammars` language (200+) and `tm-themes` theme (65)
+- the **full Shiki bundle** — every `tm-grammars` language (235, plus 18 helper
+  grammars they embed) and `tm-themes` theme (65)
 - No PHP extensions beyond `json`/`mbstring`, no Node, no native Oniguruma binding
-- Validated token-for-token against Shiki.js with an oracle regression harness
-  (scenarios across the full grammar/theme set)
+- Checked against Shiki 3.23.0 with an oracle regression harness: 214 scenarios
+  covering 167 of the 253 bundled grammars, ANSI, and all 65 themes, plus parity
+  tests for the options and transformers
 
 ## Quick Start
 
@@ -68,6 +72,10 @@ PHP, [
 Dual themes (light + dark) via CSS variables, like Shiki:
 
 ```php
+use Shikiphp\Shikiphp;
+
+$code = 'const answer: number = 42';
+
 echo Shikiphp::codeToHtml($code, [
     'lang'   => 'ts',
     'themes' => ['light' => 'github-light', 'dark' => 'github-dark'],
@@ -77,10 +85,15 @@ echo Shikiphp::codeToHtml($code, [
 Transformers, decorations, and other options (Shiki-compatible):
 
 ```php
+use Shikiphp\Shikiphp;
+use Shikiphp\Transformer\Notation\NotationHighlight;
+
+$code = "const greeting = 'hello' // [!code highlight]\nconsole.log(greeting)";
+
 echo Shikiphp::codeToHtml($code, [
     'lang'        => 'js',
     'theme'       => 'vitesse-dark',
-    'transformers' => [new MyLineNumberTransformer()],
+    'transformers' => [new NotationHighlight()],
     'decorations' => [
         ['start' => ['line' => 0, 'character' => 0], 'end' => ['line' => 0, 'character' => 5],
          'properties' => ['class' => 'highlight']],
@@ -96,6 +109,8 @@ $hast = Shikiphp::highlighter()->codeToHast($code, ['lang' => 'rust', 'theme' =>
 Highlight ANSI terminal output:
 
 ```php
+use Shikiphp\Shikiphp;
+
 echo Shikiphp::codeToHtml("\e[31merror\e[0m: something broke", [
     'lang'  => 'ansi',
     'theme' => 'github-dark',
@@ -121,9 +136,23 @@ code → grammar tokenizer → theme resolver → themed tokens → HTML
 ```
 
 The regex engine is vendored from [`inline0/phasis`](https://github.com/inline0/phasis),
-a pure-PHP JavaScript engine. Because Shiki's modern default engine converts
-Oniguruma patterns to JavaScript `RegExp`, a JS regex engine is the natural
-substrate and lets shikiphp match Shiki's output offset-for-offset.
+a pure-PHP JavaScript engine. Shiki's JavaScript regex engine
+(`shiki/engine/javascript`) converts Oniguruma patterns to JavaScript `RegExp`;
+shikiphp follows that engine, so a JS regex engine is the natural substrate and
+lets shikiphp match its output offset-for-offset.
+
+## Shiki version
+
+The bundled grammars and themes come from `tm-grammars` 1.31.15 and `tm-themes`
+1.12.2. The oracle compares against `shiki` 3.23.0 using its JavaScript regex
+engine, and the transformer parity tests against `@shikijs/transformers` 4.2.0
+(pinned in `bin/.oracle-tools/package-lock.json`). Shiki's default engine is
+Oniguruma compiled to WebAssembly; the oracle does not run it. Later Shiki
+releases have not been checked.
+
+## Requirements
+
+PHP 8.2 or later with `ext-json` and `ext-mbstring`. CI runs on PHP 8.4.
 
 ## License
 

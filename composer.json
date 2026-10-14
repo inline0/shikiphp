@@ -1,6 +1,6 @@
 {
     "name": "shikiphp/shikiphp",
-    "description": "Pure PHP port of Shiki. Syntax-highlight code with VS Code themes and TextMate grammars — no extensions, no Node, no Oniguruma binding.",
+    "description": "Pure PHP port of Shiki. Syntax-highlight code with VS Code themes and TextMate grammars — no extensions beyond json and mbstring, no Node, no Oniguruma binding.",
     "type": "library",
     "license": "MIT",
     "authors": [

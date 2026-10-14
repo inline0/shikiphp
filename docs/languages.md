@@ -25,9 +25,10 @@ below; an id the bundle does not know throws
 The special id `'ansi'` is not a grammar; it highlights terminal output. See
 [ANSI](/docs/ansi).
 
-Shiki's plain-text ids `text`, `txt`, `plain`, and `plaintext` are not
-supported yet and throw `Unknown language`
-([#2](https://github.com/inline0/shikiphp/issues/2)).
+The plain-text ids `text`, `txt`, `plain`, and `plaintext` render untokenized
+text using the theme's foreground and background. They preserve line breaks,
+escape HTML, and work with single or multiple themes without a TextMate grammar.
+Plain text has no grammar state.
 
 ## Listing the bundled languages
 

@@ -222,6 +222,10 @@ final class Highlighter
      */
     public function getLastGrammarState(string $code, array $options): GrammarState
     {
+        if (self::isPlainLang($options['lang'])) {
+            throw Highlight::plainLanguageHasNoGrammarState();
+        }
+
         if (self::isAnsiLang($options['lang'])) {
             throw Highlight::ansiLanguageHasNoGrammarState();
         }
@@ -267,6 +271,10 @@ final class Highlighter
      */
     private function resumeState(array $options): ?StateStack
     {
+        if (self::isPlainLang($options['lang'])) {
+            return null;
+        }
+
         $state = $options['grammarState'] ?? null;
         if ($state === null) {
             return null;
@@ -497,6 +505,10 @@ final class Highlighter
         ?StateStack &$finalState = null,
         ?StateStack $initialState = null,
     ): array {
+        if (self::isPlainLang($options['lang'])) {
+            return self::tokenizePlain($code);
+        }
+
         if (self::isAnsiLang($options['lang'])) {
             return $this->tokenizeAnsi($code, $options, $themesByKey, $defaultKey);
         }
@@ -529,6 +541,28 @@ final class Highlighter
         }
 
         $finalState = $state ?? $grammar->initialState();
+
+        return $out;
+    }
+
+    private static function isPlainLang(string $lang): bool
+    {
+        return in_array($lang, ['', 'text', 'txt', 'plain', 'plaintext'], true);
+    }
+
+    /** @return list<list<ThemedToken>> */
+    private static function tokenizePlain(string $code): array
+    {
+        $lines = explode("\n", $code);
+        $out = [];
+        $offset = 0;
+        foreach ($lines as $index => $line) {
+            $content = $index < count($lines) - 1 && str_ends_with($line, "\r")
+                ? substr($line, 0, -1)
+                : $line;
+            $out[] = [new ThemedToken($content, offset: $offset)];
+            $offset += self::utf16Length($line) + 1;
+        }
 
         return $out;
     }

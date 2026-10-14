@@ -25,8 +25,8 @@ vendor/bin/shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]
 
 - `<file>` — the path to read. It must be an existing file; standard input is
   not read.
-- `--lang` — the language id or alias. If omitted, the file extension is used
-  as-is as the id (falling back to `txt` when there is none).
+- `--lang` — the language id or alias. If omitted, a recognized file extension
+  selects its language; unknown extensions and extensionless files use plain text.
 - `--theme` — the theme id. Defaults to `github-dark`.
 
 ```bash
@@ -54,18 +54,16 @@ is ignored, `php` is replaced by `file.rs`, and the language comes from the
 
 ### Language inference
 
-Without `--lang`, the extension becomes the language id unchanged. That works
+Without `--lang`, a recognized extension becomes the language id. That works
 whenever the extension is itself a bundled id or alias — `php`, `js`, `ts`,
 `tsx`, `py`, `rs`, `go`, `md`, `yml`, `json`, `sh`, and many more (see
-[Languages](/docs/languages)). It does not work for:
+[Languages](/docs/languages)). Other files render as plain text:
 
 - files without an extension, such as `Makefile` or `Dockerfile`, which fall
   back to `txt`;
-- extensions that are not a language id, such as `.txt`.
+- extensions that are not a language id. The `.txt` extension also renders plain text.
 
-`txt` is not a bundled language, so both cases currently stop with an
-`Unknown language "txt"` error ([#3](https://github.com/inline0/shikiphp/issues/3)).
-Pass `--lang` for these files:
+Pass `--lang` to select a grammar for extensionless files:
 
 ```bash
 vendor/bin/shikiphp highlight Dockerfile --lang=docker
@@ -109,4 +107,4 @@ vendor/bin/shikiphp --help
 | Success, or help | stdout | `0` |
 | Unknown command | `Unknown command: <name>` on stderr | `1` |
 | `highlight` without a file, or the file does not exist | the usage line on stderr | `1` |
-| Unknown language or theme | an uncaught `Shikiphp\Exceptions\Highlight` (PHP fatal error with a stack trace) | `255` |
+| Unknown explicit language or theme | a one-line error on stderr | `1` |

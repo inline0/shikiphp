@@ -35,12 +35,17 @@ if ($command === null || in_array($command, ['-h', '--help', 'help'], true)) {
     exit(0);
 }
 
-match ($command) {
-    'highlight' => cmdHighlight($argv),
-    'langs' => cmdLangs(),
-    'themes' => cmdThemes(),
-    default => fwrite(STDERR, "Unknown command: {$command}\n") === false ? exit(1) : exit(1),
-};
+try {
+    match ($command) {
+        'highlight' => cmdHighlight($argv),
+        'langs' => cmdLangs(),
+        'themes' => cmdThemes(),
+        default => throw new RuntimeException("Unknown command: {$command}"),
+    };
+} catch (Throwable $error) {
+    fwrite(STDERR, $error->getMessage() . "\n");
+    exit(1);
+}
 
 function cmdHighlight(array $argv): void
 {
@@ -64,7 +69,12 @@ function cmdHighlight(array $argv): void
     }
 
     $code = (string) file_get_contents($file);
-    $lang ??= pathinfo($file, PATHINFO_EXTENSION) ?: 'txt';
+    if ($lang === null) {
+        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $lang = in_array($extension, Highlighter::createBundled()->loadedLanguages(), true)
+            ? $extension
+            : 'txt';
+    }
 
     echo Shikiphp::codeToHtml($code, ['lang' => $lang, 'theme' => $theme]), "\n";
 }

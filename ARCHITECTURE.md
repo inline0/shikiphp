@@ -230,6 +230,12 @@ final class Highlighter
 `Shikiphp::codeToHtml()` / `::codeToTokens()` delegate to the shared bundled
 highlighter (already scaffolded in `src/Shikiphp.php`).
 
+The plain-text ids `text`, `txt`, `plain`, and `plaintext` bypass the grammar
+pipeline. Each source line yields one unstyled token, including empty lines,
+with its absolute UTF-16 offset. The active themes still style the root HTML
+element. Plain-text results have no grammar state; `getLastGrammarState()`
+raises `Plain language does not have grammar state.`
+
 ## 8. Bundled assets — `src/Registry`
 
 - `src/Registry/grammars/<name>.json` — TextMate grammars (from `tm-grammars`).

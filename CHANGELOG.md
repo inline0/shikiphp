@@ -4,6 +4,18 @@ All notable changes to shikiphp are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-10-14
+
+### Fixed
+
+- Plain-text language ids `text`, `txt`, `plain`, and `plaintext` render
+  untokenized text with the theme's colors, preserving empty lines and UTF-16
+  offsets without a grammar state.
+- CLI highlighting falls back to plain text for unknown extensions and
+  extensionless files. Invalid explicit languages and themes report a one-line
+  error and exit 1 instead of printing a PHP fatal error.
+- Composer's description names the required `json` and `mbstring` extensions.
+
 ## [0.1.0] - 2026-06-23
 
 ### Added
@@ -41,4 +53,5 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - CLI (`bin/shikiphp`) and a Shiki.js oracle regression harness (214 scenarios
   across ~77 languages, validated token-for-token).
 
+[0.1.1]: https://github.com/inline0/shikiphp/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/inline0/shikiphp/releases/tag/v0.1.0

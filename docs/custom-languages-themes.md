@@ -27,6 +27,8 @@ $highlighter = Shikiphp::highlighter();
 $theme = json_decode(file_get_contents('my-theme.json'), true);
 $highlighter->loadTheme($theme);
 
+$code = '<?php echo "hello";';
+
 echo $highlighter->codeToHtml($code, [
     'lang'  => 'php',
     'theme' => $theme['name'], // the theme's own name
@@ -54,10 +56,14 @@ public function loadGrammar(
   too.
 
 ```php
+use Shikiphp\Shikiphp;
+
 $highlighter = Shikiphp::highlighter();
 
 $grammar = json_decode(file_get_contents('mylang.tmLanguage.json'), true);
 $highlighter->loadGrammar($grammar, 'mylang', aliases: ['ml']);
+
+$code = file_get_contents('example.mylang');
 
 echo $highlighter->codeToHtml($code, [
     'lang'  => 'mylang',
@@ -77,6 +83,10 @@ hand it over with `Shikiphp::use`:
 ```php
 use Shikiphp\Highlighter;
 use Shikiphp\Shikiphp;
+
+$myTheme = json_decode(file_get_contents('my-theme.json'), true);
+$myGrammar = json_decode(file_get_contents('mylang.tmLanguage.json'), true);
+$code = file_get_contents('example.mylang');
 
 $highlighter = Highlighter::createBundled();
 $highlighter->loadTheme($myTheme);

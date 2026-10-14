@@ -50,6 +50,10 @@ Instead of a single `theme`, pass a `themes` map. shikiphp emits CSS variables
 (like Shiki) so a single rendered block adapts to light and dark mode:
 
 ```php
+use Shikiphp\Shikiphp;
+
+$code = 'const answer: number = 42';
+
 echo Shikiphp::codeToHtml($code, [
     'lang'   => 'ts',
     'themes' => ['light' => 'github-light', 'dark' => 'github-dark'],
@@ -91,6 +95,8 @@ directly:
 
 ```php
 use Shikiphp\Shikiphp;
+
+$code = 'fn main() {}';
 
 $highlighter = Shikiphp::highlighter();
 $hast = $highlighter->codeToHast($code, ['lang' => 'rust', 'theme' => 'nord']);

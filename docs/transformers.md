@@ -22,6 +22,12 @@ use Shikiphp\Shikiphp;
 use Shikiphp\Transformer\Notation\NotationHighlight;
 use Shikiphp\Transformer\Notation\NotationDiff;
 
+$code = <<<'JS'
+console.log('this line is highlighted') // [!code highlight]
+console.log('old line') // [!code --]
+console.log('new line') // [!code ++]
+JS;
+
 echo Shikiphp::codeToHtml($code, [
     'lang'         => 'js',
     'theme'        => 'vitesse-dark',
@@ -62,6 +68,7 @@ you need; the rest stay no-ops. The transformer context exposes
 
 ```php
 use Shikiphp\Hast\Element;
+use Shikiphp\Shikiphp;
 use Shikiphp\Transformer\AbstractTransformer;
 use Shikiphp\Transformer\TransformerContext;
 
@@ -76,6 +83,13 @@ final class AddLanguageClass extends AbstractTransformer
         return $element;
     }
 }
+
+echo Shikiphp::codeToHtml('const answer = 42', [
+    'lang'         => 'js',
+    'theme'        => 'nord',
+    'transformers' => [new AddLanguageClass()],
+]);
+// <pre class="shiki nord language-js" …>
 ```
 
 ## Built-in transformers
@@ -150,6 +164,11 @@ text after a fenced code block's language.
 like `{1,3-5}`, adding the `highlighted` class.
 
 ```php
+use Shikiphp\Shikiphp;
+use Shikiphp\Transformer\MetaHighlight;
+
+$code = "const a = 1\nconst b = 2\nconst c = 3\nconst d = 4\nconst e = 5";
+
 echo Shikiphp::codeToHtml($code, [
     'lang'         => 'js',
     'theme'        => 'nord',
@@ -178,11 +197,16 @@ The constructor takes `(classSpace, classTab, position)` where `position` is
 from a list of `{line, classes}` entries.
 
 ```php
-new CompactLineOptions([
+use Shikiphp\Transformer\CompactLineOptions;
+
+$transformer = new CompactLineOptions([
     ['line' => 1, 'classes' => 'highlighted'],
     ['line' => 3, 'classes' => ['highlighted', 'error']],
 ]);
 ```
+
+Line numbers are 1-based. Pass the object in the `transformers` option like any
+other transformer.
 
 #### `RemoveNotationEscape`
 
@@ -197,19 +221,26 @@ between lines (Shiki's `transformerRemoveLineBreak`).
 
 ### `StyleToClass`
 
-`Shikiphp\Transformer\StyleToClass` — replaces every inline `style` attribute
-with a generated class and collects a stylesheet you fetch with `getCSS()`. Class
-names hash the style with Shiki's `cyrb53`, so output is byte-identical to
-`@shikijs/transformers`.
+`Shikiphp\Transformer\StyleToClass` — moves inline styles into generated classes
+and collects a stylesheet you fetch with `getCSS()`. Class names hash the style
+with Shiki's `cyrb53`, so output is byte-identical to `@shikijs/transformers`
+4.2.0, including its scope:
+
+- The `<pre>` style always becomes a class.
+- Token spans are converted only when they carry a prebuilt style, which is the
+  case with a `themes` map. With a single `theme`, the token spans keep their
+  inline `style="color:…"`, as they do in Shiki.
 
 ```php
+use Shikiphp\Shikiphp;
 use Shikiphp\Transformer\StyleToClass;
 
+$code = 'const answer = 42';
 $styleToClass = new StyleToClass();
 
 $html = Shikiphp::codeToHtml($code, [
-    'lang'         => 'php',
-    'theme'        => 'github-dark',
+    'lang'         => 'js',
+    'themes'       => ['light' => 'github-light', 'dark' => 'github-dark'],
     'transformers' => [$styleToClass],
 ]);
 

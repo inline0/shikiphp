@@ -30,6 +30,8 @@ options array always carries a `lang`, plus either a `theme` or a `themes` map,
 and any of the rendering [options](/docs/options).
 
 ```php
+use Shikiphp\Shikiphp;
+
 echo Shikiphp::codeToHtml($code, ['lang' => 'php', 'theme' => 'github-dark']);
 ```
 
@@ -44,6 +46,8 @@ Returns the bare 2D token grid (one inner list per line) of
 `Shikiphp\Render\ThemedToken` objects instead of HTML.
 
 ```php
+use Shikiphp\Shikiphp;
+
 $lines = Shikiphp::codeToTokens($code, ['lang' => 'js', 'theme' => 'nord']);
 
 foreach ($lines as $line) {
@@ -74,6 +78,8 @@ grid plus the resolved colors, theme name, dual-theme root style, and final
 grammar state. See [`TokensResult`](#tokensresult) below.
 
 ```php
+use Shikiphp\Shikiphp;
+
 $result = Shikiphp::codeToTokensResult($code, [
     'lang'  => 'php',
     'theme' => 'github-dark',
@@ -99,6 +105,8 @@ incremental highlighting. Throws if `lang` is `'ansi'` (ANSI has no grammar
 state).
 
 ```php
+use Shikiphp\Shikiphp;
+
 $state = Shikiphp::getLastGrammarState("/* unterminated comment", [
     'lang'  => 'js',
     'theme' => 'nord',
@@ -157,6 +165,8 @@ to walk, mutate, or serialize yourself. This is what `codeToHtml` serializes
 internally.
 
 ```php
+use Shikiphp\Shikiphp;
+
 $hast = Shikiphp::highlighter()->codeToHast($code, [
     'lang'  => 'rust',
     'theme' => 'nord',
@@ -174,6 +184,8 @@ Tokenizes once per theme and merges the result into per-token `variants` keyed b
 theme key, mirroring Shiki's `codeToTokensWithThemes`. Requires a `themes` map.
 
 ```php
+use Shikiphp\Shikiphp;
+
 $lines = Shikiphp::highlighter()->codeToTokensWithThemes($code, [
     'lang'   => 'ts',
     'themes' => ['light' => 'github-light', 'dark' => 'github-dark'],

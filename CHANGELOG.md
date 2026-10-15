@@ -4,6 +4,14 @@ All notable changes to shikiphp are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-10-16
+
+### Changed
+
+- Re-sync the vendored regex engine from Phasis, including Unicode 17 property
+  tables and host-independent script membership. The upstream case-fold table
+  retains its existing version.
+
 ## [0.2.0] - 2026-10-15
 
 ### Added

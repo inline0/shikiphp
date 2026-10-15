@@ -27,3 +27,7 @@ the JS engine and Shiki's tokenizer exactly.
 
 Do not edit files in this directory by hand; re-sync from upstream `phasis`
 instead.
+
+## Source checkpoint
+
+Re-synced from Phasis `79f728d5c4a1cc9f3145a9e6475d18ace8b1e6b1` on 2026-10-16. Unicode property tables track Unicode 17.0.0; the case-fold table retains its upstream version.

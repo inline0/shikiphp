@@ -132,6 +132,10 @@ for (const id of ALL_THEMES) {
 
 const manifest = {
   version: shikiVersion,
+  upstreams: Object.fromEntries([
+    'shiki', '@shikijs/transformers', '@shikijs/cli', '@shikijs/vscode-textmate',
+    'oniguruma-to-es', 'tm-grammars', 'tm-themes',
+  ].map(name => [name, JSON.parse(readFileSync(resolve(here, 'node_modules', name, 'package.json'), 'utf8')).version])),
   languages: manifestLanguages,
   themes: manifestThemes,
 };

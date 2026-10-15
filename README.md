@@ -23,7 +23,7 @@
 shikiphp is a pure PHP port of [Shiki](https://shiki.style), the syntax
 highlighter that colors code with the same TextMate grammars and themes as VS
 Code. It tokenizes code with the same **TextMate grammars** and paints it with
-the same **VS Code themes** Shiki uses, producing the HTML Shiki 3.23.0 produces
+the same **VS Code themes** Shiki uses, producing the HTML Shiki 4.5.0 produces
 — entirely in PHP.
 
 **The problem:** server-rendered syntax highlighting in PHP usually means either
@@ -42,11 +42,11 @@ Laravel/WordPress/static-site build step.
 - Shiki-compatible HTML output: dual light/dark themes via CSS variables,
   `codeToHast`, transformers (all hooks), decorations, `colorReplacements`,
   `structure: inline`, and ANSI (`lang: 'ansi'`) highlighting
-- the **full Shiki bundle** — every `tm-grammars` language (235, plus 18 helper
+- the **full Shiki bundle** — every `tm-grammars` language (242, plus 18 helper
   grammars they embed) and `tm-themes` theme (65)
 - No PHP extensions beyond `json`/`mbstring`, no Node, no native Oniguruma binding
-- Checked against Shiki 3.23.0 with an oracle regression harness: 214 scenarios
-  covering 167 of the 253 bundled grammars, ANSI, and all 65 themes, plus parity
+- Checked against Shiki 4.5.0 with an oracle regression harness: 221 scenarios
+  covering 174 of the 260 bundled grammars, ANSI, and all 65 themes, plus parity
   tests for the options and transformers
 
 ## Quick Start
@@ -143,16 +143,15 @@ lets shikiphp match its output offset-for-offset.
 
 ## Shiki version
 
-The bundled grammars and themes come from `tm-grammars` 1.31.15 and `tm-themes`
-1.12.2. The oracle compares against `shiki` 3.23.0 using its JavaScript regex
-engine, and the transformer parity tests against `@shikijs/transformers` 4.2.0
+The bundled grammars and themes come from `tm-grammars` 1.32.22 and `tm-themes`
+1.12.12. The oracle compares against `shiki` 4.5.0 using its JavaScript regex
+engine, and the transformer parity tests against `@shikijs/transformers` 4.5.0
 (pinned in `bin/.oracle-tools/package-lock.json`). Shiki's default engine is
-Oniguruma compiled to WebAssembly; the oracle does not run it. Later Shiki
-releases have not been checked.
+Oniguruma compiled to WebAssembly; the oracle does not run it. The refresh also checks `oniguruma-to-es` 4.3.6 and `@shikijs/vscode-textmate` 10.0.2.
 
 ## Requirements
 
-PHP 8.2 or later with `ext-json` and `ext-mbstring`. CI runs on PHP 8.4.
+PHP 8.2 or later with `ext-json` and `ext-mbstring`. CI runs on PHP 8.4; production smoke checks also run on PHP 8.2.
 
 ## License
 

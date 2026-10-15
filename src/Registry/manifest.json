@@ -1,5 +1,14 @@
 {
-  "version": "3.23.0",
+  "version": "4.5.0",
+  "upstreams": {
+    "shiki": "4.5.0",
+    "@shikijs/transformers": "4.5.0",
+    "@shikijs/cli": "4.5.0",
+    "@shikijs/vscode-textmate": "10.0.2",
+    "oniguruma-to-es": "4.3.6",
+    "tm-grammars": "1.32.22",
+    "tm-themes": "1.12.12"
+  },
   "languages": {
     "abap": {
       "file": "grammars/abap.json",
@@ -10,12 +19,29 @@
     "actionscript-3": {
       "file": "grammars/actionscript-3.json",
       "scopeName": "source.actionscript.3",
-      "aliases": [],
+      "aliases": [
+        "actionscript",
+        "as3"
+      ],
       "embedded": []
     },
     "ada": {
       "file": "grammars/ada.json",
       "scopeName": "source.ada",
+      "aliases": [],
+      "embedded": []
+    },
+    "ahk": {
+      "file": "grammars/ahk.json",
+      "scopeName": "source.ahk",
+      "aliases": [
+        "ahk1"
+      ],
+      "embedded": []
+    },
+    "ahk2": {
+      "file": "grammars/ahk2.json",
+      "scopeName": "source.ahk2",
       "aliases": [],
       "embedded": []
     },
@@ -455,9 +481,7 @@
     "vb": {
       "file": "grammars/vb.json",
       "scopeName": "source.asp.vb.net",
-      "aliases": [
-        "cmd"
-      ],
+      "aliases": [],
       "embedded": []
     },
     "xsl": {
@@ -472,7 +496,8 @@
       "file": "grammars/bat.json",
       "scopeName": "source.batchfile",
       "aliases": [
-        "batch"
+        "batch",
+        "cmd"
       ],
       "embedded": []
     },
@@ -493,8 +518,7 @@
       "embedded": [
         "cpp-macro",
         "regexp",
-        "glsl",
-        "sql"
+        "glsl"
       ]
     },
     "cpp-macro": {
@@ -503,8 +527,7 @@
       "aliases": [],
       "embedded": [
         "regexp",
-        "glsl",
-        "sql"
+        "glsl"
       ]
     },
     "regexp": {
@@ -645,7 +668,8 @@
       "scopeName": "source.powershell",
       "aliases": [
         "ps",
-        "ps1"
+        "ps1",
+        "pwsh"
       ],
       "embedded": []
     },
@@ -996,6 +1020,16 @@
         "python"
       ]
     },
+    "chapel": {
+      "file": "grammars/chapel.json",
+      "scopeName": "source.chapel",
+      "aliases": [
+        "chpl"
+      ],
+      "embedded": [
+        "c"
+      ]
+    },
     "clarity": {
       "file": "grammars/clarity.json",
       "scopeName": "source.clar",
@@ -1035,7 +1069,7 @@
     },
     "coq": {
       "file": "grammars/coq.json",
-      "scopeName": "source.coq",
+      "scopeName": "source.rocq",
       "aliases": [],
       "embedded": []
     },
@@ -1372,7 +1406,9 @@
     "just": {
       "file": "grammars/just.json",
       "scopeName": "source.just",
-      "aliases": [],
+      "aliases": [
+        "justfile"
+      ],
       "embedded": [
         "shellscript",
         "javascript",
@@ -1625,6 +1661,12 @@
       "embedded": [],
       "injects": true
     },
+    "nsis": {
+      "file": "grammars/nsis.json",
+      "scopeName": "source.nsis",
+      "aliases": [],
+      "embedded": []
+    },
     "nushell": {
       "file": "grammars/nushell.json",
       "scopeName": "source.nushell",
@@ -1657,6 +1699,66 @@
       "aliases": [
         "scad"
       ],
+      "embedded": []
+    },
+    "org": {
+      "file": "grammars/org.json",
+      "scopeName": "source.org",
+      "aliases": [],
+      "embedded": [
+        "javascript",
+        "typescript",
+        "tsx",
+        "java",
+        "python",
+        "regexp",
+        "css",
+        "lua",
+        "ini",
+        "make",
+        "perl",
+        "r",
+        "ruby",
+        "php",
+        "sql",
+        "vb",
+        "clojure",
+        "coffee",
+        "c",
+        "cpp",
+        "objective-c",
+        "diff",
+        "docker",
+        "go",
+        "groovy",
+        "less",
+        "scss",
+        "raku",
+        "rust",
+        "scala",
+        "shellscript",
+        "csharp",
+        "dart",
+        "nim",
+        "elixir",
+        "erlang",
+        "ocaml",
+        "zig",
+        "yaml",
+        "json",
+        "xml",
+        "xsl",
+        "markdown",
+        "html",
+        "git-commit",
+        "git-rebase",
+        "latex"
+      ]
+    },
+    "zig": {
+      "file": "grammars/zig.json",
+      "scopeName": "source.zig",
+      "aliases": [],
       "embedded": []
     },
     "pascal": {
@@ -1765,6 +1867,14 @@
         "csharp"
       ]
     },
+    "rbs": {
+      "file": "grammars/rbs.json",
+      "scopeName": "source.rbs",
+      "aliases": [
+        "ruby-signature"
+      ],
+      "embedded": []
+    },
     "reg": {
       "file": "grammars/reg.json",
       "scopeName": "source.reg",
@@ -1821,7 +1931,13 @@
     },
     "smalltalk": {
       "file": "grammars/smalltalk.json",
-      "scopeName": "source.smalltalk",
+      "scopeName": "source.smalltalk.gnu",
+      "aliases": [],
+      "embedded": []
+    },
+    "smithy": {
+      "file": "grammars/smithy.json",
+      "scopeName": "source.smithy",
       "aliases": [],
       "embedded": []
     },
@@ -2034,8 +2150,8 @@
       "scopeName": "text.html.twig",
       "aliases": [],
       "embedded": [
-        "css",
         "javascript",
+        "css",
         "scss",
         "php",
         "python",
@@ -2056,6 +2172,70 @@
       "aliases": [
         "typ"
       ],
+      "embedded": [
+        "bat",
+        "bibtex",
+        "c",
+        "clojure",
+        "coffee",
+        "cpp",
+        "css",
+        "csharp",
+        "dart",
+        "diff",
+        "docker",
+        "elixir",
+        "erlang",
+        "fsharp",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "handlebars",
+        "html",
+        "ini",
+        "java",
+        "javascript",
+        "jsonc",
+        "json",
+        "julia",
+        "latex",
+        "less",
+        "log",
+        "lua",
+        "make",
+        "markdown",
+        "objective-c",
+        "perl",
+        "raku",
+        "php",
+        "powershell",
+        "pug",
+        "r",
+        "regexp",
+        "ruby",
+        "scss",
+        "sql",
+        "swift",
+        "xml",
+        "xsl",
+        "yaml",
+        "python",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "twig",
+        "verilog",
+        "system-verilog",
+        "vb"
+      ]
+    },
+    "verilog": {
+      "file": "grammars/verilog.json",
+      "scopeName": "source.verilog",
+      "aliases": [],
       "embedded": []
     },
     "v": {
@@ -2067,12 +2247,6 @@
     "vala": {
       "file": "grammars/vala.json",
       "scopeName": "source.vala",
-      "aliases": [],
-      "embedded": []
-    },
-    "verilog": {
-      "file": "grammars/verilog.json",
-      "scopeName": "source.verilog",
       "aliases": [],
       "embedded": []
     },
@@ -2280,10 +2454,30 @@
       "aliases": [],
       "embedded": []
     },
-    "zig": {
-      "file": "grammars/zig.json",
-      "scopeName": "source.zig",
-      "aliases": [],
+    "actionscript": {
+      "file": "grammars/actionscript-3.json",
+      "scopeName": "source.actionscript.3",
+      "aliases": [
+        "actionscript",
+        "as3"
+      ],
+      "embedded": []
+    },
+    "as3": {
+      "file": "grammars/actionscript-3.json",
+      "scopeName": "source.actionscript.3",
+      "aliases": [
+        "actionscript",
+        "as3"
+      ],
+      "embedded": []
+    },
+    "ahk1": {
+      "file": "grammars/ahk.json",
+      "scopeName": "source.ahk",
+      "aliases": [
+        "ahk1"
+      ],
       "embedded": []
     },
     "js": {
@@ -2505,19 +2699,21 @@
         "html-derivative"
       ]
     },
-    "cmd": {
-      "file": "grammars/vb.json",
-      "scopeName": "source.asp.vb.net",
-      "aliases": [
-        "cmd"
-      ],
-      "embedded": []
-    },
     "batch": {
       "file": "grammars/bat.json",
       "scopeName": "source.batchfile",
       "aliases": [
-        "batch"
+        "batch",
+        "cmd"
+      ],
+      "embedded": []
+    },
+    "cmd": {
+      "file": "grammars/bat.json",
+      "scopeName": "source.batchfile",
+      "aliases": [
+        "batch",
+        "cmd"
       ],
       "embedded": []
     },
@@ -2538,8 +2734,7 @@
       "embedded": [
         "cpp-macro",
         "regexp",
-        "glsl",
-        "sql"
+        "glsl"
       ]
     },
     "regex": {
@@ -2647,7 +2842,8 @@
       "scopeName": "source.powershell",
       "aliases": [
         "ps",
-        "ps1"
+        "ps1",
+        "pwsh"
       ],
       "embedded": []
     },
@@ -2656,7 +2852,18 @@
       "scopeName": "source.powershell",
       "aliases": [
         "ps",
-        "ps1"
+        "ps1",
+        "pwsh"
+      ],
+      "embedded": []
+    },
+    "pwsh": {
+      "file": "grammars/powershell.json",
+      "scopeName": "source.powershell",
+      "aliases": [
+        "ps",
+        "ps1",
+        "pwsh"
       ],
       "embedded": []
     },
@@ -2864,6 +3071,16 @@
       ],
       "embedded": []
     },
+    "chpl": {
+      "file": "grammars/chapel.json",
+      "scopeName": "source.chapel",
+      "aliases": [
+        "chpl"
+      ],
+      "embedded": [
+        "c"
+      ]
+    },
     "ql": {
       "file": "grammars/codeql.json",
       "scopeName": "source.ql",
@@ -3066,6 +3283,21 @@
       ],
       "embedded": []
     },
+    "justfile": {
+      "file": "grammars/just.json",
+      "scopeName": "source.just",
+      "aliases": [
+        "justfile"
+      ],
+      "embedded": [
+        "shellscript",
+        "javascript",
+        "typescript",
+        "perl",
+        "python",
+        "ruby"
+      ]
+    },
     "kql": {
       "file": "grammars/kusto.json",
       "scopeName": "source.kusto",
@@ -3187,6 +3419,14 @@
       ],
       "embedded": []
     },
+    "ruby-signature": {
+      "file": "grammars/rbs.json",
+      "scopeName": "source.rbs",
+      "aliases": [
+        "ruby-signature"
+      ],
+      "embedded": []
+    },
     "shader": {
       "file": "grammars/shaderlab.json",
       "scopeName": "source.shaderlab",
@@ -3280,7 +3520,65 @@
       "aliases": [
         "typ"
       ],
-      "embedded": []
+      "embedded": [
+        "bat",
+        "bibtex",
+        "c",
+        "clojure",
+        "coffee",
+        "cpp",
+        "css",
+        "csharp",
+        "dart",
+        "diff",
+        "docker",
+        "elixir",
+        "erlang",
+        "fsharp",
+        "git-commit",
+        "git-rebase",
+        "go",
+        "groovy",
+        "handlebars",
+        "html",
+        "ini",
+        "java",
+        "javascript",
+        "jsonc",
+        "json",
+        "julia",
+        "latex",
+        "less",
+        "log",
+        "lua",
+        "make",
+        "markdown",
+        "objective-c",
+        "perl",
+        "raku",
+        "php",
+        "powershell",
+        "pug",
+        "r",
+        "regexp",
+        "ruby",
+        "scss",
+        "sql",
+        "swift",
+        "xml",
+        "xsl",
+        "yaml",
+        "python",
+        "rust",
+        "scala",
+        "shellscript",
+        "typescript",
+        "tsx",
+        "twig",
+        "verilog",
+        "system-verilog",
+        "vb"
+      ]
     },
     "vim": {
       "file": "grammars/viml.json",

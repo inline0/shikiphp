@@ -12,7 +12,7 @@ namespace Shikiphp\Render;
  * token's absolute UTF-16 start offset into the (newline-joined) source, used
  * to split tokens at decoration boundaries.
  */
-final class ThemedToken
+final class ThemedToken implements \JsonSerializable
 {
     public function __construct(
         public readonly string $content,
@@ -21,11 +21,30 @@ final class ThemedToken
         public readonly ?string $bgColor = null,
         public readonly ?string $htmlStyle = null,
         public readonly int $offset = 0,
+        public readonly ?int $type = null,
     ) {
+    }
+
+    /** @return array<string, mixed> */
+    public function jsonSerialize(): array
+    {
+        $properties = [
+            'content' => $this->content,
+            'color' => $this->color,
+            'fontStyle' => $this->fontStyle,
+            'bgColor' => $this->bgColor,
+            'htmlStyle' => $this->htmlStyle,
+            'offset' => $this->offset,
+        ];
+        if ($this->type !== null) {
+            $properties['type'] = $this->type;
+        }
+
+        return $properties;
     }
 
     public function withContent(string $content, int $offset): self
     {
-        return new self($content, $this->color, $this->fontStyle, $this->bgColor, $this->htmlStyle, $offset);
+        return new self($content, $this->color, $this->fontStyle, $this->bgColor, $this->htmlStyle, $offset, $this->type ?? null);
     }
 }

@@ -1,19 +1,19 @@
 ---
 title: "Languages"
-description: "The full tm-grammars catalog ships with shikiphp: 235 languages with their ids and aliases, and how to list them."
+description: "The full tm-grammars catalog ships with shikiphp: 242 languages with their ids and aliases, and how to list them."
 path: "languages"
 order: 60
 section: "Languages & Themes"
 meta_title: "Languages"
-meta_description: "The full tm-grammars catalog ships with shikiphp: 235 languages with their ids and aliases, and how to list them."
+meta_description: "The full tm-grammars catalog ships with shikiphp: 242 languages with their ids and aliases, and how to list them."
 ---
 
 # Languages
 
 shikiphp bundles the **full Shiki language set**: every grammar from
-[`tm-grammars`](https://github.com/shikijs/textmate-grammars-themes) 1.31.15,
-the set Shiki 3.23.0 ships. That is 235 languages plus 18 helper grammars they
-embed, 253 grammars in all. These are the same TextMate grammars VS Code and
+[`tm-grammars`](https://github.com/shikijs/textmate-grammars-themes) 1.32.22,
+the set Shiki 4.5.0 ships. That is 242 languages plus 18 helper grammars they
+embed, 260 grammars in all. These are the same TextMate grammars VS Code and
 Shiki tokenize with, so language coverage, aliases, and scope names match.
 
 You reference a language by its id or one of its aliases — for example `ts` or
@@ -43,8 +43,8 @@ $highlighter->bundledLanguages(); // list<string> — ids shipped in the box
 $highlighter->loadedLanguages();  // list<string> — bundled plus any you registered
 ```
 
-Both lists hold every id that resolves: the 253 grammar ids followed by the 97
-aliases, 350 entries for the bundle.
+Both lists hold every id that resolves: the 260 grammar ids followed by the 104
+aliases, 364 entries for the bundle.
 
 Or from the command line, one id per line:
 
@@ -54,7 +54,7 @@ vendor/bin/shikiphp langs
 
 ## Catalog
 
-The 235 bundled languages, sorted by name. Any id or alias in a row selects the
+The 242 bundled languages, sorted by name. Any id or alias in a row selects the
 same grammar.
 
 | Language | Id | Aliases |
@@ -62,7 +62,7 @@ same grammar.
 | 1C (Enterprise) | `bsl` | `1c` |
 | 1C (Query) | `sdbl` | `1c-query` |
 | ABAP | `abap` |  |
-| ActionScript | `actionscript-3` |  |
+| ActionScript | `actionscript-3` | `actionscript`, `as3` |
 | Ada | `ada` |  |
 | Angular HTML | `angular-html` |  |
 | Angular TypeScript | `angular-ts` |  |
@@ -75,9 +75,11 @@ same grammar.
 | ASP.NET Razor | `razor` |  |
 | Assembly | `asm` |  |
 | Astro | `astro` |  |
+| AutoHotkey | `ahk` | `ahk1` |
+| AutoHotkey2 | `ahk2` |  |
 | AWK | `awk` |  |
 | Ballerina | `ballerina` |  |
-| Batch File | `bat` | `batch` |
+| Batch File | `bat` | `batch`, `cmd` |
 | Beancount | `beancount` |  |
 | Berry | `berry` | `be` |
 | BibTeX | `bibtex` |  |
@@ -90,6 +92,7 @@ same grammar.
 | C3 | `c3` |  |
 | Cadence | `cadence` | `cdc` |
 | Cairo | `cairo` |  |
+| Chapel | `chapel` | `chpl` |
 | Clarity | `clarity` |  |
 | Clojure | `clojure` | `clj` |
 | Closure Templates | `soy` | `closure-templates` |
@@ -99,7 +102,6 @@ same grammar.
 | CodeQL | `codeql` | `ql` |
 | CoffeeScript | `coffee` | `coffeescript` |
 | Common Lisp | `common-lisp` | `lisp` |
-| Coq | `coq` |  |
 | Crystal | `crystal` |  |
 | CSS | `css` |  |
 | CSV | `csv` |  |
@@ -138,6 +140,7 @@ same grammar.
 | Glimmer TS | `glimmer-ts` | `gts` |
 | GLSL | `glsl` |  |
 | GN | `gn` |  |
+| GNU Smalltalk | `smalltalk` |  |
 | Gnuplot | `gnuplot` |  |
 | Go | `go` |  |
 | GraphQL | `graphql` | `gql` |
@@ -169,7 +172,7 @@ same grammar.
 | JSSM | `jssm` | `fsl` |
 | JSX | `jsx` |  |
 | Julia | `julia` | `jl` |
-| Just | `just` |  |
+| Just | `just` | `justfile` |
 | KDL | `kdl` |  |
 | Kotlin | `kotlin` | `kt`, `kts` |
 | Kusto | `kusto` | `kql` |
@@ -199,12 +202,14 @@ same grammar.
 | Nginx | `nginx` |  |
 | Nim | `nim` |  |
 | Nix | `nix` |  |
+| NSIS | `nsis` |  |
 | nushell | `nushell` | `nu` |
 | Objective-C | `objective-c` | `objc` |
 | Objective-C++ | `objective-cpp` |  |
 | OCaml | `ocaml` |  |
 | Odin | `odin` |  |
 | OpenSCAD | `openscad` | `scad` |
+| Org Markup | `org` |  |
 | Pascal | `pascal` |  |
 | Perl | `perl` |  |
 | PHP | `php` |  |
@@ -213,7 +218,7 @@ same grammar.
 | Polar | `polar` |  |
 | PostCSS | `postcss` |  |
 | PowerQuery | `powerquery` |  |
-| PowerShell | `powershell` | `ps`, `ps1` |
+| PowerShell | `powershell` | `ps`, `ps1`, `pwsh` |
 | Prisma | `prisma` |  |
 | Prolog | `prolog` |  |
 | Protocol Buffer 3 | `proto` | `protobuf` |
@@ -227,10 +232,12 @@ same grammar.
 | R | `r` |  |
 | Racket | `racket` |  |
 | Raku | `raku` | `perl6` |
+| RBS | `rbs` | `ruby-signature` |
 | RegExp | `regexp` | `regex` |
 | Rel | `rel` |  |
 | reStructuredText | `rst` |  |
 | RISC-V | `riscv` |  |
+| Rocq | `coq` |  |
 | RON | `ron` |  |
 | ROS Interface | `rosmsg` |  |
 | Ruby | `ruby` | `rb` |
@@ -244,7 +251,7 @@ same grammar.
 | ShaderLab | `shaderlab` | `shader` |
 | Shell | `shellscript` | `bash`, `sh`, `shell`, `zsh` |
 | Shell Session | `shellsession` | `console` |
-| Smalltalk | `smalltalk` |  |
+| Smithy | `smithy` |  |
 | Solidity | `solidity` |  |
 | SPARQL | `sparql` |  |
 | Splunk Query Language | `splunk` | `spl` |
@@ -277,7 +284,7 @@ same grammar.
 | Verilog | `verilog` |  |
 | VHDL | `vhdl` |  |
 | Vim Script | `viml` | `vim`, `vimscript` |
-| Visual Basic | `vb` | `cmd` |
+| Visual Basic | `vb` |  |
 | Vue | `vue` |  |
 | Vue HTML | `vue-html` |  |
 | Vue Vine | `vue-vine` |  |

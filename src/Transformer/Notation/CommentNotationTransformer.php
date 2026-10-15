@@ -82,7 +82,9 @@ abstract class CommentNotationTransformer extends AbstractTransformer
 
             $lineIdx = array_search($comment['line'], $lines, true);
             $lineIdx = $lineIdx === false ? -1 : $lineIdx;
-            if ($comment['isLineCommentOnly']) {
+            $remaining = preg_replace('/#?\s*\[!code\b(?:\\\\.|[^\]])*\]/i', '', $comment['info'][1]) ?? $comment['info'][1];
+            $remaining = preg_replace($this->regex, '', $remaining) ?? $remaining;
+            if ($comment['isLineCommentOnly'] && trim($remaining) === '') {
                 $lineIdx++;
             }
 
@@ -191,7 +193,10 @@ abstract class CommentNotationTransformer extends AbstractTransformer
                     $prevToken = $elements[$i - 1];
                     if ($prevToken instanceof Element) {
                         $prevHead = $prevToken->children[0] ?? null;
-                        if ($prevHead instanceof Text && str_contains($prevHead->value, '//')) {
+                        if (
+                            $prevHead instanceof Text && (str_contains($prevHead->value, '//')
+                            || preg_match('/^(?:\/\/|["\'#]|;{1,2}|%{1,2}|--)$/', trim($prevHead->value)) === 1)
+                        ) {
                             $combined = self::matchToken($prevHead->value . $head->value, $isLast);
                             if ($combined !== null) {
                                 $out[] = [

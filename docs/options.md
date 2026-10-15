@@ -154,3 +154,10 @@ for example the code-fence meta string consumed by
 A `Shikiphp\GrammarState` (from `getLastGrammarState`) to resume tokenization
 from. The carried `lang` and theme(s) must match. See
 [`getLastGrammarState`](/docs/api#shikiphpgetlastgrammarstate).
+
+## `includeExplanation`
+
+Set `includeExplanation` to `'tokenType'` for token output carrying the
+TextMate standard token type: `0` (other), `1` (comment), `2` (string), or `3`
+(regular expression). This mode does not produce full scope explanations.
+The `type` property is omitted from JSON unless this mode is requested.

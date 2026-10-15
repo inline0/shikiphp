@@ -259,3 +259,12 @@ Shiki.js itself is the oracle (Node available). `bin/.oracle-tools/` holds a
 `scenarios/<name>/` holds `input.<ext>` + `meta.json` (`{lang, theme}`).
 `composer test:oracle` runs `bin/test-regression`. The "Non-Negotiable Testing
 Rule": highlighting output is compared against Shiki and must not regress.
+
+## Compiled grammar lifetime
+
+Each tokenization root owns a Registry so external includes bind `$base` to
+that root. Highlighter retains the 16 most recently used compiled roots;
+`GrammarState` retains the graph behind its rule ids, so incremental states
+remain usable after eviction. Registering a custom grammar invalidates the
+compiled roots because any of them may include it. Raw grammar assets and the
+shared pattern compilation cache remain reusable.

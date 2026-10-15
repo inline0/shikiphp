@@ -60,6 +60,12 @@ final class Shikiphp
         return self::highlighter()->getLastGrammarState($code, $options);
     }
 
+    /** @param CodeToHtmlOptions $options */
+    public static function codeToANSI(string $code, array $options, int $colorLevel = 3): string
+    {
+        return self::highlighter()->codeToANSI($code, $options, $colorLevel);
+    }
+
     public static function highlighter(): Highlighter
     {
         return self::$highlighter ??= Highlighter::createBundled();

@@ -6,6 +6,7 @@ namespace Shikiphp;
 
 use Shikiphp\Exceptions\Highlight;
 use Shikiphp\Grammar\StateStack;
+use Shikiphp\Grammar\Grammar;
 
 /**
  * Holds the tokenizer's rule stack after a tokenization, keyed by theme name,
@@ -20,7 +21,14 @@ final class GrammarState
     public function __construct(
         private readonly array $stacks,
         public readonly string $lang,
+        private readonly ?Grammar $grammar = null,
     ) {
+    }
+
+    /** @internal Retains compiled rule ids while an incremental state is alive. */
+    public function getInternalGrammar(): ?Grammar
+    {
+        return $this->grammar;
     }
 
     public function theme(): string
@@ -56,7 +64,7 @@ final class GrammarState
             throw Highlight::invalidGrammarState();
         }
 
-        return new self([$theme => $this->stacks[$theme]], $this->lang);
+        return new self([$theme => $this->stacks[$theme]], $this->lang, $this->grammar);
     }
 
     /** @return list<string> */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Shikiphp;
 
 use Shikiphp\Ansi\AnsiTokenizer;
+use Shikiphp\Ansi\AnsiRenderer;
 use Shikiphp\Exceptions\Highlight;
 use Shikiphp\Grammar\Grammar;
 use Shikiphp\Grammar\Registry;
@@ -46,6 +47,7 @@ use Shikiphp\Transformer\TransformerPipeline;
  *     tokenizeMaxLineLength?: int|null,
  *     decorations?: list<array<string,mixed>>,
  *     meta?: array<string,mixed>,
+ *     includeExplanation?: false|'tokenType',
  *     grammarState?: \Shikiphp\GrammarState
  * }
  */
@@ -56,9 +58,11 @@ final class Highlighter
     private const TOKEN_TYPE_STRING = 2;
     private const TOKEN_TYPE_REGEX = 3;
 
-    private readonly Registry $registry;
+    // Compiled rules are substantially larger than raw grammar JSON. Keep a bounded
+    // working set; incremental states retain their own grammar when it is evicted.
+    private const GRAMMAR_CACHE_LIMIT = 16;
 
-    /** @var array<string, Grammar> language id → loaded grammar */
+    /** @var array<string, Grammar> root scope → compiled grammar (least recent first) */
     private array $grammars = [];
 
     /** @var array<string, Theme> theme id → compiled theme */
@@ -67,7 +71,6 @@ final class Highlighter
     public function __construct(
         private readonly BundleLoader $loader,
     ) {
-        $this->registry = new Registry($loader->grammarResolver());
     }
 
     public static function createBundled(): self
@@ -111,8 +114,10 @@ final class Highlighter
      */
     public function loadGrammar(array $rawTmLanguage, ?string $langId = null, array $aliases = [], array $embedded = []): void
     {
-        $id = $this->loader->registerGrammar($rawTmLanguage, $langId, $aliases, $embedded);
-        unset($this->grammars[$id]);
+        $this->loader->registerGrammar($rawTmLanguage, $langId, $aliases, $embedded);
+        // Includes and injections may make any compiled grammar depend on this one.
+        $this->grammars = [];
+        gc_collect_cycles();
     }
 
     /**
@@ -141,6 +146,18 @@ final class Highlighter
 
         $finalState = null;
         return $this->tokenize($code, $options, $themesByKey, $defaultKey, $finalState, $initial);
+    }
+
+    /**
+     * Render terminal escape sequences at an explicit, environment-independent level.
+     *
+     * @param Options $options
+     */
+    public function codeToANSI(string $code, array $options, int $colorLevel = 3): string
+    {
+        $theme = $this->theme($options['theme'] ?? ($this->loadedThemes()[0] ?? ''));
+
+        return (new AnsiRenderer())->render($this->codeToTokensBase($code, $options), $theme, $colorLevel);
     }
 
     /**
@@ -260,7 +277,9 @@ final class Highlighter
             $stacks[$theme->name()] = $finalState;
         }
 
-        return new GrammarState($stacks, $options['lang']);
+        $grammar = ($options['grammarState'] ?? null)?->getInternalGrammar() ?? $this->grammar($options['lang']);
+
+        return new GrammarState($stacks, $options['lang'], $grammar);
     }
 
     /**
@@ -458,7 +477,9 @@ final class Highlighter
             ]);
         }
 
-        $lines = $this->tokenize($source, $options, $themesByKey, $defaultKey);
+        $initialState = $this->resumeState($options);
+        $finalState = null;
+        $lines = $this->tokenize($source, $options, $themesByKey, $defaultKey, $finalState, $initialState);
         $lines = self::applyMergeWhitespaces($lines, $options['mergeWhitespaces'] ?? true);
         $lines = $pipeline->tokens($lines, $ctx->context);
 
@@ -513,7 +534,7 @@ final class Highlighter
             return $this->tokenizeAnsi($code, $options, $themesByKey, $defaultKey);
         }
 
-        $grammar = $this->grammar($options['lang']);
+        $grammar = ($options['grammarState'] ?? null)?->getInternalGrammar() ?? $this->grammar($options['lang']);
         $replacements = self::resolveColorReplacements($options, $themesByKey);
         $maxLineLength = $options['tokenizeMaxLineLength'] ?? null;
         $prefix = $options['cssVariablePrefix'] ?? '--shiki-';
@@ -534,7 +555,7 @@ final class Highlighter
             } else {
                 $result = $grammar->tokenizeLine($line, $state);
                 $state = $result->ruleStack;
-                $out[] = $this->themeLine($line, $result->tokens, $themesByKey, $defaultKey, $replacements, $lineOffset, $prefix);
+                $out[] = $this->themeLine($line, $result->tokens, $themesByKey, $defaultKey, $replacements, $lineOffset, $prefix, ($options['includeExplanation'] ?? false) === 'tokenType');
             }
 
             $lineOffset += $lineLen + ($index < count($lines) - 1 ? 1 : 0);
@@ -712,31 +733,37 @@ final class Highlighter
 
     private function grammar(string $lang): Grammar
     {
-        if (isset($this->grammars[$lang])) {
-            return $this->grammars[$lang];
-        }
-
         if (!$this->loader->hasLanguage($lang)) {
             throw Highlight::unknownLanguage($lang);
         }
+        $scope = $this->loader->scopeNameFor($lang);
+        if (isset($this->grammars[$scope])) {
+            $grammar = $this->grammars[$scope];
+            unset($this->grammars[$scope]);
+            $this->grammars[$scope] = $grammar;
 
-        // Include-based dependencies (`$base`/`$self`/external scopes, embedded
-        // langs) resolve lazily through the Registry's grammar resolver, so a code
-        // sample that touches none of them never pays to read or decode them.
-        // Injection grammars are the exception: they are discovered by scanning
-        // the registered raw grammars (`injectionScopesFor`), not by an `include`,
-        // so any closure grammar carrying an `injectionSelector` must be present
-        // before tokenization or its injection would silently not apply.
-        foreach ($this->loader->injectionGrammars($lang) as $raw) {
-            $this->registry->loadGrammarFromRaw($raw);
+            return $grammar;
         }
 
-        return $this->grammars[$lang] = $this->registry->loadGrammar($this->loader->scopeNameFor($lang));
+        // Each root owns its compiled graph, including the correct $base binding.
+        // Sharing a single registry retains every graph forever in a server worker.
+        $registry = new Registry($this->loader->grammarResolver());
+        foreach ($this->loader->injectionGrammars($lang) as $raw) {
+            $registry->loadGrammarFromRaw($raw);
+        }
+        $grammar = $registry->loadGrammar($scope);
+        if (count($this->grammars) >= self::GRAMMAR_CACHE_LIMIT) {
+            unset($this->grammars[array_key_first($this->grammars)]);
+            gc_collect_cycles();
+        }
+        $this->grammars[$scope] = $grammar;
+
+        return $grammar;
     }
 
     private function theme(string $themeId): Theme
     {
-        return $this->themes[$themeId] ??= Theme::fromRaw($this->loader->rawTheme($themeId));
+        return $this->themes[$themeId] ??= Theme::fromShikiRaw($this->loader->rawTheme($themeId));
     }
 
     /**
@@ -787,6 +814,7 @@ final class Highlighter
         array $replacements,
         int $lineOffset,
         string $prefix,
+        bool $includeTokenType = false,
     ): array {
         $isDual = !isset($themesByKey['default']) || count($themesByKey) > 1;
 
@@ -804,7 +832,26 @@ final class Highlighter
             $types[] = self::standardTokenType($token->scopes);
         }
 
-        return self::coalesce($themed, $types);
+        $coalesced = self::coalesce($themed, $types);
+        if ($includeTokenType) {
+            $index = 0;
+            foreach ($coalesced as $i => $token) {
+                while ($index + 1 < count($themed) && $themed[$index + 1]->offset <= $token->offset) {
+                    $index++;
+                }
+                $coalesced[$i] = new ThemedToken(
+                    $token->content,
+                    $token->color,
+                    $token->fontStyle,
+                    $token->bgColor,
+                    $token->htmlStyle,
+                    $token->offset,
+                    $types[$index],
+                );
+            }
+        }
+
+        return $coalesced;
     }
 
     /**

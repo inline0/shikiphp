@@ -152,6 +152,11 @@ occurrence of `foo` in a span carrying `highlighted-word`.
 const config = loadConfig()
 ```
 
+The optional `classActiveCode` constructor argument adds a class to `<code>`
+when word notation is present, alongside `classActivePre` for `<pre>`. Standalone
+notation applies to the next line; comments that also contain explanation text
+keep that text and apply to their own line.
+
 ### Meta transformers
 
 These read the code-fence **meta string** supplied through the
@@ -183,6 +188,14 @@ echo Shikiphp::codeToHtml($code, [
 string with `/word/` syntax, adding `highlighted-word`.
 
 ### Whitespace and structure
+
+#### `RenderLineNumber`
+
+`Shikiphp\Transformer\RenderLineNumber` prepends a number span to each line.
+Use `new RenderLineNumber(classLineNumber: 'line-number', start: 1)` to set the
+class and starting number. Empty lines receive numbers too. Inline rendering
+has no line wrappers, so it does not add number spans.
+
 
 #### `RenderWhitespace`
 
@@ -224,7 +237,7 @@ between lines (Shiki's `transformerRemoveLineBreak`).
 `Shikiphp\Transformer\StyleToClass` — moves inline styles into generated classes
 and collects a stylesheet you fetch with `getCSS()`. Class names hash the style
 with Shiki's `cyrb53`, so output is byte-identical to `@shikijs/transformers`
-4.2.0, including its scope:
+4.5.0, including its scope:
 
 - The `<pre>` style always becomes a class.
 - Token spans are converted only when they carry a prebuilt style, which is the

@@ -76,7 +76,7 @@ result:
   produce the real captures. Backreferences and `\G` stay rejected here too.
 
 Everything else runs on the matcher alone. For the bundled grammars at Shiki
-3.23.0, about 39% of the 14,234 distinct patterns run fully on PCRE, about 57%
+4.5.0, about 39% of the 14,234 distinct patterns run fully on PCRE, about 57%
 use the position tier, and about 4% stay on the matcher. The classification is
 checked by a development tool in the repository
 (`bin/.oracle-tools/pcre-equivalence.php`) that compares the fast path with the
@@ -101,12 +101,12 @@ colors; dual-theme mode writes `--shiki-light` / `--shiki-dark` CSS variables.
 
 ## Validated against Shiki
 
-Shiki itself is the oracle, pinned to `shiki` 3.23.0 with its JavaScript regex
+Shiki itself is the oracle, pinned to `shiki` 4.5.0 with its JavaScript regex
 engine. The `scenarios/` directory holds **214** fixtures, each one input in one
-language and one theme; together they cover 167 of the 253 bundled grammars,
+language and one theme; together they cover 174 of the 260 bundled grammars,
 `lang: 'ansi'`, and all 65 themes. `bin/test-regression` highlights each with
 both engines and asserts the HTML is identical once leading and trailing
 whitespace is trimmed. Options and transformers are checked by parity tests
-against output captured from the same Shiki and `@shikijs/transformers` 4.2.0.
+against output captured from the same Shiki and `@shikijs/transformers` 4.5.0.
 The non-negotiable rule is that highlighting output must not regress against
 Shiki.

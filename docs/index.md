@@ -1,10 +1,10 @@
 ---
 title: "Introduction"
-description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output matched against Shiki 3.23.0, entirely in PHP."
+description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output matched against Shiki 4.5.0, entirely in PHP."
 path: "."
 order: 10
 meta_title: "Introduction"
-meta_description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output matched against Shiki 3.23.0, entirely in PHP."
+meta_description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars and VS Code themes, with output matched against Shiki 4.5.0, entirely in PHP."
 ---
 
 # shikiphp
@@ -12,7 +12,7 @@ meta_description: "shikiphp is a pure-PHP port of Shiki — TextMate grammars an
 shikiphp is a pure-PHP port of [Shiki](https://shiki.style), the syntax
 highlighter that colors code with the same TextMate grammars and themes as VS
 Code. It tokenizes code with the same **TextMate grammars** and paints it with
-the same **VS Code themes** Shiki uses, producing the same HTML as Shiki 3.23.0
+the same **VS Code themes** Shiki uses, producing the same HTML as Shiki 4.5.0
 — entirely in PHP.
 
 No Node runtime. No PHP extensions beyond `json` and `mbstring`. No native
@@ -49,25 +49,25 @@ shikiphp removes the compromise by porting Shiki's real pipeline to PHP:
 - Shiki-compatible HTML: dual light/dark themes via CSS variables, `codeToHast`,
   transformers (every hook), decorations, `colorReplacements`,
   `structure: 'inline'`, and ANSI (`lang: 'ansi'`) highlighting
-- the **full Shiki bundle** — every `tm-grammars` language (235, plus 18
+- the **full Shiki bundle** — every `tm-grammars` language (242, plus 18
   helper grammars they embed) and every `tm-themes` theme (65)
 
-## Matched against Shiki 3.23.0
+## Matched against Shiki 4.5.0
 
 The output is not "close enough": it is checked against a pinned Shiki release.
 
 | Package | Version | Used for |
 | --- | --- | --- |
-| `shiki` | 3.23.0 | the oracle, run with its JavaScript regex engine |
-| `tm-grammars` | 1.31.15 | the bundled grammars |
-| `tm-themes` | 1.12.2 | the bundled themes |
-| `@shikijs/transformers` | 4.2.0 | the transformer parity tests |
+| `shiki` | 4.5.0 | the oracle, run with its JavaScript regex engine |
+| `tm-grammars` | 1.32.22 | the bundled grammars |
+| `tm-themes` | 1.12.12 | the bundled themes |
+| `@shikijs/transformers` | 4.5.0 | the transformer parity tests |
 
-Shiki itself is the oracle. The regression harness holds **214 scenarios**,
+Shiki itself is the oracle. The regression harness holds **221 scenarios**,
 each one sample in one language and one theme with default options. Every
 scenario is highlighted by Shiki and by shikiphp, and the two HTML strings must
 be identical once leading and trailing whitespace is trimmed. Together the
-scenarios cover 167 of the 253 bundled grammars, `lang: 'ansi'`, and all 65
+scenarios cover 174 of the 260 bundled grammars, `lang: 'ansi'`, and all 65
 themes. The options (`structure`, `tabindex`, `colorReplacements`, dual themes,
 `defaultColor` and the rest), `codeToTokensWithThemes`, and the built-in
 transformers are covered by separate parity tests whose expected output was

@@ -11,8 +11,8 @@ meta_description: "The full tm-themes catalog ships with shikiphp: all 65 themes
 # Themes
 
 shikiphp bundles the **full Shiki theme set**: all 65 VS Code themes from
-[`tm-themes`](https://github.com/shikijs/textmate-grammars-themes) 1.12.2, the
-set Shiki 3.23.0 ships. 44 are dark and 21 are light. Popular ids include
+[`tm-themes`](https://github.com/shikijs/textmate-grammars-themes) 1.12.12, the
+set Shiki 4.5.0 ships. 44 are dark and 21 are light. Popular ids include
 `github-dark`, `github-light`, `nord`, `dracula`, `vitesse-dark`,
 `vitesse-light`, `one-dark-pro`, `monokai`, `solarized-dark`, and the
 `catppuccin-*` and `material-theme-*` families.

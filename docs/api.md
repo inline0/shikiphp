@@ -58,6 +58,15 @@ foreach ($lines as $line) {
 }
 ```
 
+### `Shikiphp::codeToANSI`
+
+```php
+public static function codeToANSI(string $code, array $options, int $colorLevel = 3): string
+```
+
+Render source code to terminal escape sequences at an explicit color level.
+See [ANSI Output](/docs/ansi#render-source-code-to-ansi).
+
 ### `Shikiphp::codeToTokensBase`
 
 ```php
@@ -241,6 +250,7 @@ final class ThemedToken
     public readonly ?string $bgColor;
     public readonly ?string $htmlStyle;  // pre-built inline style (dual themes / ANSI)
     public readonly int $offset;         // UTF-16 code-unit offset into the source
+    public readonly ?int $type;          // includeExplanation: tokenType
 }
 ```
 

@@ -4,6 +4,36 @@ All notable changes to shikiphp are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-10-15
+
+### Added
+
+- Shiki 4.5.0 compatibility, with pinned transformers and CLI oracles at 4.5.0.
+- `RenderLineNumber` transformer and `NotationWordHighlight::classActiveCode`.
+- `includeExplanation: 'tokenType'` for standard TextMate token types.
+- `codeToANSI()` on the facade and highlighter with explicit 0/16/256/truecolor
+  levels, plus CLI ANSI output and standard input via `highlight -`.
+- Seven languages from tm-grammars 1.32.22: AutoHotkey 1/2, Chapel, NSIS, Org,
+  RBS, and Smithy; 242 languages, 18 helpers, and 104 aliases in total.
+- Reproducible Shiki 4.5 oracle fixtures for HTML transformers, token types and
+  all four ANSI color levels, plus live oracle scenarios for all new languages.
+
+### Changed
+
+- Updated tm-themes to 1.12.12 and oniguruma-to-es tooling to 4.3.6.
+- CLI language selection follows upstream: case-insensitive ids and plaintext
+  fallback for unknown explicit languages. Unknown themes still fail.
+
+### Fixed
+
+- Bound compiled grammar caches in long-lived highlighters while retaining
+  incremental states, preventing memory exhaustion across the full language corpus.
+  Reloading a grammar also invalidates compiled parents that include it.
+- HTML/HAST rendering now resumes the supplied grammar state as token APIs do.
+- Shiki light-theme fallback colors resolve before TextMate theme compilation.
+- Notation in comments with explanation text affects its own line and retains
+  that text; split comment prefixes work with Rose Pine themes.
+
 ## [0.1.1] - 2026-10-14
 
 ### Fixed
@@ -55,3 +85,5 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 [0.1.1]: https://github.com/inline0/shikiphp/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/inline0/shikiphp/releases/tag/v0.1.0
+
+[0.2.0]: https://github.com/inline0/shikiphp/compare/v0.1.1...v0.2.0

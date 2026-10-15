@@ -1,0 +1,456 @@
+{
+  "version": "4.5.0",
+  "html": [
+    {
+      "code": "const a = 1\n\nconst b = 2\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"line-number\">1</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span>\n<span class=\"line\"><span class=\"line-number\">2</span></span>\n<span class=\"line\"><span class=\"line-number\">3</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> b</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 2</span></span>\n<span class=\"line\"><span class=\"line-number\">4</span></span></code></pre>"
+    },
+    {
+      "code": "const a = 1\n\nconst b = 2\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {
+        "start": 0,
+        "classLineNumber": "gutter custom"
+      },
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"gutter custom\">0</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span>\n<span class=\"line\"><span class=\"gutter custom\">1</span></span>\n<span class=\"line\"><span class=\"gutter custom\">2</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> b</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 2</span></span>\n<span class=\"line\"><span class=\"gutter custom\">3</span></span></code></pre>"
+    },
+    {
+      "code": "const a = 1\n\nconst b = 2\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {
+        "structure": "inline"
+      },
+      "output": "<span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span><br><br><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> b</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 2</span><br>"
+    },
+    {
+      "code": "",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"line-number\">1</span></span></code></pre>"
+    },
+    {
+      "code": "",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {
+        "start": 0,
+        "classLineNumber": "gutter custom"
+      },
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"gutter custom\">0</span></span></code></pre>"
+    },
+    {
+      "code": "",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {
+        "structure": "inline"
+      },
+      "output": ""
+    },
+    {
+      "code": "😀\r\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"line-number\">1</span><span style=\"color:#E1E4E8\">😀</span></span>\n<span class=\"line\"><span class=\"line-number\">2</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "😀\r\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {
+        "start": 0,
+        "classLineNumber": "gutter custom"
+      },
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span class=\"gutter custom\">0</span><span style=\"color:#E1E4E8\">😀</span></span>\n<span class=\"line\"><span class=\"gutter custom\">1</span><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "😀\r\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {
+        "structure": "inline"
+      },
+      "output": "<span style=\"color:#E1E4E8\">😀</span><br><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span>"
+    },
+    {
+      "code": "// explanation [!code highlight]\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationHighlight",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark has-highlighted\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line highlighted\"><span style=\"color:#6A737D\">// explanation</span></span>\n<span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "// [!code highlight]\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationHighlight",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark has-highlighted\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line highlighted\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "// explanation [!code ++]\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationDiff",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark has-diff\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line diff add\"><span style=\"color:#6A737D\">// explanation</span></span>\n<span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "// explanation [!code focus]\nconst a = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationFocus",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark has-focused\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line focused\"><span style=\"color:#6A737D\">// explanation</span></span>\n<span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> a</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "# [!code --]\nname: value",
+      "lang": "yaml",
+      "theme": "rose-pine",
+      "kind": "NotationDiff",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki rose-pine has-diff\" style=\"background-color:#191724;color:#e0def4\" tabindex=\"0\"><code><span class=\"line diff remove\"><span style=\"color:#9CCFD8\">name</span><span style=\"color:#908CAA\">:</span><span style=\"color:#F6C177\"> value</span></span></code></pre>"
+    },
+    {
+      "code": "# [!code highlight]\nprint(1)",
+      "lang": "python",
+      "theme": "rose-pine",
+      "kind": "NotationHighlight",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki rose-pine has-highlighted\" style=\"background-color:#191724;color:#e0def4\" tabindex=\"0\"><code><span class=\"line highlighted\"><span style=\"color:#EB6F92;font-style:italic\">print</span><span style=\"color:#908CAA\">(</span><span style=\"color:#EBBCBA\">1</span><span style=\"color:#908CAA\">)</span></span></code></pre>"
+    },
+    {
+      "code": "const apple = 1 // [!code word:apple]\nconst b = apple",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationWordHighlight",
+      "options": {
+        "classActivePre": "has-words",
+        "classActiveCode": "words"
+      },
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark has-words\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code class=\"words\"><span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> </span><span style=\"color:#79B8FF\" class=\"highlighted-word\">apple</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span>\n<span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> b</span><span style=\"color:#F97583\"> =</span><span style=\"color:#E1E4E8\"> </span><span style=\"color:#E1E4E8\" class=\"highlighted-word\">apple</span></span></code></pre>"
+    },
+    {
+      "code": "// explanation [!code word:apple]\nconst apple = 1",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "kind": "NotationWordHighlight",
+      "options": {
+        "classActiveCode": "words"
+      },
+      "extra": {},
+      "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code class=\"words\"><span class=\"line\"><span style=\"color:#6A737D\">// explanation</span></span>\n<span class=\"line\"><span style=\"color:#F97583\">const</span><span style=\"color:#79B8FF\"> </span><span style=\"color:#79B8FF\" class=\"highlighted-word\">apple</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+    },
+    {
+      "code": "hello\nworld",
+      "lang": "text",
+      "theme": "horizon-bright",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki horizon-bright\" style=\"background-color:#FDF0ED;color:#333333\" tabindex=\"0\"><code><span class=\"line\"><span class=\"line-number\">1</span><span>hello</span></span>\n<span class=\"line\"><span class=\"line-number\">2</span><span>world</span></span></code></pre>"
+    },
+    {
+      "code": "hello\nworld",
+      "lang": "text",
+      "theme": "laserwave",
+      "kind": "RenderLineNumber",
+      "options": {},
+      "extra": {},
+      "output": "<pre class=\"shiki laserwave\" style=\"background-color:#27212e;color:#ffffff\" tabindex=\"0\"><code><span class=\"line\"><span class=\"line-number\">1</span><span>hello</span></span>\n<span class=\"line\"><span class=\"line-number\">2</span><span>world</span></span></code></pre>"
+    }
+  ],
+  "ansi": [
+    {
+      "code": "const x = \"hi\" // comment\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "colorLevel": 0,
+      "output": "const x = \"hi\" // comment\n\n"
+    },
+    {
+      "code": "const x = \"hi\" // comment\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "colorLevel": 1,
+      "output": "\u001b[95mconst\u001b[39m\u001b[97m \u001b[39m\u001b[96mx\u001b[39m\u001b[97m \u001b[39m\u001b[95m=\u001b[39m\u001b[97m \u001b[39m\u001b[97m\"hi\"\u001b[39m\u001b[97m \u001b[39m\u001b[30m// comment\u001b[39m\n\n"
+    },
+    {
+      "code": "const x = \"hi\" // comment\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "colorLevel": 2,
+      "output": "\u001b[38;5;211mconst\u001b[39m\u001b[38;5;189m \u001b[39m\u001b[38;5;117mx\u001b[39m\u001b[38;5;189m \u001b[39m\u001b[38;5;211m=\u001b[39m\u001b[38;5;189m \u001b[39m\u001b[38;5;153m\"hi\"\u001b[39m\u001b[38;5;189m \u001b[39m\u001b[38;5;102m// comment\u001b[39m\n\n"
+    },
+    {
+      "code": "const x = \"hi\" // comment\n",
+      "lang": "javascript",
+      "theme": "github-dark",
+      "colorLevel": 3,
+      "output": "\u001b[38;2;249;117;131mconst\u001b[39m\u001b[38;2;225;228;232m \u001b[39m\u001b[38;2;121;184;255mx\u001b[39m\u001b[38;2;225;228;232m \u001b[39m\u001b[38;2;249;117;131m=\u001b[39m\u001b[38;2;225;228;232m \u001b[39m\u001b[38;2;158;203;255m\"hi\"\u001b[39m\u001b[38;2;225;228;232m \u001b[39m\u001b[38;2;106;115;125m// comment\u001b[39m\n\n"
+    },
+    {
+      "code": "# hi\n\n**bold** _italic_",
+      "lang": "markdown",
+      "theme": "github-dark",
+      "colorLevel": 0,
+      "output": "# hi\n\n**bold** _italic_\n"
+    },
+    {
+      "code": "# hi\n\n**bold** _italic_",
+      "lang": "markdown",
+      "theme": "github-dark",
+      "colorLevel": 1,
+      "output": "\u001b[1m\u001b[96m# hi\u001b[39m\u001b[22m\n\n\u001b[1m\u001b[97m**bold**\u001b[39m\u001b[22m\u001b[97m \u001b[39m\u001b[3m\u001b[97m_italic_\u001b[39m\u001b[23m\n"
+    },
+    {
+      "code": "# hi\n\n**bold** _italic_",
+      "lang": "markdown",
+      "theme": "github-dark",
+      "colorLevel": 2,
+      "output": "\u001b[1m\u001b[38;5;117m# hi\u001b[39m\u001b[22m\n\n\u001b[1m\u001b[38;5;189m**bold**\u001b[39m\u001b[22m\u001b[38;5;189m \u001b[39m\u001b[3m\u001b[38;5;189m_italic_\u001b[39m\u001b[23m\n"
+    },
+    {
+      "code": "# hi\n\n**bold** _italic_",
+      "lang": "markdown",
+      "theme": "github-dark",
+      "colorLevel": 3,
+      "output": "\u001b[1m\u001b[38;2;121;184;255m# hi\u001b[39m\u001b[22m\n\n\u001b[1m\u001b[38;2;225;228;232m**bold**\u001b[39m\u001b[22m\u001b[38;2;225;228;232m \u001b[39m\u001b[3m\u001b[38;2;225;228;232m_italic_\u001b[39m\u001b[23m\n"
+    },
+    {
+      "code": "hello\r\nworld\n",
+      "lang": "text",
+      "theme": "horizon-bright",
+      "colorLevel": 0,
+      "output": "hello\nworld\n\n"
+    },
+    {
+      "code": "hello\r\nworld\n",
+      "lang": "text",
+      "theme": "horizon-bright",
+      "colorLevel": 1,
+      "output": "\u001b[30mhello\u001b[39m\n\u001b[30mworld\u001b[39m\n\n"
+    },
+    {
+      "code": "hello\r\nworld\n",
+      "lang": "text",
+      "theme": "horizon-bright",
+      "colorLevel": 2,
+      "output": "\u001b[38;5;236mhello\u001b[39m\n\u001b[38;5;236mworld\u001b[39m\n\n"
+    },
+    {
+      "code": "hello\r\nworld\n",
+      "lang": "text",
+      "theme": "horizon-bright",
+      "colorLevel": 3,
+      "output": "\u001b[38;2;51;51;51mhello\u001b[39m\n\u001b[38;2;51;51;51mworld\u001b[39m\n\n"
+    },
+    {
+      "code": "# comment\nname: value",
+      "lang": "yaml",
+      "theme": "horizon-bright",
+      "colorLevel": 0,
+      "output": "# comment\nname: value\n"
+    },
+    {
+      "code": "# comment\nname: value",
+      "lang": "yaml",
+      "theme": "horizon-bright",
+      "colorLevel": 1,
+      "output": "\u001b[3m\u001b[37m# comment\u001b[39m\u001b[23m\n\u001b[31mname\u001b[39m\u001b[30m: \u001b[39m\u001b[30mvalue\u001b[39m\n"
+    },
+    {
+      "code": "# comment\nname: value",
+      "lang": "yaml",
+      "theme": "horizon-bright",
+      "colorLevel": 2,
+      "output": "\u001b[3m\u001b[38;5;246m# comment\u001b[39m\u001b[23m\n\u001b[38;5;161mname\u001b[39m\u001b[38;5;236m: \u001b[39m\u001b[38;5;236mvalue\u001b[39m\n"
+    },
+    {
+      "code": "# comment\nname: value",
+      "lang": "yaml",
+      "theme": "horizon-bright",
+      "colorLevel": 3,
+      "output": "\u001b[3m\u001b[38;2;153;153;153m# comment\u001b[39m\u001b[23m\n\u001b[38;2;218;16;63mname\u001b[39m\u001b[38;2;51;51;51m: \u001b[39m\u001b[38;2;51;51;51mvalue\u001b[39m\n"
+    },
+    {
+      "code": "",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 0,
+      "output": "\n"
+    },
+    {
+      "code": "",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 1,
+      "output": "\n"
+    },
+    {
+      "code": "",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 2,
+      "output": "\n"
+    },
+    {
+      "code": "",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 3,
+      "output": "\n"
+    },
+    {
+      "code": "a\u001b[39mb",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 0,
+      "output": "a\u001b[39mb\n"
+    },
+    {
+      "code": "a\u001b[39mb",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 1,
+      "output": "\u001b[97ma\u001b[97mb\u001b[39m\n"
+    },
+    {
+      "code": "a\u001b[39mb",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 2,
+      "output": "\u001b[38;5;189ma\u001b[38;5;189mb\u001b[39m\n"
+    },
+    {
+      "code": "a\u001b[39mb",
+      "lang": "text",
+      "theme": "github-dark",
+      "colorLevel": 3,
+      "output": "\u001b[38;2;225;228;232ma\u001b[38;2;225;228;232mb\u001b[39m\n"
+    }
+  ],
+  "resume": {
+    "head": "/* start",
+    "tail": "still a comment */ const x = 1",
+    "output": "<pre class=\"shiki github-dark\" style=\"background-color:#24292e;color:#e1e4e8\" tabindex=\"0\"><code><span class=\"line\"><span style=\"color:#6A737D\">still a comment */</span><span style=\"color:#F97583\"> const</span><span style=\"color:#79B8FF\"> x</span><span style=\"color:#F97583\"> =</span><span style=\"color:#79B8FF\"> 1</span></span></code></pre>"
+  },
+  "tokenTypes": {
+    "code": "const x = \"hi\"; // comment\nconst re = /foo/;",
+    "output": [
+      [
+        {
+          "content": "const",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 0
+        },
+        {
+          "content": "x",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 0
+        },
+        {
+          "content": "=",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 0
+        },
+        {
+          "content": "\"hi\"",
+          "type": 2
+        },
+        {
+          "content": "; ",
+          "type": 0
+        },
+        {
+          "content": "// comment",
+          "type": 1
+        }
+      ],
+      [
+        {
+          "content": "const",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 0
+        },
+        {
+          "content": "re",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 0
+        },
+        {
+          "content": "=",
+          "type": 0
+        },
+        {
+          "content": " ",
+          "type": 2
+        },
+        {
+          "content": "/",
+          "type": 2
+        },
+        {
+          "content": "foo",
+          "type": 2
+        },
+        {
+          "content": "/",
+          "type": 2
+        },
+        {
+          "content": ";",
+          "type": 0
+        }
+      ]
+    ]
+  }
+}

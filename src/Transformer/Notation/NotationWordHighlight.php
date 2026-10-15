@@ -18,6 +18,7 @@ final class NotationWordHighlight extends CommentNotationTransformer
     public function __construct(
         private readonly string $classActiveWord = 'highlighted-word',
         private readonly ?string $classActivePre = null,
+        private readonly ?string $classActiveCode = null,
     ) {
         parent::__construct(
             '@shikijs/transformers:notation-highlight-word',
@@ -51,6 +52,10 @@ final class NotationWordHighlight extends CommentNotationTransformer
 
         if ($this->classActivePre !== null && $context->pre !== null) {
             $context->addClassToHast($context->pre, $this->classActivePre);
+        }
+
+        if ($this->classActiveCode !== null && $context->code !== null) {
+            $context->addClassToHast($context->code, $this->classActiveCode);
         }
 
         return true;

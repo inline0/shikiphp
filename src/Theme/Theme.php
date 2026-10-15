@@ -39,6 +39,40 @@ final class Theme
         return self::fromRawTheme(RawTheme::fromArray($raw));
     }
 
+    /**
+     * Shiki resolves missing editor colours before passing a theme to TextMate.
+     *
+     * @param array<string, mixed> $raw
+     */
+    public static function fromShikiRaw(array $raw): self
+    {
+        $theme = RawTheme::fromArray($raw);
+        $foreground = is_string($raw['fg'] ?? null) ? $raw['fg'] : null;
+        $background = is_string($raw['bg'] ?? null) ? $raw['bg'] : null;
+        if (!$foreground || !$background) {
+            foreach ($theme->settings as $entry) {
+                if (empty($entry['name']) && empty($entry['scope']) && !is_array($entry['scope'] ?? null)) {
+                    $settings = $entry['settings'] ?? [];
+                    if (is_array($settings)) {
+                        $foreground = is_string($settings['foreground'] ?? null) ? $settings['foreground'] : $foreground;
+                        $background = is_string($settings['background'] ?? null) ? $settings['background'] : $background;
+                    }
+                    break;
+                }
+            }
+            $foreground = $foreground ?: ($theme->colors['editor.foreground'] ?? null);
+            $background = $background ?: ($theme->colors['editor.background'] ?? null);
+            $foreground = $foreground ?: ($theme->type === 'light' ? '#333333' : '#bbbbbb');
+            $background = $background ?: ($theme->type === 'light' ? '#fffffe' : '#1e1e1e');
+        }
+        $settings = $theme->settings;
+        if (!isset($settings[0]['settings']) || !empty($settings[0]['scope']) || is_array($settings[0]['scope'] ?? null)) {
+            array_unshift($settings, ['settings' => ['foreground' => $foreground, 'background' => $background]]);
+        }
+
+        return self::fromRawTheme(new RawTheme($theme->name, $theme->type, $theme->colors, $settings));
+    }
+
     public static function fromRawTheme(RawTheme $raw): self
     {
         $parsed = self::parseRules($raw);

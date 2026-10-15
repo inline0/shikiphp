@@ -2,12 +2,13 @@
   "name": "shikiphp-oracle-tools",
   "private": true,
   "type": "module",
-  "description": "Node oracle + bundler tooling for shikiphp (gitignored).",
+  "description": "Pinned Node oracle and bundle-generation tooling for shikiphp (development only).",
   "dependencies": {
-    "@shikijs/transformers": "^4.2.0",
-    "oniguruma-to-es": "^4.3.3",
-    "shiki": "^3.6.0",
-    "tm-grammars": "^1.23.0",
-    "tm-themes": "^1.10.0"
+    "@shikijs/cli": "4.5.0",
+    "@shikijs/transformers": "4.5.0",
+    "oniguruma-to-es": "4.3.6",
+    "shiki": "4.5.0",
+    "tm-grammars": "1.32.22",
+    "tm-themes": "1.12.12"
   }
 }

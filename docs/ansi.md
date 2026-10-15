@@ -14,7 +14,7 @@ Set `lang` to `'ansi'` to highlight terminal output — text containing ANSI
 escape sequences — instead of tokenizing with a grammar. shikiphp parses the
 escape codes and colors the text from the theme's ANSI palette. It is a port of
 Shiki's `lang: 'ansi'` tokenizer, and four oracle scenarios check its HTML
-against Shiki 3.23.0.
+against Shiki 4.5.0.
 
 ```php
 use Shikiphp\Shikiphp;
@@ -32,6 +32,23 @@ are removed from the output; only the text remains, wrapped in colored spans.
 Note the double-quoted PHP string: `"\e"` is the escape character. When you
 render output captured from a process (for example with `shell_exec` or
 `proc_open`), the escape characters are already in the string.
+
+## Render source code to ANSI
+
+`codeToANSI` produces terminal escape sequences from source code, matching
+Shiki 4.5's CLI renderer:
+
+```php
+echo Shikiphp::codeToANSI('const answer = 42', [
+    'lang' => 'js',
+    'theme' => 'github-dark',
+], colorLevel: 3);
+```
+
+The same method is available on `Highlighter`. Color levels are `0` (plain
+text), `1` (16 colors), `2` (256 colors), and `3` (truecolor, the default).
+The level is explicit and does not depend on `NO_COLOR`, `FORCE_COLOR`, or TTY
+detection. Each source line ends in a newline, including an empty final line.
 
 ## What it understands
 

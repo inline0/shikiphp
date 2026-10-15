@@ -12,22 +12,24 @@ meta_description: "The bin/shikiphp command — highlight a file to HTML, or lis
 
 shikiphp ships a small command-line tool at `bin/shikiphp` (installed as
 `vendor/bin/shikiphp` in your project). It has three commands: `highlight`
-renders one file to HTML, and `langs` and `themes` list what the bundle
+renders a file or standard input to HTML or ANSI, and `langs` and `themes` list what the bundle
 contains.
 
 ## `highlight`
 
-Highlight a file to HTML, printed to stdout.
+Highlight a file to HTML or terminal escape sequences, printed to stdout.
 
 ```bash
-vendor/bin/shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]
+vendor/bin/shikiphp highlight <file|-> [--lang=<lang>] [--theme=<theme>] [--format=html|ansi] [--color-level=0..3]
 ```
 
-- `<file>` — the path to read. It must be an existing file; standard input is
-  not read.
+- `<file>` — an existing file, or `-` to read standard input.
 - `--lang` — the language id or alias. If omitted, a recognized file extension
   selects its language; unknown extensions and extensionless files use plain text.
 - `--theme` — the theme id. Defaults to `github-dark`.
+- `--format` — `html` (default) or `ansi`.
+- `--color-level` — ANSI level `0` (plain text), `1` (16 colors), `2` (256 colors),
+  or `3` (truecolor, default). It is independent of terminal detection and `NO_COLOR`.
 
 ```bash
 vendor/bin/shikiphp highlight src/App.php --lang=php --theme=nord
@@ -41,7 +43,7 @@ it can be redirected straight into a file:
 vendor/bin/shikiphp highlight src/App.php --theme=github-light > app.html
 ```
 
-The command takes no other options. For dual themes, transformers, or any other
+For dual themes, transformers, or any other
 [option](/docs/options), call the PHP API instead.
 
 ### Options and arguments
@@ -51,6 +53,13 @@ Options must use the `--name=value` form. Any other argument that starts with
 the file. `--lang php file.rs` therefore highlights `file.rs` as Rust: `--lang`
 is ignored, `php` is replaced by `file.rs`, and the language comes from the
 `.rs` extension.
+
+Language ids passed to the CLI are normalized to lowercase. Unknown ids use
+plain text; errors loading known grammars still propagate.
+
+```bash
+cat example.js | vendor/bin/shikiphp highlight - --lang=js --format=ansi
+```
 
 ### Language inference
 
@@ -78,8 +87,8 @@ Print every id the bundle accepts as a language, one per line.
 vendor/bin/shikiphp langs
 ```
 
-The list has 350 lines: the 253 bundled grammar ids in bundle order (not
-alphabetical), followed by their 97 aliases (`js`, `cjs`, `mjs`, and so on).
+The list has 364 lines: the 260 bundled grammar ids in bundle order (not
+alphabetical), followed by their 104 aliases (`js`, `cjs`, `mjs`, and so on).
 The grammar ids include 18 helper grammars that other grammars embed, such as
 `vue-directives` and `es-tag-css`; see [Languages](/docs/languages) for the
 catalog with names and aliases. Pipe through `sort` for an alphabetical list.
@@ -107,4 +116,5 @@ vendor/bin/shikiphp --help
 | Success, or help | stdout | `0` |
 | Unknown command | `Unknown command: <name>` on stderr | `1` |
 | `highlight` without a file, or the file does not exist | the usage line on stderr | `1` |
-| Unknown explicit language or theme | a one-line error on stderr | `1` |
+| Unknown theme or invalid format/color level | a one-line error on stderr | `1` |
+| Unknown language (including explicit `--lang`) | plain-text output | `0` |

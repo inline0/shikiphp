@@ -27,7 +27,7 @@ if ($command === null || in_array($command, ['-h', '--help', 'help'], true)) {
     shikiphp — pure PHP syntax highlighter (a Shiki port)
 
     Usage:
-      shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]   Highlight a file to HTML
+      shikiphp highlight <file|-> [--lang=<lang>] [--theme=<theme>] [--format=html|ansi] [--color-level=0..3]
       shikiphp langs                                                List bundled languages
       shikiphp themes                                               List bundled themes
 
@@ -52,31 +52,43 @@ function cmdHighlight(array $argv): void
     $file = null;
     $lang = null;
     $theme = 'github-dark';
+    $format = 'html';
+    $colorLevel = 3;
 
     foreach (array_slice($argv, 2) as $arg) {
         if (str_starts_with($arg, '--lang=')) {
             $lang = substr($arg, 7);
         } elseif (str_starts_with($arg, '--theme=')) {
             $theme = substr($arg, 8);
+        } elseif (str_starts_with($arg, '--format=')) {
+            $format = substr($arg, 9);
+        } elseif (str_starts_with($arg, '--color-level=')) {
+            $value = substr($arg, 14);
+            if (!in_array($value, ['0', '1', '2', '3'], true)) {
+                throw new RuntimeException('ANSI colorLevel must be between 0 and 3.');
+            }
+            $colorLevel = (int) $value;
         } elseif (!str_starts_with($arg, '--')) {
             $file = $arg;
         }
     }
 
-    if ($file === null || !is_file($file)) {
-        fwrite(STDERR, "Usage: shikiphp highlight <file> [--lang=<lang>] [--theme=<theme>]\n");
-        exit(1);
+    if ($file === null || ($file !== '-' && !is_file($file))) {
+        throw new RuntimeException('Usage: shikiphp highlight <file|-> [--lang=<lang>] [--theme=<theme>] [--format=html|ansi] [--color-level=0..3]');
+    }
+    if (!in_array($format, ['html', 'ansi'], true)) {
+        throw new RuntimeException('Unknown format: ' . $format);
     }
 
-    $code = (string) file_get_contents($file);
-    if ($lang === null) {
-        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        $lang = in_array($extension, Highlighter::createBundled()->loadedLanguages(), true)
-            ? $extension
-            : 'txt';
+    $code = (string) file_get_contents($file === '-' ? 'php://stdin' : $file);
+    $lang = strtolower($lang ?? pathinfo($file, PATHINFO_EXTENSION));
+    if (!in_array($lang, [...Highlighter::createBundled()->loadedLanguages(), 'text', 'txt', 'plain', 'plaintext', 'ansi'], true)) {
+        $lang = 'text';
     }
-
-    echo Shikiphp::codeToHtml($code, ['lang' => $lang, 'theme' => $theme]), "\n";
+    $options = ['lang' => $lang, 'theme' => $theme];
+    echo $format === 'ansi'
+        ? Shikiphp::codeToANSI($code, $options, $colorLevel)
+        : Shikiphp::codeToHtml($code, $options) . "\n";
 }
 
 function cmdLangs(): void

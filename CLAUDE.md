@@ -8,6 +8,14 @@ Read **[ARCHITECTURE.md](./ARCHITECTURE.md)** first — it is the
 normative contract for every subsystem (value-object shapes, method signatures,
 the pipeline). Do not diverge from it without updating it.
 
+## Releases
+
+Follow the [shared release rule](https://github.com/inline0/_cp/blob/main/CLAUDE.md#canonical-github-releases).
+Titles are exactly the tag. Bodies contain only the linked `CHANGELOG.md`
+sentence with that tag. Keep complete notes in `CHANGELOG.md` before publishing.
+`.github/workflows/release-format.yml` enforces this format; keep it identical
+to `_cp/scripts/release-format.yml`.
+
 ## Quick Reference
 
 ```bash

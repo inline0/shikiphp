@@ -104,7 +104,7 @@ colors; dual-theme mode writes `--shiki-light` / `--shiki-dark` CSS variables.
 Shiki itself is the oracle, pinned to `shiki` 4.5.0 with its JavaScript regex
 engine. The `scenarios/` directory holds **214** fixtures, each one input in one
 language and one theme; together they cover 174 of the 260 bundled grammars,
-`lang: 'ansi'`, and all 65 themes. `bin/test-regression` highlights each with
+`lang: 'ansi'`, and all 65 themes. `composer test:oracle` highlights each with
 both engines and asserts the HTML is identical once leading and trailing
 whitespace is trimmed. Options and transformers are checked by parity tests
 against output captured from the same Shiki and `@shikijs/transformers` 4.5.0.

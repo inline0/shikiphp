@@ -146,7 +146,7 @@ lets shikiphp match its output offset-for-offset.
 The bundled grammars and themes come from `tm-grammars` 1.32.22 and `tm-themes`
 1.12.12. The oracle compares against `shiki` 4.5.0 using its JavaScript regex
 engine, and the transformer parity tests against `@shikijs/transformers` 4.5.0
-(pinned in `bin/.oracle-tools/package-lock.json`). Shiki's default engine is
+(pinned in `pnpm-lock.yaml`). Shiki's default engine is
 Oniguruma compiled to WebAssembly; the oracle does not run it. The refresh also checks `oniguruma-to-es` 4.3.6 and `@shikijs/vscode-textmate` 10.0.2.
 
 ## Requirements
@@ -156,3 +156,13 @@ PHP 8.2 or later with `ext-json` and `ext-mbstring`. CI runs on PHP 8.4; product
 ## License
 
 MIT © inline0. Bundled TextMate grammars and themes retain their upstream licenses.
+
+## Development tooling
+
+Repository tooling uses Node.js 26.12+, pnpm 12.14 and Effect 4.0.5. Install
+with `pnpm install --frozen-lockfile`. Run `pnpm typecheck`, `pnpm test:scripts`
+and `pnpm docs:check` for the TypeScript gate. Scripts run directly as
+`node scripts/<name>.ts`; the shared runtime provides typed CLI failures,
+filesystem services and scoped subprocesses that close on interruption.
+These are development dependencies only; PHP consumers keep the same runtime
+requirements and Composer archives exclude the Node tooling.

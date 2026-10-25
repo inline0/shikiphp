@@ -13,7 +13,7 @@ use Shikiphp\Transformer\StyleToClass;
 /**
  * Byte-exact parity for the remove-line-break and style-to-class transformers
  * against output captured from the installed `@shikijs/transformers`
- * (`bin/.oracle-tools/style-class-parity.mjs`).
+ * (`bin/.oracle-tools/style-class-parity.ts`).
  */
 final class StyleClassTransformerTest extends TestCase
 {

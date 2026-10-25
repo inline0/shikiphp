@@ -247,18 +247,18 @@ raises `Plain language does not have grammar state.`
 
 ## 9. Oracle harness (inline0 signature)
 
-Shiki.js itself is the oracle (Node available). `bin/.oracle-tools/` holds a
-`package.json` depending on `shiki` and an `oracle.mjs` that prints
+Shiki.js itself is the oracle (Node is available for development). The root
+private `package.json` pins `shiki`; `bin/.oracle-tools/oracle.ts` prints
 `codeToHtml(code, {lang, theme})` (default JS engine, to match our pipeline).
 
 - `bin/oracle <lang> <theme> <file>`   → reference HTML from Shiki.js
 - `bin/actual <lang> <theme> <file>`   → shikiphp HTML
 - `bin/compare <scenario>`             → normalized diff
-- `bin/test-regression [--jobs N]`     → all `scenarios/`, pass/fail report
+- `node scripts/test-regression.ts [--jobs N]`     → all `scenarios/`, pass/fail report
 
 `scenarios/<name>/` holds `input.<ext>` + `meta.json` (`{lang, theme}`).
-`composer test:oracle` runs `bin/test-regression`. The "Non-Negotiable Testing
-Rule": highlighting output is compared against Shiki and must not regress.
+`composer test:oracle` runs `node scripts/test-regression.ts`. The
+"Non-Negotiable Testing Rule": highlighting output is compared against Shiki and must not regress.
 
 ## Compiled grammar lifetime
 

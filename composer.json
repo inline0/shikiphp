@@ -1,6 +1,6 @@
 {
     "name": "shikiphp/shikiphp",
-    "description": "Pure PHP port of Shiki. Syntax-highlight code with VS Code themes and TextMate grammars — no extensions beyond json and mbstring, no Node, no Oniguruma binding.",
+    "description": "Pure PHP port of Shiki. Syntax-highlight code with VS Code themes and TextMate grammars \u2014 no extensions beyond json and mbstring, no Node, no Oniguruma binding.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -58,7 +58,7 @@
         "test": "phpunit",
         "test:unit": "phpunit --testsuite=unit",
         "test:integration": "phpunit --testsuite=integration",
-        "test:oracle": "php bin/test-regression",
+        "test:oracle": "node scripts/test-regression.ts",
         "bench": "php bench/bench.php",
         "analyse": "phpstan analyse --memory-limit=512M",
         "cs": "phpcs --warning-severity=0",

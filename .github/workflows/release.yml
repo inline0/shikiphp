@@ -30,13 +30,15 @@ jobs:
           mkdir -p dist
           rsync -a --exclude='.git' --exclude='.github' --exclude='.claude' \
             --exclude='tests' --exclude='scenarios' \
-            --exclude='docs' \
+            --exclude='docs' --exclude='scripts' --exclude='node_modules' --exclude='dist' \
+            --exclude='package.json' --exclude='pnpm-lock.yaml' \
+            --exclude='pnpm-workspace.yaml' --exclude='tsconfig.json' \
             --exclude='AGENTS.md' --exclude='CLAUDE.md' --exclude='CHANGELOG.md' \
             --exclude='phpunit.xml*' --exclude='phpcs.xml' --exclude='phpstan.neon*' \
             --exclude='.phpunit*' --exclude='.phpstan*' \
             --exclude='bin/.oracle-tools' \
             --exclude='bin/oracle' --exclude='bin/actual' --exclude='bin/compare' \
-            --exclude='bin/test-scenario' --exclude='bin/test-regression' \
+            --exclude='bin/test-scenario' \
             . dist/shikiphp/
           cd dist && zip -r ../shikiphp.zip shikiphp/
 

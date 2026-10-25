@@ -11,7 +11,7 @@ if ($lang === null || $theme === null || $file === null || !is_file($file)) {
     exit(2);
 }
 
-$script = __DIR__ . '/.oracle-tools/oracle.mjs';
+$script = __DIR__ . '/.oracle-tools/oracle.ts';
 $cmd = sprintf('node %s %s %s %s', escapeshellarg($script), escapeshellarg($lang), escapeshellarg($theme), escapeshellarg($file));
 
 passthru($cmd, $code);

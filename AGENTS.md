@@ -30,7 +30,7 @@ composer verify                          # Final gate: analyse + cs + test + ora
 composer test                            # PHPUnit (unit + integration + oracle suites)
 composer test:unit                       # Isolated component tests
 composer test:oracle                     # Regression vs Shiki.js across scenarios/
-php bin/test-regression --jobs 4         # Oracle matrix, parallel
+node scripts/test-regression.ts --jobs 4         # Oracle matrix, parallel
 php bin/oracle <lang> <theme> <file>     # Reference HTML from Shiki.js
 php bin/actual <lang> <theme> <file>     # shikiphp HTML
 php bin/compare <scenario>               # Normalized diff oracle vs actual
@@ -89,7 +89,7 @@ the same themed tokens and HTML as Shiki, in pure PHP.
 - `src/Ansi/` — ANSI (`lang: 'ansi'`) tokenizer + palette.
 - `src/Registry/` — bundled grammars + themes (JSON) and the bundle manifest.
 - `src/Highlighter.php`, `src/Shikiphp.php` — orchestration + static facade.
-- `bin/.oracle-tools/` — Node side: `shiki` dependency + `oracle.mjs` + bundler.
+- `bin/.oracle-tools/` — Node side: `shiki` dependency + `oracle.ts` + bundler.
 - `scenarios/` — oracle fixtures (`input.<ext>` + `meta.json`).
 
 ## Conventions
@@ -103,3 +103,13 @@ Comments are sparse. Class docblock: 1–3 lines. Method docblock: only to carry
 `@param`/`@return`/`@var` shapes PHP types can't express, or a one-line note for
 genuinely non-obvious behaviour. No inline comments that narrate what code does —
 only the rare *why*. No comments in config files (xml/neon/json/yml).
+
+## Development tooling
+
+Repository tooling uses Node.js 26.12+, pnpm 12.14 and Effect 4.0.5. Install
+with `pnpm install --frozen-lockfile`. Run `pnpm typecheck`, `pnpm test:scripts`
+and `pnpm docs:check` for the TypeScript gate. Scripts run directly as
+`node scripts/<name>.ts`; the shared runtime provides typed CLI failures,
+filesystem services and scoped subprocesses that close on interruption.
+These are development dependencies only; PHP consumers keep the same runtime
+requirements and Composer archives exclude the Node tooling.

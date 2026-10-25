@@ -11,7 +11,7 @@ use Shikiphp\Highlighter;
 
 /**
  * Verifies the codeToHtml option surface against byte-exact strings captured
- * from the installed Shiki (`bin/.oracle-tools/oracle-options.mjs`).
+ * from the installed Shiki (`bin/.oracle-tools/oracle-options.ts`).
  */
 final class OptionsParityTest extends TestCase
 {

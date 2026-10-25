@@ -13,7 +13,7 @@ final class OracleRegressionTest extends TestCase
     public function every_scenario_matches_shiki(): void
     {
         if (!OracleCapture::isAvailable()) {
-            self::markTestSkipped('Oracle unavailable: node or bin/.oracle-tools/node_modules missing.');
+            self::markTestSkipped('Oracle unavailable: node or node_modules/shiki missing.');
         }
 
         $scenarios = (new ScenarioRepository())->all();

@@ -17,7 +17,7 @@ use Shikiphp\Transformer\Transformer;
 /**
  * Byte-exact parity for the `// [!code ...]` notation transformers against
  * strings captured from the installed `@shikijs/transformers`
- * (`bin/.oracle-tools/notation-parity.mjs`).
+ * (`bin/.oracle-tools/notation-parity.ts`).
  */
 final class NotationTransformerTest extends TestCase
 {

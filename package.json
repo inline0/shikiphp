@@ -1,0 +1,31 @@
+{
+  "name": "@inline0/shikiphp-tooling",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=26.12.0",
+    "pnpm": ">=12.14.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:scripts": "node --test scripts/tests/*.test.ts",
+    "docs:check": "node scripts/check-docs-content.ts",
+    "oracle": "node bin/.oracle-tools/oracle.ts",
+    "bundle": "node bin/.oracle-tools/bundle.ts",
+    "refresh:parity": "node bin/.oracle-tools/refresh-parity.ts"
+  },
+  "devDependencies": {
+    "@effect/platform-node": "4.0.5",
+    "@types/node": "26.6.5",
+    "effect": "4.0.5",
+    "typescript": "7.0.2",
+    "@shikijs/cli": "4.5.0",
+    "@shikijs/transformers": "4.5.0",
+    "oniguruma-to-es": "4.3.6",
+    "shiki": "4.5.0",
+    "tm-grammars": "1.32.22",
+    "tm-themes": "1.12.12",
+    "@shikijs/vscode-textmate": "10.0.2"
+  }
+}

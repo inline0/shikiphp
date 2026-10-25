@@ -21,3 +21,9 @@
 # composer.json, so it ships.
 /bin/*                export-ignore
 /bin/shikiphp         -export-ignore
+
+# Node tooling is development-only.
+/package.json export-ignore
+/pnpm-lock.yaml export-ignore
+/pnpm-workspace.yaml export-ignore
+/tsconfig.json export-ignore

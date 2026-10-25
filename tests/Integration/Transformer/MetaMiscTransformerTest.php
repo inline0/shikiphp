@@ -16,7 +16,7 @@ use Shikiphp\Transformer\RenderWhitespace;
 /**
  * Byte-exact parity for the meta-string and misc transformers against strings
  * captured from the installed `@shikijs/transformers`
- * (`bin/.oracle-tools/meta-misc-parity.mjs`).
+ * (`bin/.oracle-tools/meta-misc-parity.ts`).
  */
 final class MetaMiscTransformerTest extends TestCase
 {

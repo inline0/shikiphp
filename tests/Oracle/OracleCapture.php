@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Shikiphp\Tests\Oracle;
 
 /**
- * Reference HTML from Shiki.js via `bin/.oracle-tools/oracle.mjs`.
+ * Reference HTML from Shiki.js via `bin/.oracle-tools/oracle.ts`.
  */
 final class OracleCapture
 {
     public static function isAvailable(): bool
     {
         $node = trim((string) shell_exec('command -v node 2>/dev/null'));
-        return $node !== '' && is_dir(self::toolsDir() . '/node_modules');
+        return $node !== '' && is_dir(dirname(__DIR__, 2) . '/node_modules/shiki');
     }
 
     public static function html(string $lang, string $theme, string $file): string
@@ -48,7 +48,7 @@ final class OracleCapture
         $themesJson = (string) json_encode($themes);
         $cmd = sprintf(
             'node %s %s %s %s',
-            escapeshellarg(self::toolsDir() . '/oracle-tokens-themes.mjs'),
+            escapeshellarg(self::toolsDir() . '/oracle-tokens-themes.ts'),
             escapeshellarg($lang),
             escapeshellarg($file),
             escapeshellarg($themesJson),
@@ -80,7 +80,7 @@ final class OracleCapture
     }
 
     /**
-     * Run oracle.mjs with stdout and stderr captured separately so a stray node
+     * Run oracle.ts with stdout and stderr captured separately so a stray node
      * warning never corrupts the reference HTML.
      *
      * @return array{string, string, int}
@@ -89,7 +89,7 @@ final class OracleCapture
     {
         $cmd = sprintf(
             'node %s %s %s %s',
-            escapeshellarg(self::toolsDir() . '/oracle.mjs'),
+            escapeshellarg(self::toolsDir() . '/oracle.ts'),
             escapeshellarg($lang),
             escapeshellarg($theme),
             escapeshellarg($file),

@@ -29,7 +29,7 @@ final class ScenarioRunnerRetryTest extends TestCase
     public function runner_reports_a_stable_failure_after_retries(): void
     {
         if (!OracleCapture::isAvailable()) {
-            self::markTestSkipped('Oracle unavailable: node or bin/.oracle-tools/node_modules missing.');
+            self::markTestSkipped('Oracle unavailable: node or node_modules/shiki missing.');
         }
 
         $input = tempnam(sys_get_temp_dir(), 'retry') . '.js';

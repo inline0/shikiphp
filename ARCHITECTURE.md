@@ -250,6 +250,9 @@ raises `Plain language does not have grammar state.`
 Shiki.js itself is the oracle (Node is available for development). The root
 private `package.json` pins `shiki`; `bin/.oracle-tools/oracle.ts` prints
 `codeToHtml(code, {lang, theme})` (default JS engine, to match our pipeline).
+Oracle captures pass `tokenizeTimeLimit: 0`: Shiki otherwise stops a line after
+500 ms and emits the rest as one token, so a loaded machine would produce a
+different reference. shikiphp has no tokenize time limit.
 
 - `bin/oracle <lang> <theme> <file>`   → reference HTML from Shiki.js
 - `bin/actual <lang> <theme> <file>`   → shikiphp HTML

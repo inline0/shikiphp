@@ -91,13 +91,13 @@ export const runOracle = (mode: OracleMode, args: readonly string[], tokens = fa
     else if (kind === "style-to-class-single" || kind === "style-to-class-dual") { style = transformers.transformerStyleToClass(); selected.push(style); }
     else return yield* fail(`unknown kind: ${kind}`, 2);
   }
-  const options = { lang, ...(themes ? { themes } : { theme: selectedTheme }), ...extra, ...(selected.length ? { transformers: selected } : {}), ...(meta ? { meta } : {}) } as CodeToHastOptions;
+  const options = { lang, tokenizeTimeLimit: 0, ...(themes ? { themes } : { theme: selectedTheme }), ...extra, ...(selected.length ? { transformers: selected } : {}), ...(meta ? { meta } : {}) } as CodeToHastOptions;
   const output = yield* attempt(() => {
     if (mode === "oracle-tokens-themes") {
-      const lines = highlighter.codeToTokensWithThemes(code, { lang: lang as BundledLanguage, themes: themes! as Record<string, BundledTheme> });
+      const lines = highlighter.codeToTokensWithThemes(code, { lang: lang as BundledLanguage, themes: themes! as Record<string, BundledTheme>, tokenizeTimeLimit: 0 });
       return JSON.stringify(lines.map((line) => line.map((token) => ({ content: token.content, offset: token.offset, variants: Object.fromEntries(Object.entries(token.variants).map(([key, value]) => [key, { color: value.color ?? null, fontStyle: typeof value.fontStyle === "number" ? value.fontStyle : 0, bgColor: value.bgColor ?? null }])) }))));
     }
-    if (tokens && mode === "oracle") return JSON.stringify(highlighter.codeToTokens(code, { lang: lang as BundledLanguage, theme: selectedTheme as BundledTheme }).tokens);
+    if (tokens && mode === "oracle") return JSON.stringify(highlighter.codeToTokens(code, { lang: lang as BundledLanguage, theme: selectedTheme as BundledTheme, tokenizeTimeLimit: 0 }).tokens);
     try {
       const html = highlighter.codeToHtml(code, options);
       return style ? JSON.stringify({ html, css: style.getCSS() }) : html;

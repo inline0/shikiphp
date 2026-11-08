@@ -43,6 +43,9 @@ final class BundleLoader
     /** @var array<string, array<string, mixed>> scope name → decoded raw grammar */
     private array $rawCache = [];
 
+    /** @var array<string, string> grammar file → scope name it declared when decoded */
+    private array $fileScopes = [];
+
     public function __construct(
         private readonly string $baseDir,
     ) {
@@ -259,8 +262,13 @@ final class BundleLoader
     /** @return array<string, mixed> */
     private function loadGrammarFile(string $relativeFile): array
     {
+        $cachedScope = $this->fileScopes[$relativeFile] ?? null;
+        if ($cachedScope !== null && isset($this->rawCache[$cachedScope])) {
+            return $this->rawCache[$cachedScope];
+        }
         $raw = self::decodeJson($this->baseDir . '/' . $relativeFile);
         $scopeName = is_string($raw['scopeName'] ?? null) ? $raw['scopeName'] : $relativeFile;
+        $this->fileScopes[$relativeFile] = $scopeName;
         return $this->rawCache[$scopeName] ??= $raw;
     }
 

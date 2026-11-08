@@ -17,7 +17,7 @@ const highlighter = yield* factory.create(['javascript', 'yaml', 'python', 'mark
 const html: Array<{ code: string; lang: string; theme: string; kind: string; options: object; extra: object; output: string }> = [];
 function capture(code: string, lang: string, kind: string, options: object = {}, extra: object = {}, theme = 'github-dark') {
   const name = `transformer${kind}`;
-  const output = highlighter.codeToHtml(code, {lang, theme, ...extra, transformers: [(transformers[name as keyof typeof transformers] as (options: object) => ShikiTransformer)(options)]});
+  const output = highlighter.codeToHtml(code, {lang, theme, tokenizeTimeLimit: 0, ...extra, transformers: [(transformers[name as keyof typeof transformers] as (options: object) => ShikiTransformer)(options)]});
   html.push({code, lang, theme, kind, options, extra, output});
 }
 for (const code of ['const a = 1\n\nconst b = 2\n', '', '😀\r\nconst a = 1']) {
@@ -48,11 +48,11 @@ for (const [code, lang, theme] of [
     ansi.push({code: code!, lang: lang!, theme: theme!, colorLevel, output: yield* promise(() => codeToANSI(code!, lang as BundledLanguage, theme as BundledTheme, {colorLevel: colorLevel as 0 | 1 | 2 | 3}))});
   }
 }
-const resumeOptions = {lang: 'javascript', theme: 'github-dark'} as const;
+const resumeOptions = {lang: 'javascript', theme: 'github-dark', tokenizeTimeLimit: 0} as const;
 const resume = {head: '/* start', tail: 'still a comment */ const x = 1', output: ''};
 resume.output = highlighter.codeToHtml(resume.tail, {...resumeOptions, grammarState: highlighter.getLastGrammarState(resume.head, resumeOptions)});
 const code = 'const x = "hi"; // comment\nconst re = /foo/;';
-const tokenTypes = highlighter.codeToTokensBase(code, {lang: 'javascript', theme: 'github-dark', includeExplanation: 'tokenType'})
+const tokenTypes = highlighter.codeToTokensBase(code, {lang: 'javascript', theme: 'github-dark', tokenizeTimeLimit: 0, includeExplanation: 'tokenType'})
   .map(line => line.map(({content, type}) => ({content, type})));
 yield* fs.writeFileString(fileURLToPath(new URL('../../tests/Integration/fixtures/upstream-4.5.json', import.meta.url)),
   JSON.stringify({version: '4.5.0', html, ansi, resume, tokenTypes: {code, output: tokenTypes}}, null, 2) + '\n');

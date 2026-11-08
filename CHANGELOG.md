@@ -4,6 +4,17 @@ All notable changes to shikiphp are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-11-08
+
+### Fixed
+
+- The bundle loader checks its grammar cache before reading a file, so a repeat
+  lookup of a bundled grammar returns the decoded JSON without decoding it
+  again (about 0.3 µs instead of about 1 ms for TypeScript), as the
+  performance guide describes.
+- The upstream parity fixture capture disables Shiki's tokenize time limit like
+  the other oracle captures.
+
 ## [0.2.3] - 2026-11-07
 
 ### Fixed
@@ -116,3 +127,4 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 [0.2.1]: https://github.com/inline0/shikiphp/compare/v0.2.0...v0.2.1
 [0.2.2]: https://github.com/inline0/shikiphp/compare/v0.2.1...v0.2.2
 [0.2.3]: https://github.com/inline0/shikiphp/compare/v0.2.2...v0.2.3
+[0.2.4]: https://github.com/inline0/shikiphp/compare/v0.2.3...v0.2.4
